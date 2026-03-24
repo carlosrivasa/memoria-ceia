@@ -5,180 +5,293 @@
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
-Todos los capítulos deben comenzar con un breve párrafo introductorio que indique cuál es el contenido que se encontrará al leerlo.  La redacción sobre el contenido de la memoria debe hacerse en presente y todo lo referido al proyecto en pasado, siempre de modo impersonal.
+Este capítulo introduce las herramientas de terceros, los fundamentos teóricos y las tecnologías necesarias para el desarrollo del sistema. Se describen los conjuntos de datos analizados, las técnicas de extracción de representaciones numéricas, los modelos de aprendizaje automático y las herramientas utilizadas para el despliegue del producto.
 
-\section{Estilo y convenciones}
-\label{sec:ejemplo}
+\section{Fuentes de datos de canciones}
+\label{sec:datos}
 
-\subsection{Uso de mayúscula inicial para los título de secciones}
+Para entrenar los modelos predictivos se evaluaron diferentes fuentes de datos musicales. En una etapa inicial se analizaron repositorios públicos orientados a tareas de recuperación de información musical. El objetivo fue identificar las ventajas y desventajas de cada alternativa antes de tomar una decisión definitiva. En la tabla \ref{tab:datasets} se resumen los conjuntos de datos estudiados.
 
-Si en el texto se hace alusión a diferentes partes del trabajo referirse a ellas como capítulo, sección o subsección según corresponda. Por ejemplo: ``En el capítulo \ref{Chapter1} se explica tal cosa'', o ``En la sección \ref{sec:ejemplo} se presenta lo que sea'', o ``En la subsección \ref{subsec:ejemplo} se discute otra cosa''.
+\begin{table}[htpb]
+    \centering
+    \caption[Conjuntos de datos evaluados]{Comparativa de los conjuntos de datos musicales evaluados para el entrenamiento de los modelos.}
+    \begin{tabular}{p{2.5cm} p{5.5cm} p{3.5cm} p{3.5cm}}    
+        \toprule
+        \textbf{Nombre} & \textbf{Descripción} & \textbf{Ventajas} & \textbf{Desventajas} \\
+        \midrule
+        GTZAN & Archivo histórico con audios de 30 segundos clasificados por género. & Ampliamente documentado. & Tamaño reducido. \\       
+        FMA & Repositorio libre con metadatos y extracción de características precalculadas. & Gran volumen de datos. & Etiquetas ruidosas. \\
+        Plusyc & Colección privada provista por la empresa comercial asociada al proyecto. & Etiquetas manuales precisas. & Acceso restringido. \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:datasets}
+\end{table}
 
-Cuando se quiere poner una lista tabulada, se hace así:
+\begin{table}[htpb]
+    \centering
+    \caption[Conjuntos de datos evaluados]{Comparativa de los conjuntos de datos musicales evaluados para el entrenamiento de los modelos.}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{p{2.5cm} p{4.5cm} p{3.5cm} p{4cm}}    
+        \toprule
+        \textbf{Nombre} & \textbf{Descripción} & \textbf{Ventajas} & \textbf{Desventajas} \\
+        \midrule
+        GTZAN & Archivo histórico con características precalculadas sobre ventanas de 3 y 30 segundos. & Ampliamente documentado. & Audios cortos. Complejidad para replicar el preprocesamiento en datos nuevos. \\       
+        FMA & Repositorio libre con metadatos y extracción de atributos acústicos. & Gran volumen de datos. & Audios limitados a fragmentos de 30 segundos. Etiquetas ruidosas. \\
+        MSD y Last.fm & Base de datos masiva con etiquetas sociales y características precalculadas. & Gran escala. Contiene etiquetas semánticas útiles. & No incluye los archivos de audio crudo. Demanda altos recursos computacionales. \\
+        Kaggle (Spotify Tracks) & Conjuntos de datos tabulares con métricas extraídas de plataformas comerciales. & Gran volumen de metadatos y etiquetas de alto nivel. & No incluye los archivos de audio crudo. Imposibilita el entrenamiento desde la señal acústica. \\
+        Magnatune & Conjunto de datos con acceso a metadatos estructurados. & Información detallada de las pistas. & Estructura de archivos XML compleja de procesar. \\
+        Plusyc & Colección privada provista por la empresa asociada al proyecto. & Audios completos. Etiquetas manuales precisas para todos los objetivos. & Acceso restringido al público general. \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:datasets_comparativa}
+\end{table}
+
+Tras esta evaluación, se determinó que los conjuntos públicos presentaban limitaciones para los objetivos específicos de la empresa. Por este motivo, se seleccionó el conjunto de datos privado de Plusyc. Esta fuente cuenta con más de 60.000 canciones completas. Además, cada pista posee etiquetas manuales para todos los objetivos predictivos requeridos.
+
+\section{Representaciones numéricas de la música}
+\label{sec:dsp}
+
+El procesamiento computacional del audio requiere extraer descriptores acústicos de la señal. Para esta tarea se emplearon bibliotecas de procesamiento digital de señales (DSP, por sus siglas en inglés). Estas herramientas transforman la onda sonora en arreglos matemáticos de una o dos dimensiones.
+
+Entre las representaciones más útiles se encuentran el espectrograma y el cromagrama. El espectrograma refleja la variación de las frecuencias a lo largo del tiempo. Por su parte, el cromagrama captura la energía asociada a las doce clases de notas musicales. Un ejemplo de ambas transformaciones se ilustra en la figura \ref{fig:espectro_croma}.
+
+Figura aquí
+% \begin{figure}[htpb]
+%     \centering
+%     \includegraphics[width=0.8\textwidth]{./Figures/espectro_croma.pdf}
+%     \caption{Representación visual de un espectrograma de Mel y un cromagrama extraídos de una señal de audio.}
+%     \label{fig:espectro_croma}
+% \end{figure}
+
+Además de estas representaciones visuales, el sistema requiere la extracción de atributos numéricos unidimensionales. En la tabla \ref{tab:atributos_dsp} se listan las características principales que se extrajeron para alimentar los algoritmos de predicción.
+
+\begin{table}[htpb]
+    \centering
+    \caption[Atributos DSP extraídos]{Listado de los principales atributos de procesamiento de señales extraídos del audio.}
+    \begin{tabular}{l p{10cm}}    
+        \toprule
+        \textbf{Atributo} & \textbf{Descripción principal} \\
+        \midrule
+        MFCC & Coeficientes cepstrales que modelan la percepción auditiva humana. \\       
+        Centroide espectral & Indica el centro de masa del espectro y se asocia al brillo del sonido. \\
+        Ancho de banda & Mide la amplitud de las frecuencias alrededor del centroide espectral. \\
+        Tasa de cruce por cero & Cuantifica los cambios de signo en la señal temporal. \\
+        Flujo espectral & Evalúa la tasa de cambio local en el espectro entre tramas sucesivas. \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:atributos_dsp}
+\end{table}
+
+\section{Información semántica del audio}
+\label{sec:semantica}
+
+Las representaciones numéricas de bajo nivel no siempre son suficientes para capturar conceptos musicales complejos. Por ello, se implementó una estrategia de aprendizaje por transferencia. Esta técnica consiste en utilizar modelos previamente entrenados con grandes volúmenes de datos para extraer características de alto nivel.
+
+Para este fin se utilizó la biblioteca \textit{PANNs Inference}. Esta herramienta provee acceso a redes neuronales optimizadas para el análisis de sonido. De las opciones disponibles, se seleccionó la arquitectura denominada CNN14. Se trata de una red neuronal convolucional robusta, capaz de abstraer patrones semánticos profundos de la música. La estructura interna de esta arquitectura se detalla en la figura \ref{fig:cnn14}.
+
+Figura aquí.
+% \begin{figure}[htpb]
+%     \centering
+%     \includegraphics[width=0.7\textwidth]{./Figures/arquitectura_cnn14.pdf}
+%     \caption{Diagrama de bloques de la arquitectura de la red neuronal convolucional CNN14.}
+%     \label{fig:cnn14}
+% \end{figure}
+
+\section{Modelos de inteligencia artificial utilizados}
+\label{sec:modelos}
+
+Una vez obtenidas las características acústicas y semánticas, fue necesario aplicar algoritmos de predicción. El alcance del trabajo abarca problemas de clasificación y de regresión. Para resolverlos, se implementaron dos enfoques principales:
 
 \begin{itemize}
-	\item Este es el primer elemento de la lista.
-	\item Este es el segundo elemento de la lista.
+    \item Redes MLP: Se diseñaron perceptrones multicapa para abordar los problemas de regresión multisalida. Estas redes neuronales artificiales demostraron eficacia para predecir variables continuas correlacionadas.
+    \item Algoritmos LightGBM: Se integró el marco de trabajo \textit{LightGBM} para las tareas generales de clasificación multiclase y regresión simple. Esta herramienta se basa en el ensamble de árboles de decisión y destaca por su velocidad computacional.
 \end{itemize}
 
-Notar el uso de las mayúsculas y el punto al final de cada elemento.
+\section{Despliegue e integración}
+\label{sec:despliegue}
 
-Si se desea poner una lista numerada el formato es este:
+Para que las predicciones musicales sean consumidas por servicios externos, se desarrolló una interfaz de programación de aplicaciones. Se eligió el marco de trabajo \textit{FastAPI} por su alto rendimiento y su facilidad para construir servicios web con lenguaje \textit{Python}. 
 
-\begin{enumerate}
-	\item Este es el primer elemento de la lista.
-	\item Este es el segundo elemento de la lista.
-\end{enumerate}
+Finalmente, el sistema completo se configuró para operar de forma remota. Se provisionó una instancia de cómputo en la nube, la cual garantiza la disponibilidad y los recursos de procesamiento necesarios. El esquema general de integración entre el cliente, la interfaz y el servidor se muestra en la figura \ref{fig:diagrama_despliegue}.
 
-Notar el uso de las mayúsculas y el punto al final de cada elemento.
-
-\subsection{Este es el título de una subsección}
-\label{subsec:ejemplo}
-
-Se recomienda no utilizar \textbf{texto en negritas} en ningún párrafo, ni tampoco texto \underline{subrayado}. En cambio sí se debe utilizar \textit{texto en itálicas} para palabras en un idioma extranjero, al menos la primera vez que aparecen en el texto. En el caso de palabras que estamos inventando se deben utilizar ``comillas'', así como también para citas textuales. Por ejemplo, un \textit{digital filter} es una especie de ``selector'' que permite separar ciertos componentes armónicos en particular.
-
-La escritura debe ser impersonal. Por ejemplo, no utilizar ``el diseño del firmware lo hice de acuerdo con tal principio'', sino ``el firmware fue diseñado utilizando tal principio''. 
-
-El trabajo es algo que al momento de escribir la memoria se supone que ya está concluido, entonces todo lo que se refiera a hacer el trabajo se narra en tiempo pasado, porque es algo que ya ocurrió. Por ejemplo, "se diseñó el firmware empleando la técnica de test driven development".
-
-En cambio, la memoria es algo que está vivo cada vez que el lector la lee. Por eso transcurre siempre en tiempo presente, como por ejemplo:
-
-``En el presente capítulo se da una visión global sobre las distintas pruebas realizadas y los resultados obtenidos. Se explica el modo en que fueron llevados a cabo los test unitarios y las pruebas del sistema''.
-
-Se recomienda no utilizar una sección de glosario sino colocar la descripción de las abreviaturas como parte del mismo cuerpo del texto. Por ejemplo, RTOS (\textit{Real Time Operating System}, Sistema Operativo de Tiempo Real) o en caso de considerarlo apropiado mediante notas a pie de página.
-
-Si se desea indicar alguna página web utilizar el siguiente formato de referencias bibliográficas, dónde las referencias se detallan en la sección de bibliografía de la memoria, utilizado el formato establecido por IEEE en \citep{IEEE:citation}. Por ejemplo, ``el presente trabajo se basa en la plataforma EDU-CIAA-NXP \citep{CIAA}, la cual...''.
-
-\subsection{Figuras} 
-
-Al insertar figuras en la memoria se deben considerar determinadas pautas. Para empezar, usar siempre tipografía claramente legible. Luego, tener claro que \textbf{es incorrecto} escribir por ejemplo esto: ``El diseño elegido es un cuadrado, como se ve en la siguiente figura:''
-
-\begin{figure}[h]
-\centering
-\includegraphics[scale=.45]{./Figures/cuadradoAzul.png}
-\end{figure}
-
-La forma correcta de utilizar una figura es con referencias cruzadas, por ejemplo: ``Se eligió utilizar un cuadrado azul para el logo, como puede observarse en la figura \ref{fig:cuadradoAzul}''.
-
-\begin{figure}[ht]
-	\centering
-	\includegraphics[scale=.45]{./Figures/cuadradoAzul.png}
-	\caption{Ilustración del cuadrado azul que se eligió para el diseño del logo.}
-	\label{fig:cuadradoAzul}
-\end{figure}
-
-El texto de las figuras debe estar siempre en español, excepto que se decida reproducir una figura original tomada de alguna referencia. En ese caso la referencia de la cual se tomó la figura debe ser indicada en el epígrafe de la figura e incluida como una nota al pie, como se ilustra en la figura \ref{fig:palabraIngles}.
-
-\begin{figure}[htpb]
-	\centering
-	\includegraphics[scale=.3]{./Figures/word.jpeg}
-	\caption{Imagen tomada de la página oficial del procesador\protect\footnotemark.}
-	\label{fig:palabraIngles}
-\end{figure}
-
-\footnotetext{Imagen tomada de \url{https://goo.gl/images/i7C70w}}
-
-La figura y el epígrafe deben conformar una unidad cuyo significado principal pueda ser comprendido por el lector sin necesidad de leer el cuerpo central de la memoria. Para eso es necesario que el epígrafe sea todo lo detallado que corresponda y si en la figura se utilizan abreviaturas entonces aclarar su significado en el epígrafe o en la misma figura.
+Figura aquí.
+% \begin{figure}[htpb]
+%     \centering
+%     \includegraphics[width=0.9\textwidth]{./Figures/diagrama_bloques.pdf}
+%     \caption{Diagrama de bloques del sistema en su entorno de despliegue en la nube.}
+%     \label{fig:diagrama_despliegue}
+% \end{figure}
 
 
+% \subsection{Uso de mayúscula inicial para los título de secciones}
 
-\begin{figure}[ht]
-	\centering
-	\includegraphics[scale=.37]{./Figures/questionMark.png}
-	\caption{¿Por qué de pronto aparece esta figura?}
-	\label{fig:questionMark}
-\end{figure}
+% Si en el texto se hace alusión a diferentes partes del trabajo referirse a ellas como capítulo, sección o subsección según corresponda. Por ejemplo: ``En el capítulo \ref{Chapter1} se explica tal cosa'', o ``En la sección \ref{sec:ejemplo} se presenta lo que sea'', o ``En la subsección \ref{subsec:ejemplo} se discute otra cosa''.
 
-Nunca colocar una figura en el documento antes de hacer la primera referencia a ella, como se ilustra con la figura \ref{fig:questionMark}, porque sino el lector no comprenderá por qué de pronto aparece la figura en el documento, lo que distraerá su atención.
+% Cuando se quiere poner una lista tabulada, se hace así:
 
-Otra posibilidad es utilizar el entorno \textit{subfigure} para incluir más de una figura, como se puede ver en la figura \ref{fig:three graphs}. Notar que se pueden referenciar también las figuras internas individualmente de esta manera: \ref{fig:1de3}, \ref{fig:2de3} y \ref{fig:3de3}.
+% \begin{itemize}
+% 	\item Este es el primer elemento de la lista.
+% 	\item Este es el segundo elemento de la lista.
+% \end{itemize}
+
+% Notar el uso de las mayúsculas y el punto al final de cada elemento.
+
+% Si se desea poner una lista numerada el formato es este:
+
+% \begin{enumerate}
+% 	\item Este es el primer elemento de la lista.
+% 	\item Este es el segundo elemento de la lista.
+% \end{enumerate}
+
+% Notar el uso de las mayúsculas y el punto al final de cada elemento.
+
+% \subsection{Este es el título de una subsección}
+% \label{subsec:ejemplo}
+
+% Se recomienda no utilizar \textbf{texto en negritas} en ningún párrafo, ni tampoco texto \underline{subrayado}. En cambio sí se debe utilizar \textit{texto en itálicas} para palabras en un idioma extranjero, al menos la primera vez que aparecen en el texto. En el caso de palabras que estamos inventando se deben utilizar ``comillas'', así como también para citas textuales. Por ejemplo, un \textit{digital filter} es una especie de ``selector'' que permite separar ciertos componentes armónicos en particular.
+
+% La escritura debe ser impersonal. Por ejemplo, no utilizar ``el diseño del firmware lo hice de acuerdo con tal principio'', sino ``el firmware fue diseñado utilizando tal principio''. 
+
+% El trabajo es algo que al momento de escribir la memoria se supone que ya está concluido, entonces todo lo que se refiera a hacer el trabajo se narra en tiempo pasado, porque es algo que ya ocurrió. Por ejemplo, "se diseñó el firmware empleando la técnica de test driven development".
+
+% En cambio, la memoria es algo que está vivo cada vez que el lector la lee. Por eso transcurre siempre en tiempo presente, como por ejemplo:
+
+% ``En el presente capítulo se da una visión global sobre las distintas pruebas realizadas y los resultados obtenidos. Se explica el modo en que fueron llevados a cabo los test unitarios y las pruebas del sistema''.
+
+% Se recomienda no utilizar una sección de glosario sino colocar la descripción de las abreviaturas como parte del mismo cuerpo del texto. Por ejemplo, RTOS (\textit{Real Time Operating System}, Sistema Operativo de Tiempo Real) o en caso de considerarlo apropiado mediante notas a pie de página.
+
+% Si se desea indicar alguna página web utilizar el siguiente formato de referencias bibliográficas, dónde las referencias se detallan en la sección de bibliografía de la memoria, utilizado el formato establecido por IEEE en \citep{IEEE:citation}. Por ejemplo, ``el presente trabajo se basa en la plataforma EDU-CIAA-NXP \citep{CIAA}, la cual...''.
+
+% \subsection{Figuras} 
+
+% Al insertar figuras en la memoria se deben considerar determinadas pautas. Para empezar, usar siempre tipografía claramente legible. Luego, tener claro que \textbf{es incorrecto} escribir por ejemplo esto: ``El diseño elegido es un cuadrado, como se ve en la siguiente figura:''
+
+% \begin{figure}[h]
+% \centering
+% \includegraphics[scale=.45]{./Figures/cuadradoAzul.png}
+% \end{figure}
+
+% La forma correcta de utilizar una figura es con referencias cruzadas, por ejemplo: ``Se eligió utilizar un cuadrado azul para el logo, como puede observarse en la figura \ref{fig:cuadradoAzul}''.
+
+% \begin{figure}[ht]
+% 	\centering
+% 	\includegraphics[scale=.45]{./Figures/cuadradoAzul.png}
+% 	\caption{Ilustración del cuadrado azul que se eligió para el diseño del logo.}
+% 	\label{fig:cuadradoAzul}
+% \end{figure}
+
+% El texto de las figuras debe estar siempre en español, excepto que se decida reproducir una figura original tomada de alguna referencia. En ese caso la referencia de la cual se tomó la figura debe ser indicada en el epígrafe de la figura e incluida como una nota al pie, como se ilustra en la figura \ref{fig:palabraIngles}.
+
+% \begin{figure}[htpb]
+% 	\centering
+% 	\includegraphics[scale=.3]{./Figures/word.jpeg}
+% 	\caption{Imagen tomada de la página oficial del procesador\protect\footnotemark.}
+% 	\label{fig:palabraIngles}
+% \end{figure}
+
+% \footnotetext{Imagen tomada de \url{https://goo.gl/images/i7C70w}}
+
+% La figura y el epígrafe deben conformar una unidad cuyo significado principal pueda ser comprendido por el lector sin necesidad de leer el cuerpo central de la memoria. Para eso es necesario que el epígrafe sea todo lo detallado que corresponda y si en la figura se utilizan abreviaturas entonces aclarar su significado en el epígrafe o en la misma figura.
+
+
+
+% \begin{figure}[ht]
+% 	\centering
+% 	\includegraphics[scale=.37]{./Figures/questionMark.png}
+% 	\caption{¿Por qué de pronto aparece esta figura?}
+% 	\label{fig:questionMark}
+% \end{figure}
+
+% Nunca colocar una figura en el documento antes de hacer la primera referencia a ella, como se ilustra con la figura \ref{fig:questionMark}, porque sino el lector no comprenderá por qué de pronto aparece la figura en el documento, lo que distraerá su atención.
+
+% Otra posibilidad es utilizar el entorno \textit{subfigure} para incluir más de una figura, como se puede ver en la figura \ref{fig:three graphs}. Notar que se pueden referenciar también las figuras internas individualmente de esta manera: \ref{fig:1de3}, \ref{fig:2de3} y \ref{fig:3de3}.
  
-\begin{figure}[!htpb]
-     \centering
-     \begin{subfigure}[b]{0.3\textwidth}
-         \centering
-         \includegraphics[width=.65\textwidth]{./Figures/questionMark}
-         \caption{Un caption.}
-         \label{fig:1de3}
-     \end{subfigure}
-     \hfill
-     \begin{subfigure}[b]{0.3\textwidth}
-         \centering
-         \includegraphics[width=.65\textwidth]{./Figures/questionMark}
-         \caption{Otro.}
-         \label{fig:2de3}
-     \end{subfigure}
-     \hfill
-     \begin{subfigure}[b]{0.3\textwidth}
-         \centering
-         \includegraphics[width=.65\textwidth]{./Figures/questionMark}
-         \caption{Y otro más.}
-         \label{fig:3de3}
-     \end{subfigure}
-        \caption{Tres gráficos simples.}
-        \label{fig:three graphs}
-\end{figure}
+% \begin{figure}[!htpb]
+%      \centering
+%      \begin{subfigure}[b]{0.3\textwidth}
+%          \centering
+%          \includegraphics[width=.65\textwidth]{./Figures/questionMark}
+%          \caption{Un caption.}
+%          \label{fig:1de3}
+%      \end{subfigure}
+%      \hfill
+%      \begin{subfigure}[b]{0.3\textwidth}
+%          \centering
+%          \includegraphics[width=.65\textwidth]{./Figures/questionMark}
+%          \caption{Otro.}
+%          \label{fig:2de3}
+%      \end{subfigure}
+%      \hfill
+%      \begin{subfigure}[b]{0.3\textwidth}
+%          \centering
+%          \includegraphics[width=.65\textwidth]{./Figures/questionMark}
+%          \caption{Y otro más.}
+%          \label{fig:3de3}
+%      \end{subfigure}
+%         \caption{Tres gráficos simples.}
+%         \label{fig:three graphs}
+% \end{figure}
 
-El código para generar las imágenes se encuentra disponible para su reutilización en el archivo \file{Chapter2.tex}.
+% El código para generar las imágenes se encuentra disponible para su reutilización en el archivo \file{Chapter2.tex}.
 
-\subsection{Tablas}
+% \subsection{Tablas}
 
-Para las tablas utilizar el mismo formato que para las figuras, sólo que el epígrafe se debe colocar arriba de la tabla, como se ilustra en la tabla \ref{tab:peces}. Observar que sólo algunas filas van con líneas visibles y notar el uso de las negritas para los encabezados.  La referencia se logra utilizando el comando \verb|\ref{<label>}| donde label debe estar definida dentro del entorno de la tabla.
+% Para las tablas utilizar el mismo formato que para las figuras, sólo que el epígrafe se debe colocar arriba de la tabla, como se ilustra en la tabla \ref{tab:peces}. Observar que sólo algunas filas van con líneas visibles y notar el uso de las negritas para los encabezados.  La referencia se logra utilizando el comando \verb|\ref{<label>}| donde label debe estar definida dentro del entorno de la tabla.
 
-\begin{verbatim}
-\begin{table}[h]
-	\centering
-	\caption[caption corto]{caption largo más descriptivo}
-	\begin{tabular}{l c c}    
-		\toprule
-		\textbf{Especie}     & \textbf{Tamaño} & \textbf{Valor}\\
-		\midrule
-		Amphiprion Ocellaris & 10 cm           & \$ 6.000 \\		
-		Hepatus Blue Tang    & 15 cm           & \$ 7.000 \\
-		Zebrasoma Xanthurus  & 12 cm           & \$ 6.800 \\
-		\bottomrule
-		\hline
-	\end{tabular}
-	\label{tab:peces}
-\end{table}
-\end{verbatim}
+% \begin{verbatim}
+% \begin{table}[h]
+% 	\centering
+% 	\caption[caption corto]{caption largo más descriptivo}
+% 	\begin{tabular}{l c c}    
+% 		\toprule
+% 		\textbf{Especie}     & \textbf{Tamaño} & \textbf{Valor}\\
+% 		\midrule
+% 		Amphiprion Ocellaris & 10 cm           & \$ 6.000 \\		
+% 		Hepatus Blue Tang    & 15 cm           & \$ 7.000 \\
+% 		Zebrasoma Xanthurus  & 12 cm           & \$ 6.800 \\
+% 		\bottomrule
+% 		\hline
+% 	\end{tabular}
+% 	\label{tab:peces}
+% \end{table}
+% \end{verbatim}
 
 
-\begin{table}[h]
-	\centering
-	\caption[caption corto]{caption largo más descriptivo.}
-	\begin{tabular}{l c c}    
-		\toprule
-		\textbf{Especie} 	 & \textbf{Tamaño} 		& \textbf{Valor}  \\
-		\midrule
-		Amphiprion Ocellaris & 10 cm 				& \$ 6.000 \\		
-		Hepatus Blue Tang	 & 15 cm				& \$ 7.000 \\
-		Zebrasoma Xanthurus	 & 12 cm				& \$ 6.800 \\
-		\bottomrule
-		\hline
-	\end{tabular}
-	\label{tab:peces}
-\end{table}
+% \begin{table}[h]
+% 	\centering
+% 	\caption[caption corto]{caption largo más descriptivo.}
+% 	\begin{tabular}{l c c}    
+% 		\toprule
+% 		\textbf{Especie} 	 & \textbf{Tamaño} 		& \textbf{Valor}  \\
+% 		\midrule
+% 		Amphiprion Ocellaris & 10 cm 				& \$ 6.000 \\		
+% 		Hepatus Blue Tang	 & 15 cm				& \$ 7.000 \\
+% 		Zebrasoma Xanthurus	 & 12 cm				& \$ 6.800 \\
+% 		\bottomrule
+% 		\hline
+% 	\end{tabular}
+% 	\label{tab:peces}
+% \end{table}
 
-En cada capítulo se debe reiniciar el número de conteo de las figuras y las tablas, por ejemplo, figura 2.1 o tabla 2.1, pero no se debe reiniciar el conteo en cada sección. Por suerte la plantilla se encarga de esto por nosotros.
+% En cada capítulo se debe reiniciar el número de conteo de las figuras y las tablas, por ejemplo, figura 2.1 o tabla 2.1, pero no se debe reiniciar el conteo en cada sección. Por suerte la plantilla se encarga de esto por nosotros.
 
-\subsection{Ecuaciones}
-\label{sec:Ecuaciones}
+% \subsection{Ecuaciones}
+% \label{sec:Ecuaciones}
 
-Al insertar ecuaciones en la memoria dentro de un entorno \textit{equation}, éstas se numeran en forma automática  y se pueden referir al igual que como se hace con las figuras y tablas, por ejemplo ver la ecuación \ref{eq:metric}.
+% Al insertar ecuaciones en la memoria dentro de un entorno \textit{equation}, éstas se numeran en forma automática  y se pueden referir al igual que como se hace con las figuras y tablas, por ejemplo ver la ecuación \ref{eq:metric}.
 
-\begin{equation}
-	\label{eq:metric}
-	ds^2 = c^2 dt^2 \left( \frac{d\sigma^2}{1-k\sigma^2} + \sigma^2\left[ d\theta^2 + \sin^2\theta d\phi^2 \right] \right)
-\end{equation}
+% \begin{equation}
+% 	\label{eq:metric}
+% 	ds^2 = c^2 dt^2 \left( \frac{d\sigma^2}{1-k\sigma^2} + \sigma^2\left[ d\theta^2 + \sin^2\theta d\phi^2 \right] \right)
+% \end{equation}
                                                         
-Para generar la ecuación \ref{eq:metric} se utilizó el siguiente código:
+% Para generar la ecuación \ref{eq:metric} se utilizó el siguiente código:
 
-\begin{verbatim}
-\begin{equation}
-	\label{eq:metric}
-	ds^2 = c^2 dt^2 \left( \frac{d\sigma^2}{1-k\sigma^2} + 
-	\sigma^2\left[ d\theta^2 + 
-	\sin^2\theta d\phi^2 \right] \right)
-\end{equation}
-\end{verbatim}
+% \begin{verbatim}
+% \begin{equation}
+% 	\label{eq:metric}
+% 	ds^2 = c^2 dt^2 \left( \frac{d\sigma^2}{1-k\sigma^2} + 
+% 	\sigma^2\left[ d\theta^2 + 
+% 	\sin^2\theta d\phi^2 \right] \right)
+% \end{equation}
+% \end{verbatim}
