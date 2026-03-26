@@ -5,117 +5,93 @@
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
-Este capítulo introduce las herramientas de terceros, los fundamentos teóricos y las tecnologías necesarias para el desarrollo del sistema. Se describen los conjuntos de datos analizados, las técnicas de extracción de representaciones numéricas, los modelos de aprendizaje automático y las herramientas utilizadas para el despliegue del producto.
+Este capítulo introduce las herramientas de terceros y las tecnologías necesarias para el desarrollo del sistema. Se describe la fuente de datos principal, las técnicas para extraer representaciones numéricas del audio, los modelos predictivos y las tecnologías utilizadas para el despliegue.
 
 \section{Fuentes de datos de canciones}
 \label{sec:datos}
 
-Para entrenar los modelos predictivos se evaluaron diferentes fuentes de datos musicales. En una etapa inicial se analizaron repositorios públicos orientados a tareas de recuperación de información musical. El objetivo fue identificar las ventajas y desventajas de cada alternativa antes de tomar una decisión definitiva. En la tabla \ref{tab:datasets} se resumen los conjuntos de datos estudiados.
+Para el entrenamiento de los modelos predictivos se utilizó la colección privada de canciones de la empresa. Esta fuente de datos cuenta con más de 60.000 archivos de audio de canciones completas. Adicionalmente, incluye un registro tabular que contiene las etiquetas definidas en el alcance del trabajo.
 
-\begin{table}[htpb]
-    \centering
-    \caption[Conjuntos de datos evaluados]{Comparativa de los conjuntos de datos musicales evaluados para el entrenamiento de los modelos.}
-    \begin{tabular}{p{2.5cm} p{5.5cm} p{3.5cm} p{3.5cm}}    
-        \toprule
-        \textbf{Nombre} & \textbf{Descripción} & \textbf{Ventajas} & \textbf{Desventajas} \\
-        \midrule
-        GTZAN & Archivo histórico con audios de 30 segundos clasificados por género. & Ampliamente documentado. & Tamaño reducido. \\       
-        FMA & Repositorio libre con metadatos y extracción de características precalculadas. & Gran volumen de datos. & Etiquetas ruidosas. \\
-        Plusyc & Colección privada provista por la empresa comercial asociada al proyecto. & Etiquetas manuales precisas. & Acceso restringido. \\
-        \bottomrule
-    \end{tabular}
-    \label{tab:datasets}
-\end{table}
+Se seleccionó este conjunto de datos por la facilidad en el acceso a la información y por su representatividad en ambientes comerciales reales. Por el contrario, otros conjuntos de datos públicos musicales, como GTZAN \citep{GTZAN} y FMA \citep{FMA}, ofrecen fragmentos limitados a 10 o 30 segundos de audio. El uso de pistas incompletas restringe la información musical disponible. Realizar predicciones sobre el audio total resulta más preciso, ya que evita la pérdida de los eventos musicales que ocurren antes o después de una sola ventana.
 
-\begin{table}[htpb]
-    \centering
-    \caption[Conjuntos de datos evaluados]{Comparativa de los conjuntos de datos musicales evaluados para el entrenamiento de los modelos.}
-    \renewcommand{\arraystretch}{1.2}
-    \begin{tabular}{p{2.5cm} p{4.5cm} p{3.5cm} p{4cm}}    
-        \toprule
-        \textbf{Nombre} & \textbf{Descripción} & \textbf{Ventajas} & \textbf{Desventajas} \\
-        \midrule
-        GTZAN & Archivo histórico con características precalculadas sobre ventanas de 3 y 30 segundos. & Ampliamente documentado. & Audios cortos. Complejidad para replicar el preprocesamiento en datos nuevos. \\       
-        FMA & Repositorio libre con metadatos y extracción de atributos acústicos. & Gran volumen de datos. & Audios limitados a fragmentos de 30 segundos. Etiquetas ruidosas. \\
-        MSD y Last.fm & Base de datos masiva con etiquetas sociales y características precalculadas. & Gran escala. Contiene etiquetas semánticas útiles. & No incluye los archivos de audio crudo. Demanda altos recursos computacionales. \\
-        Kaggle (Spotify Tracks) & Conjuntos de datos tabulares con métricas extraídas de plataformas comerciales. & Gran volumen de metadatos y etiquetas de alto nivel. & No incluye los archivos de audio crudo. Imposibilita el entrenamiento desde la señal acústica. \\
-        Magnatune & Conjunto de datos con acceso a metadatos estructurados. & Información detallada de las pistas. & Estructura de archivos XML compleja de procesar. \\
-        Plusyc & Colección privada provista por la empresa asociada al proyecto. & Audios completos. Etiquetas manuales precisas para todos los objetivos. & Acceso restringido al público general. \\
-        \bottomrule
-    \end{tabular}
-    \label{tab:datasets_comparativa}
-\end{table}
+El acceso a las canciones completas garantiza la preservación de la estructura musical, evita la pérdida de información y flexibiliza la extracción de representaciones matemáticas usando bibliotecas y modelos preentrenados.
 
-Tras esta evaluación, se determinó que los conjuntos públicos presentaban limitaciones para los objetivos específicos de la empresa. Por este motivo, se seleccionó el conjunto de datos privado de Plusyc. Esta fuente cuenta con más de 60.000 canciones completas. Además, cada pista posee etiquetas manuales para todos los objetivos predictivos requeridos.
+El análisis comparativo de las fuentes de datos, las representaciones estadísticas de las canciones, y los criterios de selección de variables predictivas se detallan en el Capítulo 3.
+
 
 \section{Representaciones numéricas de la música}
 \label{sec:dsp}
 
-El procesamiento computacional del audio requiere extraer descriptores acústicos de la señal. Para esta tarea se emplearon bibliotecas de procesamiento digital de señales (DSP, por sus siglas en inglés). Estas herramientas transforman la onda sonora en arreglos matemáticos de una o dos dimensiones.
+El procesamiento computacional del audio requiere extraer descriptores de bajo nivel de la señal original. El procesamiento digital de señales (DSP) transforma la onda sonora en arreglos matemáticos de una o dos dimensiones.
 
-Entre las representaciones más útiles se encuentran el espectrograma y el cromagrama. El espectrograma refleja la variación de las frecuencias a lo largo del tiempo. Por su parte, el cromagrama captura la energía asociada a las doce clases de notas musicales. Un ejemplo de ambas transformaciones se ilustra en la figura \ref{fig:espectro_croma}.
+Entre las representaciones bidimensionales más destacadas se encuentran el espectrograma, el cromagrama y el espacio armónico o \textit{tonnetz}. El espectrograma refleja la variación de las frecuencias a lo largo del tiempo. Por su parte, el cromagrama captura la energía asociada a las doce clases de notas musicales. Finalmente, el \textit{tonnetz} modela las relaciones tonales y armónicas de la pista. Un ejemplo visual de estas tres transformaciones se ilustra en la figura 
+%\ref{fig:representaciones_2d}.
 
-Figura aquí
 % \begin{figure}[htpb]
 %     \centering
-%     \includegraphics[width=0.8\textwidth]{./Figures/espectro_croma.pdf}
-%     \caption{Representación visual de un espectrograma de Mel y un cromagrama extraídos de una señal de audio.}
-%     \label{fig:espectro_croma}
+%     \includegraphics[width=0.9\textwidth]{./Figures/espectro_croma_tonnetz.pdf}
+%     \caption{Representación visual de un espectrograma, un cromagrama y un \textit{tonnetz} extraídos de una señal de audio.}
+%     \label{fig:representaciones_2d}
 % \end{figure}
 
-Además de estas representaciones visuales, el sistema requiere la extracción de atributos numéricos unidimensionales. En la tabla \ref{tab:atributos_dsp} se listan las características principales que se extrajeron para alimentar los algoritmos de predicción.
+Estas transformaciones matemáticas reducen la dimensionalidad del archivo de audio. Sin embargo, carecen de significado semántico por sí solas. Su función principal es generar las variables predictivas necesarias para entrenar los modelos de aprendizaje automático.
+
+Además de las representaciones bidimensionales, las bibliotecas de procesamiento de señales facilitan la extracción de atributos numéricos unidimensionales. En la tabla \ref{tab:atributos_dsp} se presenta un listado introductorio con las características de bajo nivel más representativas en el análisis musical.
 
 \begin{table}[htpb]
     \centering
-    \caption[Atributos DSP extraídos]{Listado de los principales atributos de procesamiento de señales extraídos del audio.}
-    \begin{tabular}{l p{10cm}}    
+    \caption[Atributos representativos]{Listado introductorio de los principales atributos de procesamiento de señales extraídos del audio.}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{p{3.5cm} p{8.5cm}}    
         \toprule
         \textbf{Atributo} & \textbf{Descripción principal} \\
         \midrule
         MFCC & Coeficientes cepstrales que modelan la percepción auditiva humana. \\       
-        Centroide espectral & Indica el centro de masa del espectro y se asocia al brillo del sonido. \\
-        Ancho de banda & Mide la amplitud de las frecuencias alrededor del centroide espectral. \\
-        Tasa de cruce por cero & Cuantifica los cambios de signo en la señal temporal. \\
-        Flujo espectral & Evalúa la tasa de cambio local en el espectro entre tramas sucesivas. \\
+        Centroide espectral & Indica el centro de masa del espectro acústico. Se asocia al brillo del sonido. \\
+        Ancho de banda & Mide la dispersión de las frecuencias alrededor del centroide espectral. \\
+        Tasa de cruces por cero & Cuantifica la cantidad de cambios de signo en la señal temporal. \\
+        \textit{Rolloff} espectral & Estima la frecuencia por debajo de la cual se concentra la mayor parte de la energía. \\
         \bottomrule
     \end{tabular}
     \label{tab:atributos_dsp}
 \end{table}
 
+El listado completo de las variables de entrada, el análisis de su relevancia y su impacto en el rendimiento de los algoritmos se detalla en el Capítulo 3.
+
 \section{Información semántica del audio}
 \label{sec:semantica}
 
-Las representaciones numéricas de bajo nivel no siempre son suficientes para capturar conceptos musicales complejos. Por ello, se implementó una estrategia de aprendizaje por transferencia. Esta técnica consiste en utilizar modelos previamente entrenados con grandes volúmenes de datos para extraer características de alto nivel.
+Las representaciones de bajo nivel descritas en la sección anterior no siempre son suficientes para capturar conceptos musicales complejos. Es posible mejorar la cobertura de información musical siguiendo una estrategia de aprendizaje por transferencia. Esta técnica consiste en utilizar modelos previamente entrenados con grandes volúmenes de datos para extraer características semánticas de alto nivel.
 
-Para este fin se utilizó la biblioteca \textit{PANNs Inference}. Esta herramienta provee acceso a redes neuronales optimizadas para el análisis de sonido. De las opciones disponibles, se seleccionó la arquitectura denominada CNN14. Se trata de una red neuronal convolucional robusta, capaz de abstraer patrones semánticos profundos de la música. La estructura interna de esta arquitectura se detalla en la figura \ref{fig:cnn14}.
+Para este fin existen bibliotecas especializadas, como \textit{PANNs Inference}. Esta herramienta provee acceso a redes neuronales optimizadas para el análisis de eventos sonoros. Dentro de sus opciones, destaca la arquitectura denominada CNN14. Se trata de una red neuronal convolucional robusta, capaz de abstraer patrones profundos de la música y generar embeddings numéricos. La estructura interna de esta arquitectura se detalla en la figura 
+% \ref{fig:cnn14}.
 
-Figura aquí.
 % \begin{figure}[htpb]
 %     \centering
 %     \includegraphics[width=0.7\textwidth]{./Figures/arquitectura_cnn14.pdf}
-%     \caption{Diagrama de bloques de la arquitectura de la red neuronal convolucional CNN14.}
+%     \caption[Arquitectura de la red CNN14]{Diagrama de bloques de la arquitectura de la red neuronal convolucional CNN14 \citep{kong2020panns}.}
 %     \label{fig:cnn14}
 % \end{figure}
+
+El uso de esta arquitectura permite transformar la onda sonora en representaciones latentes densas y obtener probabilidades asociadas a etiquetas predefinidas, como la presencia de aplausos, instrumentos, o habla. Estos datos semánticos, tienen mucho sentido para enriquecer el conjunto de variables de entrada para la inferencia de algunas de las características musicales que se definieron en el alcance del trabajo.
+
 
 \section{Modelos de inteligencia artificial utilizados}
 \label{sec:modelos}
 
-Una vez obtenidas las características acústicas y semánticas, fue necesario aplicar algoritmos de predicción. El alcance del trabajo abarca problemas de clasificación y de regresión. Para resolverlos, se implementaron dos enfoques principales:
+Una vez obtenidos los descriptores numéricos y semánticos, fue necesario aplicar algoritmos de predicción. Para este fin, se seleccionaron dos enfoques principales:
 
 \begin{itemize}
-    \item Redes MLP: Se diseñaron perceptrones multicapa para abordar los problemas de regresión multisalida. Estas redes neuronales artificiales demostraron eficacia para predecir variables continuas correlacionadas.
-    \item Algoritmos LightGBM: Se integró el marco de trabajo \textit{LightGBM} para las tareas generales de clasificación multiclase y regresión simple. Esta herramienta se basa en el ensamble de árboles de decisión y destaca por su velocidad computacional.
+    \item Redes MLP: Los perceptrones multicapa son redes neuronales artificiales con capacidad para modelar relaciones complejas. Permiten, entre otras aplicaciones, predecir múltiples variables continuas de forma simultánea.
+    \item Algoritmos LightGBM: Se integró el marco de trabajo \textit{LightGBM}, el cual se basa en el ensamble de árboles de decisión. Esta herramienta destaca por su alta velocidad computacional y eficiencia en tareas generales de predicción.
 \end{itemize}
 
 \section{Despliegue e integración}
 \label{sec:despliegue}
 
-Para que las predicciones musicales sean consumidas por servicios externos, se desarrolló una interfaz de programación de aplicaciones. Se eligió el marco de trabajo \textit{FastAPI} por su alto rendimiento y su facilidad para construir servicios web con lenguaje \textit{Python}. 
+La integración del sistema predictivo requirió una interfaz de programación de aplicaciones. Para su construcción se utilizó \textit{FastAPI} como framework. Esta herramienta facilita el desarrollo de servicios web de alto rendimiento basados en \textit{Python}.
 
-Finalmente, el sistema completo se configuró para operar de forma remota. Se provisionó una instancia de cómputo en la nube, la cual garantiza la disponibilidad y los recursos de procesamiento necesarios. El esquema general de integración entre el cliente, la interfaz y el servidor se muestra en la figura \ref{fig:diagrama_despliegue}.
-
-Figura aquí.
-% \begin{figure}[htpb]
+El alojamiento remoto del proyecto se apoyó en los servicios de infraestructura de \textit{Oracle Cloud Infrastructure} (OCI). Se provisionó una instancia de cómputo virtual en esta nube para desplegar la aplicación y ejecutar los modelos predictivos. El uso de esta tecnología garantiza la disponibilidad continua del sistema. El esquema general de la arquitectura se ilustra en la figura \ref{fig:diagrama_despliegue}.% \begin{figure}[htpb]
 %     \centering
 %     \includegraphics[width=0.9\textwidth]{./Figures/diagrama_bloques.pdf}
 %     \caption{Diagrama de bloques del sistema en su entorno de despliegue en la nube.}

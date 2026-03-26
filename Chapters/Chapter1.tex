@@ -28,7 +28,8 @@ En este capítulo se introduce la definición de la extracción de información 
 % Introducción a la extracción de información musical (MIR).
 
 La extracción de información musical, comúnmente conocida como MIR (por sus siglas en inglés \textit{Music Information Retrieval}), procesa, analiza y organiza datos musicales \citep{Downie2003}.
-Los sistemas MIR abarcan el procesamiento digital de señales y el aprendizaje automático, y permiten automatizar tareas como el etiquetado de canciones, la clasificación de géneros o el reconocimiento de estados de ánimo a partir del audio digital \citep{Casey2008}.
+
+Los sistemas MIR abarcan el procesamiento digital de señales (DSP) y el aprendizaje automático, y permiten automatizar tareas como el etiquetado de canciones, la clasificación de géneros o el reconocimiento de estados de ánimo a partir del audio digital \citep{Casey2008}.
 
 % Acá tiene un ejemplo de una ``subsubsección'' que es el cuarto nivel de ordenamiento del texto, después de capítulo, sección y subsección.  Como se puede ver, las subsubsecciones no van numeradas en el cuerpo del documento ni en el índice.  El formato está definido por la plantilla y no debe ser modificado.
 
@@ -52,11 +53,11 @@ Con la implementación de este trabajo, la empresa cuenta con un sistema de inte
 
 \section{Objetivos y alcance}
 
-Esta sección define las metas del proyecto. Se presentan los objetivos generales y específicos, los pasos metodológicos necesarios para su cumplimiento y el conjunto de características musicales consideradas.
+Esta sección define las metas del proyecto. Se presenta el objetivo general y los objetivos específicos, los pasos metodológicos necesarios para su cumplimiento y el conjunto de características musicales consideradas.
 
 \subsection{Objetivo general}
 
-Desarrollar un sistema predictivo basado en inteligencia artificial para la caracterización automática de canciones a partir de su archivo de audio, destinado a dotar de autonomía a la aplicación de la empresa y a reducir la dependencia de servicios de terceros.
+Desarrollar un sistema basado en inteligencia artificial para predecir las características musicales de las canciones del catálogo de Plusyc Live a partir de su archivo de audio y reducir la dependencia de servicios de terceros.
 
 \subsection{Objetivos específicos}
 
@@ -113,6 +114,7 @@ Para alcanzar el objetivo general, se definen los siguientes pasos metodológico
 \subsection{Alcance}
 
 El alcance de este trabajo comprende la predicción computacional de trece características musicales, que se agrupan en tres categorías principales:
+
 \begin{itemize}
     \item Básicas: tonalidad (key), modo (mode), tempo y volumen (loudness).
     \item Perceptibles: nivel acústico (acousticness), bailabilidad (danceability), energía (energy), instrumentalidad (instrumentalness), presencia de público (liveness), presencia de voz (speechiness) y positividad (valence).
@@ -120,7 +122,8 @@ El alcance de este trabajo comprende la predicción computacional de trece carac
 \end{itemize}
 
 Para cada una de las características mencionadas se aplican los pasos mencionados en los objetivos específicos.
-El detalle técnico, las definiciones formales y el modelado de cada característica como problema de clasificación o regresión se abordan en el capítulo de desarrollo.
+
+El detalle técnico, las definiciones formales y el modelado de cada característica como problema de clasificación o regresión se abordan en el transcurso de la presente memoria.
 
 % El presente trabajo no incluye:
 
@@ -142,7 +145,8 @@ En el campo de la extracción de información musical existen diversas herramien
 \subsection{Procesamiento digital de señales y extracción a bajo nivel}
 
 Existen bibliotecas de software para extraer descriptores numéricos de bajo nivel, como Librosa \citep{librosa} y Essentia \citep{essentia}. 
-Estas herramientas representan la señal digital en arreglos numéricos, como espectrogramas.
+
+Las bibliotecas de procesamiento digital de señales proveen funciones para representar la señal digital en arreglos numéricos, como espectrogramas y cromagramas. Este tipo de transformaciones matemáticas son útiles para reducir la dimensionalidad de los archivos de audio y generar variables predictivas para modelos de aprendizaje automático.
 
 \subsection{Modelos preentrenados y soluciones comerciales}
 
@@ -151,15 +155,16 @@ Para la predicción de características de alto nivel existen modelos de código
 La biblioteca Essentia también incorpora modelos preentrenados para inferir atributos semánticos, y por lo tanto se incluye en esta categoría.
 
 Por su parte, soluciones comerciales como Spotify \citep{spotify} y Gracenote \citep{gracenote} operan en la modalidad de software como servicio (SaaS) y entregan predicciones mediante su interfaz de programación de aplicaciones (API). La gran desventaja es que introducen costos operativos recurrentes y generan dependencia tecnológica hacia el proveedor.
+
 También existen plataformas web que permiten consultar esta información de manera individual. Un ejemplo es Tunebat \citep{Tunebat}, que permite visualizar un conjunto de características, pero restringe la consulta a una canción a la vez. Se presenta un ejemplo en la figura~\ref{fig:tunebat_screenshot}. 
 
 
 \subsection{Síntesis comparativa}
 \label{subsec:sintesis_estado_arte}
 
-Las tecnologías actuales para la extracción de información musical ofrecen diversas soluciones útiles. Las bibliotecas de procesamiento digital de señales permiten extraer representaciones numéricas de las ondas sonoras, y los modelos preentrenados ofrecen representaciones semánticas. Por otro lado, los servicios comerciales proveen servicios de etiquetado para canciones.
+Las tecnologías existentes ofrecen herramientas útiles para el objetivo del trabajo. Las bibliotecas de procesamiento digital de señales permiten extraer representaciones numéricas de las ondas sonoras, y los modelos preentrenados ofrecen representaciones semánticas. Por otro lado, los servicios comerciales proveen servicios de etiquetado para canciones.
  
-Sin embargo, persisten limitaciones operativas para su aplicación directa en el entorno de la empresa. Los servicios de terceros generan costos recurrentes, limitan la cantidad de consultas y crean dependencia tecnológica. Las plataformas web de uso manual no son viables para procesar catálogos con miles de canciones. Además, los modelos no coinciden con las características y las clases específicas que usa la empresa.
+Sin embargo, persisten limitaciones operativas para su aplicación directa en el entorno de la empresa. Los servicios de terceros generan costos recurrentes, limitan la cantidad de consultas y crean dependencia tecnológica. Las plataformas web de uso manual no son viables para procesar catálogos con miles de canciones. Además, los modelos no coinciden con las características y las clases específicas que usa Plusyc Live.
 
 Por estos motivos, resulta necesario desarrollar una solución propia. El propósito de este trabajo es aprovechar las técnicas actuales de inteligencia artificial para crear un sistema independiente. Esto permite analizar directamente los archivos de audio y etiquetarlos según las necesidades de la empresa, lo cual elimina de forma definitiva la dependencia de proveedores externos.
 
@@ -176,15 +181,15 @@ Por estos motivos, resulta necesario desarrollar una solución propia. El propó
 
 \section{Estructura del documento}
 
-Para exponer de manera ordenada el desarrollo y los resultados del sistema, la presente memoria se estructura en los siguientes capítulos:
+La presente memoria se estructura en los siguientes capítulos:
 
-En el \textbf{Capítulo 2} se introduce el marco teórico. Se definen los conceptos matemáticos y computacionales sobre los que se sustenta el trabajo, incluyendo el procesamiento de señales de audio y los fundamentos del aprendizaje automático. 
+En el Capítulo 2 se presentan las herramientas de terceros y las tecnologías necesarias para el desarrollo del sistema. Se describe la fuente de datos principal, las técnicas para extraer representaciones numéricas del audio, los modelos de aprendizaje automático seleccionados y las tecnologías para el despliegue.
 
-En el \textbf{Capítulo 3} se detalla el desarrollo metodológico. Se documenta la selección del conjunto de datos, el análisis exploratorio y el proceso de extracción de características, así como las arquitecturas de los modelos predictivos utilizados.
+En el Capítulo 3 se detalla el desarrollo del trabajo. Se documenta la evaluación y selección de los conjuntos de datos. Se analizan las distribuciones de las variables objetivo y las estrategias de muestreo. Asimismo, se describen las técnicas de selección y reducción de variables de entrada para el uso de una arquitectura mixta. Luego, se explica el proceso de modelado y la búsqueda de hiperparámetros. Finalmente, se presentan los resultados generales de la iteración productiva y la arquitectura para el despliegue del sistema.
 
-En el \textbf{Capítulo 4} se presentan los resultados obtenidos. Se evalúa el desempeño de los distintos modelos entrenados y se justifica la selección final de los algoritmos para su paso a producción.
+En el Capítulo 4 se presentan los resultados obtenidos. Se evalúa el desempeño de los distintos modelos entrenados y se justifica la selección final de los algoritmos para su paso a producción.
 
-Finalmente, en el \textbf{Capítulo 5} se exponen las conclusiones generales del proyecto, el cumplimiento de los objetivos propuestos y las posibles líneas de trabajo futuro para escalar el sistema implementado.
+Finalmente, en el Capítulo 5 se exponen las conclusiones generales del proyecto, el cumplimiento de los objetivos propuestos y las posibles líneas de trabajo futuro para mejorar el sistema implementado.
 
 % Esta plantilla se distribuye como una único archivo .zip que se puede descomprimir en varios archivos y carpetas. Asimismo, se puede consultar el repositorio git para obtener la última versión de los archivos, \url{https://github.com/patriciobos/Plantilla-CESE.git}. Los nombres de las carpetas son, o pretender ser, auto-explicativos.
 
