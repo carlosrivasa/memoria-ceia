@@ -10,33 +10,33 @@ Este capítulo introduce las herramientas de terceros y las tecnologías necesar
 \section{Fuentes de datos de canciones}
 \label{sec:datos}
 
-Para el entrenamiento de los modelos predictivos se utilizó la colección privada de canciones de la empresa. Esta fuente de datos cuenta con más de 60.000 archivos de audio de canciones completas. Adicionalmente, incluye un registro tabular que contiene las etiquetas definidas en el alcance del trabajo.
+Para el entrenamiento de los modelos predictivos se utilizó la colección privada de canciones de la empresa. Esta fuente de datos cuenta con más de 60~000 archivos de audio de canciones completas.
 
-Se seleccionó este conjunto de datos por la facilidad en el acceso a la información y por su representatividad en ambientes comerciales reales. Por el contrario, otros conjuntos de datos públicos musicales, como GTZAN \citep{GTZAN} y FMA \citep{FMA}, ofrecen fragmentos limitados a 10 o 30 segundos de audio. El uso de pistas incompletas restringe la información musical disponible. Realizar predicciones sobre el audio total resulta más preciso, ya que evita la pérdida de los eventos musicales que ocurren antes o después de una sola ventana.
+Se seleccionó este conjunto de datos por la disponibilidad en el acceso a la información y por su representatividad en ambientes comerciales reales. Por el contrario, otros conjuntos de datos públicos musicales, como GTZAN \citep{GTZAN} y los subconjuntos estándar de FMA \citep{FMA}, ofrecen fragmentos limitados a 10 o 30 segundos de audio. El uso de pistas incompletas restringe la disponibilidad de la información musical. Realizar predicciones sobre el audio total resulta más preciso, ya que evita la pérdida de los eventos musicales que ocurren antes o después de una sola ventana. Además, estas alternativas carecen parcialmente de las variables objetivo requeridas en el alcance del trabajo.
 
-El acceso a las canciones completas garantiza la preservación de la estructura musical, evita la pérdida de información y flexibiliza la extracción de representaciones matemáticas usando bibliotecas y modelos preentrenados.
+El acceso a los archivos de audio de canciones completas garantiza la preservación de la estructura musical, evita la pérdida de información y flexibiliza la extracción de representaciones matemáticas mediante el uso de bibliotecas y modelos preentrenados.
 
-El análisis comparativo de las fuentes de datos, las representaciones estadísticas de las canciones, y los criterios de selección de variables predictivas se detallan en el Capítulo 3.
-
+El análisis comparativo de las fuentes de datos, las representaciones estadísticas de las canciones y los criterios de selección de variables predictivas se detallan en el Capítulo 3.
+% TODO: Cambiar "Capítulo 3" por las referencias cruzadas (\ref{}) de las secciones exactas una vez que se termine de escribir el Capítulo 3.
 
 \section{Representaciones numéricas de la música}
 \label{sec:dsp}
 
-El procesamiento computacional del audio requiere extraer descriptores de bajo nivel de la señal original. El procesamiento digital de señales (DSP) transforma la onda sonora en arreglos matemáticos de una o dos dimensiones.
+Una canción se traduce a un formato numérico para su procesamiento computacional. El procesamiento digital de señales (DSP) transforma la onda sonora en arreglos matemáticos de una o dos dimensiones. 
+Entre las representaciones bidimensionales más destacadas se encuentran el espectrograma, el cromagrama y el espacio armónico o tonnetz. El espectrograma refleja la variación de las frecuencias a lo largo del tiempo. Por su parte, el cromagrama captura la energía asociada a las doce clases de notas musicales. Finalmente, el tonnetz modela las relaciones tonales y armónicas de la pista. A modo de ejemplo, en la figura \ref{fig:representaciones_2d} se ilustran estas tres transformaciones aplicadas a un fragmento de la canción ``Weird Fishes/Arpeggi'' de la banda Radiohead. En estos gráficos, el eje horizontal representa el tiempo, mientras que la intensidad del color indica la magnitud de la energía para las distintas frecuencias, notas musicales o relaciones tonales correspondientes a cada eje vertical.
 
-Entre las representaciones bidimensionales más destacadas se encuentran el espectrograma, el cromagrama y el espacio armónico o \textit{tonnetz}. El espectrograma refleja la variación de las frecuencias a lo largo del tiempo. Por su parte, el cromagrama captura la energía asociada a las doce clases de notas musicales. Finalmente, el \textit{tonnetz} modela las relaciones tonales y armónicas de la pista. Un ejemplo visual de estas tres transformaciones se ilustra en la figura 
-%\ref{fig:representaciones_2d}.
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=1\textwidth]{./Figures/espectro_croma_tonnetz.pdf}
+    \caption[Representaciones visuales del audio]{Representación visual de un espectrograma, un cromagrama y un tonnetz.}
+    \label{fig:representaciones_2d}
+\end{figure}
 
-% \begin{figure}[htpb]
-%     \centering
-%     \includegraphics[width=0.9\textwidth]{./Figures/espectro_croma_tonnetz.pdf}
-%     \caption{Representación visual de un espectrograma, un cromagrama y un \textit{tonnetz} extraídos de una señal de audio.}
-%     \label{fig:representaciones_2d}
-% \end{figure}
+Además de las representaciones bidimensionales, las bibliotecas de procesamiento de señales facilitan la extracción de atributos numéricos unidimensionales. En la tabla \ref{tab:atributos_dsp} se presenta un listado que introduce algunas de las características de bajo nivel más representativas en el análisis musical. En la elaboración del trabajo se usaron Librosa y Essentia en este proceso.
 
-Estas transformaciones matemáticas reducen la dimensionalidad del archivo de audio. Sin embargo, carecen de significado semántico por sí solas. Su función principal es generar las variables predictivas necesarias para entrenar los modelos de aprendizaje automático.
+Estas transformaciones matemáticas reducen la dimensionalidad del archivo de audio. Sin embargo, carecen de significado semántico. Su función principal, en el contexto de este trabajo, es la de generar las variables predictivas necesarias para entrenar modelos de aprendizaje automático.
 
-Además de las representaciones bidimensionales, las bibliotecas de procesamiento de señales facilitan la extracción de atributos numéricos unidimensionales. En la tabla \ref{tab:atributos_dsp} se presenta un listado introductorio con las características de bajo nivel más representativas en el análisis musical.
+El listado completo de las variables de entrada, el análisis de su relevancia y su impacto en el rendimiento de los algoritmos se detalla en el Capítulo 3.
 
 \begin{table}[htpb]
     \centering
@@ -50,48 +50,48 @@ Además de las representaciones bidimensionales, las bibliotecas de procesamient
         Centroide espectral & Indica el centro de masa del espectro acústico. Se asocia al brillo del sonido. \\
         Ancho de banda & Mide la dispersión de las frecuencias alrededor del centroide espectral. \\
         Tasa de cruces por cero & Cuantifica la cantidad de cambios de signo en la señal temporal. \\
-        \textit{Rolloff} espectral & Estima la frecuencia por debajo de la cual se concentra la mayor parte de la energía. \\
+        Rolloff espectral & Estima la frecuencia por debajo de la que se concentra la mayor parte de la energía. \\
         \bottomrule
     \end{tabular}
     \label{tab:atributos_dsp}
 \end{table}
 
-El listado completo de las variables de entrada, el análisis de su relevancia y su impacto en el rendimiento de los algoritmos se detalla en el Capítulo 3.
-
 \section{Información semántica del audio}
 \label{sec:semantica}
 
-Las representaciones de bajo nivel descritas en la sección anterior no siempre son suficientes para capturar conceptos musicales complejos. Es posible mejorar la cobertura de información musical siguiendo una estrategia de aprendizaje por transferencia. Esta técnica consiste en utilizar modelos previamente entrenados con grandes volúmenes de datos para extraer características semánticas de alto nivel.
+Las representaciones de bajo nivel descritas en la sección 2.2 no siempre son suficientes para capturar conceptos musicales complejos. Es posible mejorar la cobertura de la información musical con el aprendizaje por transferencia. Esta técnica consiste en utilizar modelos previamente entrenados con grandes volúmenes de datos para extraer características semánticas de alto nivel.
 
-Para este fin existen bibliotecas especializadas, como \textit{PANNs Inference}. Esta herramienta provee acceso a redes neuronales optimizadas para el análisis de eventos sonoros. Dentro de sus opciones, destaca la arquitectura denominada CNN14. Se trata de una red neuronal convolucional robusta, capaz de abstraer patrones profundos de la música y generar embeddings numéricos. La estructura interna de esta arquitectura se detalla en la figura 
-% \ref{fig:cnn14}.
+Para este fin existen bibliotecas especializadas, como PANNs Inference. Esta herramienta provee acceso a redes neuronales optimizadas para el análisis de eventos sonoros. Dentro de sus opciones, destaca la arquitectura denominada CNN14 \citep{kong2020panns}. Se trata de una red neuronal convolucional, capaz de abstraer patrones del audio y generar embeddings numéricos basados en las clases del conjunto de datos AudioSet. 
 
-% \begin{figure}[htpb]
-%     \centering
-%     \includegraphics[width=0.7\textwidth]{./Figures/arquitectura_cnn14.pdf}
-%     \caption[Arquitectura de la red CNN14]{Diagrama de bloques de la arquitectura de la red neuronal convolucional CNN14 \citep{kong2020panns}.}
-%     \label{fig:cnn14}
-% \end{figure}
+Un ejemplo de las probabilidades de detección obtenidas para distintas clases de eventos sonoros a lo largo del tiempo se visualiza en la figura \ref{fig:mapa_semantico}, donde se muestran ventanas consecutivas de 10 segundos de la canción de Radiohead. En este mapa de calor, las áreas más claras indican una mayor probabilidad de activación para cada clase.
 
-El uso de esta arquitectura permite transformar la onda sonora en representaciones latentes densas y obtener probabilidades asociadas a etiquetas predefinidas, como la presencia de aplausos, instrumentos, o habla. Estos datos semánticos, tienen mucho sentido para enriquecer el conjunto de variables de entrada para la inferencia de algunas de las características musicales que se definieron en el alcance del trabajo.
+El uso de esta arquitectura permite transformar la onda sonora para extraer embeddings y obtener probabilidades asociadas a etiquetas predefinidas, como la presencia de aplausos, instrumentos musicales específicos o habla. Estos datos semánticos enriquecen el conjunto de variables de entrada para la inferencia de algunas de las características musicales que se definieron en el alcance del trabajo.
 
+\newpage
+\begin{figure}[!htpb]
+    \centering
+    \includegraphics[width=1\textwidth]{mapa_top_clases.pdf}
+    \caption[Probabilidades de detección semántica]{Mapa de calor de las características semánticas extraídas mediante la red CNN14.}
+    \label{fig:mapa_semantico}
+\end{figure}
 
 \section{Modelos de inteligencia artificial utilizados}
 \label{sec:modelos}
 
-Una vez obtenidos los descriptores numéricos y semánticos, fue necesario aplicar algoritmos de predicción. Para este fin, se seleccionaron dos enfoques principales:
+Una vez obtenidos los descriptores numéricos y semánticos, es necesario aplicar algoritmos de predicción. Para este fin, se utilizaron dos enfoques principales:
 
 \begin{itemize}
-    \item Redes MLP: Los perceptrones multicapa son redes neuronales artificiales con capacidad para modelar relaciones complejas. Permiten, entre otras aplicaciones, predecir múltiples variables continuas de forma simultánea.
-    \item Algoritmos LightGBM: Se integró el marco de trabajo \textit{LightGBM}, el cual se basa en el ensamble de árboles de decisión. Esta herramienta destaca por su alta velocidad computacional y eficiencia en tareas generales de predicción.
+    \item Algoritmos LightGBM: se integró la arquitectura LightGBM, basada en el ensamble de árboles de decisión. Esta herramienta destaca por su alta velocidad computacional y eficiencia en tareas generales de predicción.
+    \item Redes MLP: los perceptrones multicapa son redes neuronales artificiales con capacidad para modelar relaciones complejas. Permiten, entre otras aplicaciones, predecir múltiples variables continuas de forma simultánea.
 \end{itemize}
 
 \section{Despliegue e integración}
 \label{sec:despliegue}
 
-La integración del sistema predictivo requirió una interfaz de programación de aplicaciones. Para su construcción se utilizó \textit{FastAPI} como framework. Esta herramienta facilita el desarrollo de servicios web de alto rendimiento basados en \textit{Python}.
+La integración del sistema predictivo requirió del despliegue de una interfaz de programación de aplicaciones. Para su construcción se utilizó FastAPI \citep{ramirez2018fastapi} como marco de trabajo. Esta herramienta facilita el desarrollo de servicios web de alto rendimiento basados en Python \citep{python3}.
 
-El alojamiento remoto del proyecto se apoyó en los servicios de infraestructura de \textit{Oracle Cloud Infrastructure} (OCI). Se provisionó una instancia de cómputo virtual en esta nube para desplegar la aplicación y ejecutar los modelos predictivos. El uso de esta tecnología garantiza la disponibilidad continua del sistema. El esquema general de la arquitectura se ilustra en la figura \ref{fig:diagrama_despliegue}.% \begin{figure}[htpb]
+El alojamiento remoto del producto se apoyó en los servicios de infraestructura de OCI (por su sigla en inglés, Oracle Cloud Infrastructure) \citep{oracle_oci}. Se provisionó una instancia de cómputo virtual en la nube para desplegar la aplicación y ejecutar los modelos predictivos. El uso de esta tecnología garantiza la disponibilidad continua del sistema.
+
 %     \centering
 %     \includegraphics[width=0.9\textwidth]{./Figures/diagrama_bloques.pdf}
 %     \caption{Diagrama de bloques del sistema en su entorno de despliegue en la nube.}

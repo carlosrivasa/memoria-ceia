@@ -2,7 +2,7 @@
 
 \label{Chapter3} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
-Todos los capítulos deben comenzar con un breve párrafo introductorio que indique cuál es el contenido que se encontrará al leerlo.  La redacción sobre el contenido de la memoria debe hacerse en presente y todo lo referido al proyecto en pasado, siempre de modo impersonal.
+% Todos los capítulos deben comenzar con un breve párrafo introductorio que indique cuál es el contenido que se encontrará al leerlo.  La redacción sobre el contenido de la memoria debe hacerse en presente y todo lo referido al proyecto en pasado, siempre de modo impersonal.
 
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
@@ -24,7 +24,7 @@ Todos los capítulos deben comenzar con un breve párrafo introductorio que indi
   %frame=single,	                % adds a frame around the code
   keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
   keywordstyle=\color{blue},       % keyword style
-  language=[ANSI]C,                % the language of the code
+  language=Python,                % the language of the code
   %otherkeywords={*,...},           % if you want to add more keywords to the set
   numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
   numbersep=5pt,                   % how far the line-numbers are from the code
@@ -41,13 +41,16 @@ Todos los capítulos deben comenzar con un breve párrafo introductorio que indi
 }
 
 
+Este capítulo detalla el diseño y la implementación del sistema predictivo. Se analizan los conjuntos de datos utilizados, la extracción de características del audio y el tratamiento de datos según las distribuciones de las variables objetivo. Asimismo, se describen las técnicas de reducción y selección de variables, el proceso de optimización de los modelos y los resultados de la iteración productiva. Finalmente, se presenta la arquitectura desarrollada para el despliegue y la integración del sistema en un entorno operativo.
+
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
-\section{Análisis del software}
- 
-La idea de esta sección es resaltar los problemas encontrados, los criterios utilizados y la justificación de las decisiones que se hayan tomado.
+\section{Conjuntos de datos}
+\label{sec:conjuntos_datos}
+% Aquí se describirá la extracción de datos del audio.
 
+La idea de esta sección es resaltar los problemas encontrados, los criterios utilizados y la justificación de las decisiones que se hayan tomado.
 Se puede agregar código o pseudocódigo dentro de un entorno lstlisting con el siguiente código:
 
 \begin{verbatim}

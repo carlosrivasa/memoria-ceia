@@ -27,7 +27,7 @@ En este capítulo se introduce la definición de la extracción de información 
 
 % Introducción a la extracción de información musical (MIR).
 
-La extracción de información musical, comúnmente conocida como MIR (por sus siglas en inglés \textit{Music Information Retrieval}), procesa, analiza y organiza datos musicales \citep{Downie2003}.
+La extracción de información musical, comúnmente conocida como MIR (por su sigla en inglés, \textit{Music Information Retrieval}), procesa, analiza y organiza datos musicales \citep{Downie2003}.
 
 Los sistemas MIR abarcan el procesamiento digital de señales (DSP) y el aprendizaje automático, y permiten automatizar tareas como el etiquetado de canciones, la clasificación de géneros o el reconocimiento de estados de ánimo a partir del audio digital \citep{Casey2008}.
 
@@ -43,7 +43,7 @@ Los sistemas MIR abarcan el procesamiento digital de señales (DSP) y el aprendi
 \section{Contexto de aplicación}
 
 % MIR en el contexto de la ambientación comercial.
-El trabajo se realiza para dar respuesta a una necesidad tecnológica de Plusyc Live SAS, una empresa dedicada a la creación de experiencias musicales personalizadas para locales comerciales. La plataforma de la compañía crea listas de reproducción basadas en las características musicales de un catálogo de canciones. 
+El trabajo se realiza para dar respuesta a una necesidad tecnológica de Plusyc Live SAS \citep{plusyc_instagram}, una empresa dedicada a la creación de experiencias musicales personalizadas para locales comerciales. La plataforma de la compañía crea listas de reproducción basadas en las características musicales de un catálogo de canciones. 
 
 Anteriormente, la asignación de estas características dependía del consumo de interfaces de programación de aplicaciones (API) de terceros. Esta metodología generaba restricciones de disponibilidad, incrementos en los costos operativos y limitaba la autonomía de la empresa. 
 
@@ -53,7 +53,7 @@ Con la implementación de este trabajo, la empresa cuenta con un sistema de inte
 
 \section{Objetivos y alcance}
 
-Esta sección define las metas del proyecto. Se presenta el objetivo general y los objetivos específicos, los pasos metodológicos necesarios para su cumplimiento y el conjunto de características musicales consideradas.
+Esta sección define las metas. Se presenta el objetivo general y los objetivos específicos, y el conjunto de características musicales consideradas.
 
 \subsection{Objetivo general}
 
@@ -61,7 +61,7 @@ Desarrollar un sistema basado en inteligencia artificial para predecir las carac
 
 \subsection{Objetivos específicos}
 
-Para alcanzar el objetivo general, se definen los siguientes pasos metodológicos:
+Para alcanzar el objetivo general, se definen los siguientes objetivos específicos:
 
 \begin{itemize}
   \item Seleccionar y analizar un conjunto de datos musicales pertinente para el entrenamiento de modelos de aprendizaje supervisado.
@@ -121,9 +121,7 @@ El alcance de este trabajo comprende la predicción computacional de trece carac
     \item Clasificables por ánimo y género: estados de ánimo predominantes (primary moods), estados de ánimo secundarios (secondary moods) y géneros sugeridos (suggested genres).
 \end{itemize}
 
-Para cada una de las características mencionadas se aplican los pasos mencionados en los objetivos específicos.
-
-El detalle técnico, las definiciones formales y el modelado de cada característica como problema de clasificación o regresión se abordan en el transcurso de la presente memoria.
+Para cada una de las características mencionadas se busca cumplir con los objetivos específicos definidos.
 
 % El presente trabajo no incluye:
 
@@ -150,46 +148,33 @@ Las bibliotecas de procesamiento digital de señales proveen funciones para repr
 
 \subsection{Modelos preentrenados y soluciones comerciales}
 
-Para la predicción de características de alto nivel existen modelos de código abierto basados en aprendizaje profundo. Dos ejemplos son la arquitectura musicnn \citep{musicnn} y los modelos entrenados sobre el conjunto de datos AudioSet \citep{audioset}. Estos sistemas clasifican etiquetas musicales generales. Su limitación principal radica en el uso de taxonomías fijas orientadas a los datos con los que fueron entrenados originalmente.
-
+Para la predicción de características semánticas existen modelos de código abierto basados en aprendizaje profundo. Dos ejemplos son la arquitectura musicnn \citep{musicnn} y los modelos entrenados sobre el conjunto de datos AudioSet \citep{audioset}. Estos sistemas clasifican etiquetas musicales generales. Su limitación principal radica en el uso de taxonomías fijas orientadas a los datos con los que fueron entrenados originalmente.
 La biblioteca Essentia también incorpora modelos preentrenados para inferir atributos semánticos, y por lo tanto se incluye en esta categoría.
 
 Por su parte, soluciones comerciales como Spotify \citep{spotify} y Gracenote \citep{gracenote} operan en la modalidad de software como servicio (SaaS) y entregan predicciones mediante su interfaz de programación de aplicaciones (API). La gran desventaja es que introducen costos operativos recurrentes y generan dependencia tecnológica hacia el proveedor.
 
-También existen plataformas web que permiten consultar esta información de manera individual. Un ejemplo es Tunebat \citep{Tunebat}, que permite visualizar un conjunto de características, pero restringe la consulta a una canción a la vez. Se presenta un ejemplo en la figura~\ref{fig:tunebat_screenshot}. 
+También existen plataformas web que permiten consultar esta información de manera individual. Un ejemplo es Tunebat \citep{Tunebat}, que permite visualizar un conjunto de características, pero restringe la consulta a una canción a la vez. En la figura~\ref{fig:tunebat_screenshot} se presenta un ejemplo de la plataforma web Tunebat.
 
 
 \subsection{Síntesis comparativa}
 \label{subsec:sintesis_estado_arte}
 
-Las tecnologías existentes ofrecen herramientas útiles para el objetivo del trabajo. Las bibliotecas de procesamiento digital de señales permiten extraer representaciones numéricas de las ondas sonoras, y los modelos preentrenados ofrecen representaciones semánticas. Por otro lado, los servicios comerciales proveen servicios de etiquetado para canciones.
+Las tecnologías existentes ofrecen herramientas útiles para el objetivo del trabajo. Las bibliotecas de procesamiento digital de señales permiten extraer representaciones numéricas de las ondas sonoras, y los modelos preentrenados ofrecen representaciones semánticas. Por otro lado, las soluciones comerciales proveen servicios de etiquetado para canciones.
  
 Sin embargo, persisten limitaciones operativas para su aplicación directa en el entorno de la empresa. Los servicios de terceros generan costos recurrentes, limitan la cantidad de consultas y crean dependencia tecnológica. Las plataformas web de uso manual no son viables para procesar catálogos con miles de canciones. Además, los modelos no coinciden con las características y las clases específicas que usa Plusyc Live.
 
-Por estos motivos, resulta necesario desarrollar una solución propia. El propósito de este trabajo es aprovechar las técnicas actuales de inteligencia artificial para crear un sistema independiente. Esto permite analizar directamente los archivos de audio y etiquetarlos según las necesidades de la empresa, lo cual elimina de forma definitiva la dependencia de proveedores externos.
+Por estos motivos, resulta necesario desarrollar una solución propia. El propósito de este trabajo es aprovechar las técnicas actuales de inteligencia artificial para crear un sistema independiente. Esto permite analizar directamente los archivos de audio, etiquetarlos según las necesidades de la empresa y así reducir la dependencia de proveedores externos.
 
 
 \begin{figure}[htpb]
     \centering
     \includegraphics[width=1\textwidth]{Figures/weirdfishes.pdf}
-    \caption[Interfaz de consulta en Tunebat]{Ejemplo de visualización de características musicales en Tunebat \protect\footnotemark.}
+    \caption[Interfaz de consulta en Tunebat]{Ejemplo de visualización de características musicales en Tunebat\protect\footnotemark.}
     \label{fig:tunebat_screenshot}
 \end{figure}
-\footnotetext{Imagen tomada de \url{https://tunebat.com/Info/Weird-Fishes-Arpeggi-Radiohead/4wajJ1o7jWIg62YqpkHC7S}}
+\footnotetext{Imagen tomada de \url{https://tunebat.com/Info/Weird-Fishes-Arpeggi-Radiohead/4wajJ1o7jWIg62YqpkHC7S}}.
 % \subsection{Carpetas}
 
-
-\section{Estructura del documento}
-
-La presente memoria se estructura en los siguientes capítulos:
-
-En el Capítulo 2 se presentan las herramientas de terceros y las tecnologías necesarias para el desarrollo del sistema. Se describe la fuente de datos principal, las técnicas para extraer representaciones numéricas del audio, los modelos de aprendizaje automático seleccionados y las tecnologías para el despliegue.
-
-En el Capítulo 3 se detalla el desarrollo del trabajo. Se documenta la evaluación y selección de los conjuntos de datos. Se analizan las distribuciones de las variables objetivo y las estrategias de muestreo. Asimismo, se describen las técnicas de selección y reducción de variables de entrada para el uso de una arquitectura mixta. Luego, se explica el proceso de modelado y la búsqueda de hiperparámetros. Finalmente, se presentan los resultados generales de la iteración productiva y la arquitectura para el despliegue del sistema.
-
-En el Capítulo 4 se presentan los resultados obtenidos. Se evalúa el desempeño de los distintos modelos entrenados y se justifica la selección final de los algoritmos para su paso a producción.
-
-Finalmente, en el Capítulo 5 se exponen las conclusiones generales del proyecto, el cumplimiento de los objetivos propuestos y las posibles líneas de trabajo futuro para mejorar el sistema implementado.
 
 % Esta plantilla se distribuye como una único archivo .zip que se puede descomprimir en varios archivos y carpetas. Asimismo, se puede consultar el repositorio git para obtener la última versión de los archivos, \url{https://github.com/patriciobos/Plantilla-CESE.git}. Los nombres de las carpetas son, o pretender ser, auto-explicativos.
 
