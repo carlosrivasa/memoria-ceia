@@ -2,7 +2,7 @@
 
 \label{Chapter3} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
-% Todos los capítulos deben comenzar con un breve párrafo introductorio que indique cuál es el contenido que se encontrará al leerlo.  La redacción sobre el contenido de la memoria debe hacerse en presente y todo lo referido al proyecto en pasado, siempre de modo impersonal.
+% Tudos los capítulos deben comenzar con un breve párrafo introductorio que indique cuál es el contenido que se encontrará al leerlo.  La redacción sobre el contenido de la memoria debe hacerse en presente y todo lo referido al proyecto en pasado, siempre de modo impersonal.
 
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
@@ -53,30 +53,34 @@ Este capítulo detalla el diseño y la implementación del sistema predictivo. S
 \subsection{Análisis de conjuntos de datos públicos}
 
 La definición de la estrategia para la extracción de atributos se fundamenta en una revisión de conjuntos de datos públicos estandarizados en el ámbito MIR. 
-El objetivo fue entender cómo repositorios de referencia, como FMA y Million Song Dataset, representan y estructuran los datos musicales, para decidir su viabilidad en el contexto de aplicación de este trabajo. 
+El objetivo de este análisis previo fue entender cómo repositorios de referencia, como FMA y Million Song Dataset \cite{bertin2011million}, representan y estructuran los datos musicales, como método para establecer los criterios de diseño del conjunto de datos propio.
+
+En un comienzo se contempló el uso de algunos de estos conjuntos de datos, pero se encontró que presentan varias limitaciones frente a la solución propuesta: algunos restringen el análisis a segmentos cortos de audio, mientras que otros requieren tamaños de almacenamiento excesivamente pesados o estructuras de datos difíciles de replicar durante el proceso de inferencia y dependientes de las versiones de las bibliotecas de extracción.
+
+Por otro lado, el análisis resultó positivo; estas restricciones motivaron que el proceso de extracción se ejecute directamente sobre el catálogo privado para eliminar las limitaciones, y su análisis permitió conocer las variables numéricas en la música, cómo se segmentan las canciones, cómo se reduce la dimensionalidad y hacer los primeros experimentos predictivos de las variables objetivo requeridas.
 
 \subsubsection{GTZAN}
-Este conjunto de datos se considera el equivalente al MNIST \cite{lecun1998gradient} para el análisis de audio \cite{sturm2014state}, dada su adopción histórica como estándar de evaluación en tareas de clasificación de géneros musicales.
+Este conjunto de datos se considera el equivalente al MNIST \cite{lecun1998gradient} para el análisis de audio \cite{sturm2014state}, dada su adopción histórica como estándar de evaluación en tareas de clasificación de géneros musicales. Con el análisis de este conjunto de datos se pudo identificar los siguientes puntos:
 \begin{itemize}
     \item Variables predictivas principales: tempo, representaciones chroma, amplitud media cuadrática (RMS), descriptores espectrales y coeficientes MFCC.
     \item Estructura: 1~000 archivos de audio en crudo limitados a 30 segundos, acompañados de metadatos tabulares e imágenes de espectrogramas de Mel en su versión distribuida mediante Kaggle \citep{gtzan_kaggle}. 
-    Todas estas representaciones fueron extraídas utilizando la biblioteca Librosa. Las tablas contienen los atributos calculados sobre la pista completa y también sobre divisiones de 3 segundos para incrementar el volumen de datos de entrenamiento. En ambos escenarios se aplica una reducción de dimensionalidad temporal: las variables se calculan inicialmente sobre micro-ventanas de milisegundos y luego se colapsan a valores estáticos mediante estadísticos de agregación, como la media y la varianza.
+    Todas estas representaciones fueron extraídas con la biblioteca Librosa. Las tablas contienen los atributos calculados sobre la pista completa y también sobre divisiones de 3 segundos para incrementar el volumen de datos de entrenamiento. En ambos escenarios se aplica una reducción de dimensionalidad temporal: las variables se calculan inicialmente sobre micro-ventanas de milisegundos y luego se colapsan a valores estáticos mediante estadísticos de agregación, como la media y la varianza.
     \item Variables objetivo principales en Plusyc: se podría relacionar con \textit{suggested genres}. 
     \item Desventajas: provee segmentos cortos de audio, lo que limita la representatividad de la información musical a nivel de canción; y solo abarca 10 géneros musicales, mientras que Plusyc trabaja con más de 500.
 \end{itemize}
 
 \subsubsection{FMA estándar}
-Se analiza la versión estándar de FMA, diseñada para superar las limitaciones de tamaño y acceso a las colecciones completa y mediana.
+Se analiza la versión estándar de FMA, diseñada para superar las limitaciones de tamaño y acceso a las colecciones completa y mediana. Se encuentra:
 \begin{itemize}
     \item Variables predictivas principales: representaciones chroma, Transformada de Q Constante (CQT), tonnetz, MFCC, RMS, descriptores espectrales y tasa de cruces por cero (ZCR).
-    \item Estructura: ofrece recortes de audio de 30 segundos para sus subconjuntos estándar, acompañados de matrices de atributos precomputados distribuidos en formato tabular (CSV). Los atributos fueron extraídos utilizando Librosa y posteriormente colapsados mediante estadísticos de agregación, como la media, desviación estándar, asimetría y curtosis, para obtener valores estáticos por pista.
+    \item Estructura: ofrece recortes de audio de 30 segundos para sus subconjuntos estándar, acompañados de matrices de atributos precomputados distribuidos en formato tabular (CSV). Los atributos fueron extraídos con Librosa y posteriormente colapsados mediante estadísticos de agregación, como la media, desviación estándar, asimetría y curtosis, para obtener valores estáticos por pista.
     \item Metadatos contextuales: información tabular adicional que incluye álbum, artista, popularidad, fechas de lanzamiento y ubicación geográfica.
     \item Variables objetivo principales: géneros musicales estructurados en una taxonomía jerárquica de clases y para un subconjunto de aproximadamente 13~000 pistas, proporciona atributos como \textit{danceability, energy, valence, speechiness} y \textit{liveness}.
     \item Desventajas: el análisis está restringido a segmentos de 30 segundos en la versión estándar. Las versiones media y completa exceden las capacidades de procesamiento de la infraestructura actual de la empresa. Además, la incertidumbre sobre las versiones exactas de Librosa utilizadas originalmente dificulta la replicabilidad técnica sobre canciones nuevas. Finalmente, la información etiquetada de 13~000 pistas es mucho menor que la de más de 60~000 de Plusyc.
 \end{itemize}
 
 \subsubsection{Million Song Dataset (MSD)}
-Desarrollado por la Universidad de Columbia y The Echo Nest \cite{bertin2011million}, este conjunto escaló la investigación de información musical a nivel industrial.
+Desarrollado por la Universidad de Columbia y The Echo Nest, este conjunto escaló la investigación de información musical a nivel industrial. Se describen sus componentes principales:
 \begin{itemize}
     \item Variables predictivas principales: representaciones de tono (chroma y pitch) y descriptores de timbre, ambos calculados a nivel de segmento.
     \item Estructura: colección de metadatos y descriptores precomputados empaquetados en archivos HDF5.
@@ -86,7 +90,7 @@ Desarrollado por la Universidad de Columbia y The Echo Nest \cite{bertin2011mill
 \end{itemize}
 
 \subsubsection{AudioSet}
-Este conjunto masivo establece un estándar para la clasificación de eventos sonoros generales
+Este conjunto masivo establece un estándar para la clasificación de eventos sonoros generales:
 \begin{itemize}
     \item Estructura: conjunto de identificadores de videos de YouTube y marcas de tiempo que referencian segmentos de 10 segundos, anotados bajo una ontología de 527 clases.
     \item Variables predictivas principales: el corpus original no extrae descriptores tradicionales. Su distribución oficial provee embeddings precomputados mediante el modelo VGGish \cite{hershey2017cnn}, que sirven como entrada rápida para entrenar clasificadores de terceros sin necesidad de descargar el audio original.
@@ -94,64 +98,272 @@ Este conjunto masivo establece un estándar para la clasificación de eventos so
     \item Desventajas: el enfoque en sonidos generales limita su precisión para los atributos musicales.
 \end{itemize}
 
+Cabe mencionar que, a pesar de que en algunas de las fuentes de datos públicas se incluye información del contexto como la región del artista, el año de lanzamiento, el álbum o las letras, en esta solución se trabaja exclusivamente con información musical que se extrae del audio.
+
 % En la tabla \ref{tab:variables_datasets} se presentan algunas de las variables predictivas más relevantes de cada conjunto de datos.
-
-Todos estos conjuntos de datos presentan varias limitaciones frente a la solución propuesta: algunos restringen el análisis a segmentos cortos de audio, mientras que otros requieren tamaños de almacenamiento excesivamente pesados o estructuras de datos difíciles de replicar durante el proceso de inferencia y dependientes de las versiones de las bibliotecas de extracción.
-
-Por otro lado, estas restricciones motivaron que el proceso de extracción se ejecute directamente sobre el catálogo privado para eliminar las limitaciones, y su revisión permitió sentar las bases para determinar cuáles son las variables predictivas en la música, cómo se segmentan las canciones, cómo se reduce la dimensionalidad y para hacer los primeros experimentos predictivos de las variables objetivo requeridas.
-
-Cabe mencionar que, a pesar de que en algunas de las fuentes de datos públicas se incluye información del contexto como la región del artista, el año de lanzamiento, el álbum o las letras, en esta solución se trabaja exclusivamente con información musical que se extrae del audio. 
-
 \subsection{Reducción de dimensionalidad mediante estadísticas}
 
 En el ámbito del procesamiento de señales, la información de un archivo de audio se representa como una serie de tiempo multivariada: una secuencia de puntos de datos \cite{muller2015fundamentals}, en este caso, descriptores numéricos y semánticos, indexados y ordenados cronológicamente.
 
-La estrategia adoptada se inspiró en los conjuntos de datos de referencia, donde la señal se divide en ventanas temporales y la información de cada ventana se colapsa en valores estáticos. Esto permite reducir estas secuencias a un vector por cada canción, buscando optimizar el uso de la memoria y los tiempos de procesamiento.
-Esta transformación de la señal de secuencias de números a un vector de estadísticos ocurre de la siguiente manera:
+La estrategia adoptada se inspiró en los conjuntos de datos de referencia, donde la señal se divide en ventanas temporales y la información de cada ventana se colapsa en valores estáticos. Esto permite reducir estas secuencias a un vector por cada canción, para optimizar el uso de la memoria y los tiempos de procesamiento.
+El diagrama de flujo de este algoritmo se muestra en la figura \ref{fig:pipeline_extraccion_real}, donde se observa como la extracción ocurre en ramas paralelas para la transformación de la señal a un vector de estadísticos.
+
+\begin{figure}[htpb]
+    \centering
+    \begin{tikzpicture}[
+        font=\sffamily\small,
+        >=stealth,
+        % Ajusté levemente el ancho (3.4cm) para dar más margen de respiración entre columnas
+        data/.style={rectangle, draw=black!70, fill=gray!10, thick, text width=3.4cm, align=center, minimum height=1.2cm, rounded corners=2mm},
+        process/.style={rectangle, draw=blue!70!black, fill=blue!5, thick, text width=3.4cm, align=center, minimum height=1.2cm},
+        model/.style={rectangle, draw=green!60!black, fill=green!5, thick, text width=3.4cm, align=center, minimum height=1.2cm},
+        output/.style={rectangle, draw=red!70!black, fill=red!5, thick, text width=5cm, align=center, minimum height=1.2cm, rounded corners=2mm},
+        arrow/.style={->, thick, draw=black!70}
+    ]
+
+    % --- 1. UBICACIÓN DE NODOS (Coordenadas Absolutas X, Y) ---
+    
+    % Nivel 1 (Centro)
+    \node[data, text width=4.5cm] (audio) at (0, 0) {Archivo de audio \\ (.mp3)};
+
+    % Nivel 2 (Bifurcación simétrica)
+    \node[model] (dsp) at (-3.5, -2) {Extracción de variables (DSP)};
+    \node[process] (winpanns) at (3.5, -2) {Segmentación \\ (Ventanas de 10 segundos)};
+
+    % Nivel 3 (Separación milimétrica para evitar solapamientos)
+    \node[data] (dspframes) at (-5.5, -4) {Matrices de variables  \\ (Ventanas de $\sim$64ms)};
+    \node[data] (dspglobal) at (-1.5, -4) {Atributos escalares globales};
+    \node[model] (cnn) at (3.5, -4) {PANNs inference \\ (red CNN14)};
+
+    % Nivel 4 
+    \node[process] (aggdsp) at (-5.5, -6.2) {\textbf{7 Estadísticos} \\ (Media, std dev, asimetría, curtosis, P10, P50, P90)};
+    \node[data] (featpanns) at (3.5, -6.2) {Secuencias Semánticas \\ (Embeddings y probabilidades)};
+
+    % Nivel 5 
+    \node[process] (aggpanns) at (3.5, -8.4) {\textbf{4 Estadísticos} \\ (Media, máximo, std, P90)};
+
+    % Nivel 6 (Centro)
+    \node[process, text width=11cm] (concat) at (-0.5, -10.5) {Aplanado y concatenación (Flatten)};
+
+    % Nivel 7 (Centro)
+    \node[output] (out) at (-0.5, -12.3) {Vector unidimensional \\ (\textbf{9591 variables})};
+
+
+    % --- 2. ENRUTAMIENTO DE FLECHAS (Salida .south -> Entrada .north) ---
+    
+    % Punto de quiebre para la primera división (T invertida perfecta)
+    \coordinate (b1) at (0, -1.1);
+    \draw[thick, draw=black!70] (audio.south) -- (b1);
+    \draw[arrow] (b1) -| (dsp.north);
+    \draw[arrow] (b1) -| (winpanns.north);
+
+    % Punto de quiebre para la división DSP
+    \coordinate (b2) at (-3.5, -3.1);
+    \draw[thick, draw=black!70] (dsp.south) -- (b2);
+    \draw[arrow] (b2) -| (dspframes.north);
+    \draw[arrow] (b2) -| (dspglobal.north);
+
+    % Bajadas directas (líneas totalmente rectas)
+    \draw[arrow] (winpanns.south) -- (cnn.north);
+    \draw[arrow] (dspframes.south) -- (aggdsp.north);
+    \draw[arrow] (cnn.south) -- (featpanns.north);
+    \draw[arrow] (featpanns.south) -- (aggpanns.north);
+
+    % Caída libre de las 3 ramas hacia el nodo aplanador
+    \draw[arrow] (aggdsp.south) -- (aggdsp.south |- concat.north);
+    \draw[arrow] (dspglobal.south) -- (dspglobal.south |- concat.north);
+    \draw[arrow] (aggpanns.south) -- (aggpanns.south |- concat.north);
+
+    % Flecha final
+    \draw[arrow] (concat.south) -- (out.north);
+
+    \end{tikzpicture}
+    \caption[Algoritmo de extracción de atributos]{Algoritmo de extracción de atributos.}
+    \label{fig:pipeline_extraccion_real}
+\end{figure}
+
+En la rama de la izquierda se observa la extracción de variables (DSP) y a la derecha la extracción de embeddings y probabilidades semánticas con PANNs inference:
 
 \begin{itemize}
-    \item Segmentación temporal: se estableció una ventana de análisis de 10 segundos continuos. Esta decisión se fundamenta en la arquitectura de la red neuronal CNN14, entrenada sobre el conjunto de datos AudioSet, cuyos segmentos originales son de 10 segundos.
-    \item Extracción de variables predictivas: para cada segmento de 10 segundos de la canción, el algoritmo usa Librosa y Essentia para extraer el conjunto de variables predictivas principales que proveen las fuentes de datos públicos. También se extrae información global de la canción y algunas de las variables predictivas escalares se calculan de forma global y también de forma segmentada y agregada.
-    \item Extracción de embeddings y probabilidades: para esos segmentos de 10 segundos, el algoritmo también extrae un vector de embeddings y las probabilidades de activación para 173 clases de eventos musicales provistas por PANNs inference.
-    \item Agrupación estadística: dado que una canción estándar produce una cantidad variable de segmentos de 10 segundos, se aplicó una técnica de colapso estadístico a lo largo del eje temporal, diferenciando el tratamiento según el tipo de variable:
+    \item Para la extracción de variables (DSP) se utilizan las bibliotecas Librosa y Essentia sobre la señal continua, el algoritmo extrae las series temporales de las características principales, por ventanas de 64 ms de longitud y solapamiento de 16 ms, que proporciona una alta resolución temporal original de la señal \cite{muller2015fundamentals, lerch2012introduction}. También se extrae información global de la canción, descriptores escalares para la pista entera que complementan la información segmentada.
+    \item Para la extracción de embeddings y probabilidades se estableció una ventana de análisis de 10 segundos continuos. Esta decisión se fundamenta en la arquitectura de la red neuronal CNN14, entrenada sobre el conjunto de datos AudioSet, cuyos segmentos originales son de 10 segundos. El algoritmo extrae un vector de embeddings y las probabilidades de activación para 173 clases de eventos musicales provistas por PANNs inference por cada ventana.
+    \item Agrupación estadística: dado que una canción estándar produce una cantidad variable de segmentos, se aplicó una técnica de colapso estadístico a lo largo del eje temporal, según el tipo de variable:
     \begin{itemize}
-        \item Para las variables predictivas (DSP), se calcularon siete estadísticos por pista: media, desviación estándar, asimetría, curtosis, y los percentiles 10 (cerca del mínimo), 50 (mediana) y 90 (cerca del máximo para evitar ruido).
+        \item Para las variables (DSP), se calcularon siete estadísticos por pista: media, desviación estándar, asimetría, curtosis, y los percentiles 10 (cerca del mínimo), 50 (mediana) y 90 (cerca del máximo para evitar ruido).
         \item Para los embeddings y las probabilidades semánticas de las 173 clases seleccionadas de PANNs, se calcularon cuatro medidas: media, valor máximo, desviación estándar y el percentil 90.
     \end{itemize}
 \end{itemize}
 
-Este enfoque matemático permite comprimir el volumen masivo de información de una serie de tiempo en un único vector unidimensional por canción.
+Este enfoque matemático permite comprimir el volumen masivo de información de una serie de tiempo en un vector unidimensional por canción. Una representación empírica de este proceso se ilustra en la figura \ref{fig:reduccion_dimensionalidad}, donde se observa visualmente cómo las matrices dinámicas de la pista se colapsan en vectores tras el cálculo estadístico. La visualización muestra solo algunos ejemplos, la media en algunos DSP y el percentil 90 en algunas clases del AudioSet.
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=1\textwidth]{red_dim_real.pdf} 
+    \caption[Proceso de reducción de dimensionalidad]{Visualización de la reducción de dimensionalidad: las secuencias temporales (izquierda) se transforman en vectores (derecha) mediante la aplicación de medidas de agregación.}
+    \label{fig:reduccion_dimensionalidad}
+\end{figure}
 
 Algunos experimentos preliminares sirvieron para validar que esta representación permitía capturar la información esencial de la canción de manera eficiente y compacta.
-El algoritmo de extracción, es el resultado de múltiples pruebas con distintas configuraciones de variables, estadísticos y métodos de segmentación. Algunos de los experimentos que no resultaron exitosos comprenden:
-pruebas con solo variables predictivas sin embeddings, demuestran que no es posible capturar eventos como el público en vivo o el habla en los primeros intentos de inferencia de \textit{liveness} y \textit{speechiness}. Las pruebas con embeddings pero sin variables predictivas en general no proporcionan la información de \textit{key}, \textit{tempo}, \textit{loudness}, \textit{mood} o \textit{genres}.
-Pruebas con distintas ventanas resultaron ser ineficientes en el proceso de extracción de más de 60~000 canciones. Pruebas aplicando todos los estadísticos resultaron en un espacio de variables que consume mucho espacio de almacenamiento y con alta correlación.
+El algoritmo de extracción, es el resultado de pruebas con distintas configuraciones de variables, estadísticos y métodos de segmentación.
+% todo referencia cruzada cap 4
 
-\subsection{Conformación del espacio de variables masivo}
-% Tras validar la superioridad de la arquitectura mixta, se ejecutó el proceso de extracción sobre el catálogo completo. El procesamiento computacional requirió más de una semana de ejecución ininterrumpida para procesar las canciones completas.
+\subsection{Conformación del espacio de variables}
 
-% El algoritmo de extracción definitivo combinó las funciones de Librosa y Essentia con la inferencia de la red neuronal CNN14. El resultado fue un conjunto de datos masivo compuesto por más de 9000 variables predictivas independientes por cada registro de audio. Este extenso espacio de características garantiza la disponibilidad de toda la información acústica y semántica posible para la etapa de experimentación. El alto costo computacional de la extracción justifica esta estrategia de recopilación exhaustiva, eliminando la necesidad de reprocesar el audio y trasladando el desafío técnico hacia la selección rigurosa de las variables más relevantes durante la etapa de modelado, proceso que se detalla en la sección \ref{sec:seleccion_variables} %.
+El procesamiento computacional sobre el catálogo de canciones requirió más de una semana de ejecución para procesar y extraer la información de más de 60~000 canciones completas.
+El alto costo computacional se justificó por la necesidad de garantizar la disponibilidad de información para los experimentos de modelos predictivos de múltiples características musicales. 
 
+La aplicación del algoritmo final generó un conjunto de datos masivo compuesto por 9591 variables, resumido en la tabla \ref{tab:espacio_variables}.
+
+\begin{table}[htpb]
+    \centering
+    \caption[Desglose detallado del espacio de variables]{Desglose estructural de las 9591 variables extraídas por canción.}
+    \renewcommand{\arraystretch}{1.3}
+    \small
+    \makebox[\textwidth][c]{%
+    \begin{tabular}{p{2.5cm} p{4.5cm} c p{3.5cm} c c}
+        \toprule
+        \textbf{Categoría de extracción} & \textbf{Atributos base} & \textbf{Cant.} & \textbf{Estadísticos aplicados} & \textbf{Cant.} & \textbf{Total} \\
+        \midrule
+        Representaciones DSP (Librosa) & MFCC (20), Deltas (40), Centroide, Ancho de banda, Rolloff, Contraste (7), Flatness, Flux, Chroma (12), Tonnetz (6), RMS, ZCR. & 92 & Media, Desv. Estándar, Asimetría, Curtosis, Percentiles (10, 50, 90). & 7 & 644 \\
+        \midrule
+        Atributos globales y ritmo & LUFS, Entropía espectral, Tempo Librosa/Essentia (2), Complejidad dinámica, Tasa de onsets, Estadísticos de onset (3), Pitch, Fracción de voz, Claridad tonal (2), Factor de cresta. & 15 & Cálculo único por pista completa. & 1 & 15 \\
+        \midrule
+        Estimación tonal (Perfiles) & Vectores de correlación Krumhansl (Mayor/Menor) y Temperley (Mayor/Menor). & 48 & Cálculo único por pista completa (4 perfiles $\times$ 12 semitonos). & 1 & 48 \\
+        \midrule
+        Embeddings semánticos (PANNs) & Vector latente de la capa previa a la clasificación de la red CNN14. & 2048 & Media, Máximo, Desv. Estándar, Percentil 90. & 4 & 8192 \\
+        \midrule
+        Probabilidades (PANNs) & Clases filtradas (Voz, Instrumentos, Géneros, Público en vivo, Distorsión). & 173 & Media, Máximo, Desv. Estándar, Percentil 90. & 4 & 692 \\
+        \bottomrule
+        \multicolumn{5}{r}{\textbf{Total de variables por canción:}} & \textbf{9591} \\
+    \end{tabular}
+    }
+    \label{tab:espacio_variables}
+\end{table}
 
 \section{Ejecución de tareas sobre el conjunto de datos}
 \label{sec:ejecucion_tareas}
+
+% todo Esta sección describe la fase de exploración y preparación de los datos. Se presentan las distribuciones de las variables objetivo, el tratamiento aplicado a los datos acorde a los desafíos encontrados y las técnicas de selección y reducción de características implementadas para gestionar la alta dimensionalidad del espacio de entrada.
+Esta sección presenta las variables objetivo y sus distribuciones, el tratamiento aplicado a los datos y las técnicas de selección y reducción de variables predictivas.
+
+Las variables objetivo se dividen en tres grupos: básicas, perceptibles y géneros/estados de ánimo sugeridos. Y se definen en la tabla \ref{tab:caracteristicas_ia}.
+\begin{table}[htpb]
+  \centering
+  \caption[Características predictivas]{Definición, ejemplos y tipo de problema de aprendizaje supervisado por característica.}
+  \label{tab:caracteristicas_ia}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{@{}l p{5.5cm} p{3.5cm} l@{}}
+    \toprule
+    \textbf{Característica} & \textbf{Definición} & \textbf{Ejemplos} & \textbf{Tipo de problema} \\
+    \midrule
+    \multicolumn{4}{@{}l}{\textbf{Básicas}} \\
+    \midrule
+    \textit{Loudness} & Volumen global promedio en decibeles, más negativa, más silenciosa (dB) & -5.2 dB, -12.4 dB & Regresión \\
+    \textit{Key} & Tonalidad estimada de la pista mapeada a números enteros (\textit{Pitch Class}). & 0 (Do), 1 (Do\#), 2 (Re) & Clasificación \\
+    \textit{Mode} & Modalidad (mayor o menor) del contenido melódico. & 1 (Mayor), 0 (Menor) & Clasificación \\
+    \textit{Tempo} & Tempo global estimado en pulsaciones por minuto (BPM). & 120 BPM, 85 BPM & Regresión \\
+    \midrule
+    \multicolumn{4}{@{}l}{\textbf{Perceptibles}} \\
+    \midrule
+    \textit{Acousticness} & Confianza de que la pista es acústica (0.0 a 1.0). & 0.95, 0.10 & Regresión \\
+    \textit{Danceability} & Capacidad de ser bailable según tempo y ritmo (0.0 a 1.0). & 0.85, 0.20 & Regresión \\
+    \textit{Energy} & Medida de intensidad y actividad (0.0 a 1.0). & 0.90 & Regresión \\
+    \textit{Instrumentalness} & Probabilidad de ausencia de contenido vocal (0.0 a 1.0). & 0.90 (sin voz), 0.05 (cantada) & Regresión \\
+    \textit{Liveness} & Confianza de grabación con público en vivo (0.0 a 1.0). & 0.85 (concierto), 0.10 (estudio) & Regresión \\
+    \textit{Speechiness} & Presencia de palabras habladas (0.0 a 1.0). & 0.85 (conversación), 0.5 (rap), 0.05 (música) & Regresión \\
+    \textit{Valence} & Positividad musical transmitida (0.0 a 1.0). & 0.90, 0.15 & Regresión \\
+    \midrule
+    \multicolumn{4}{@{}l}{\textbf{ánimo y género sugeridos}} \\
+    \midrule
+    \textit{Primary Mood} & Estado de ánimo o emoción predominante. & \textit{Energizing, Lively, Empowering} & Clasificación \\
+    \textit{Secondary Mood} & Estados de ánimo complementarios. & \textit{Euphoric Energy, Energetic Anxious} & Clasificación \\
+    \textit{Suggested Genres} & Género musical. & \textit{Chill House, EDM} & Clasificación \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Distribuciones de las variables objetivo}
+\label{sec:distribuciones_variables_objetivo}
 % Aquí se detallarán las distribuciones de las variables objetivo, dificultades encontradas y estrategias de muestreo.
 
+\subsubsection{Características básicas}
+Este grupo incluye el \textit{loudness}, \textit{key}, \textit{mode} y \textit{tempo}: 
 
-\section{Selección de variables de entrada}
+% \paragraph{Tempo (BPM)} 
+% Como se observa en la figura \ref{fig:dist_tempo}, la variable presenta una distribución [NORMAL / BIMODAL / ASIMÉTRICA], concentrando la mayoría de las pistas en el rango de [X] a [Y] BPM. 
+
+% \textbf{Desafíos:}
+% \begin{itemize}
+%     \item Se detectaron [ERRORES DE ETIQUETADO / METRICAS IRREGULARES / RUIDO].
+%     \item Presencia de valores atípicos severos, inferiores a [X] o superiores a [Y] BPM.
+% \end{itemize}
+
+% \textbf{Tratamiento:}
+% \begin{itemize}
+%     \item Se aplicó un filtro para excluir pistas fuera del rango operativo de [X] a [Y] BPM.
+%     \item La variable se mantuvo en su escala continua para abordarla mediante tareas de regresión.
+% \end{itemize}
+
+\paragraph{Loudness}
+
+La figura \ref{fig:dist_loudness} muestra el valor del \textit{loudness} en el eje x y la frecuencia en las canciones del catálogo en el eje y. Se observa que presenta un sesgo negativo, con una concentración principal cerca de los -7 dB. Esto es predecible dada la guerra del \textit{loudness} \cite{vickers2010loudness}, donde muchos artistas y productores quieren que sus canciones suenen fuertes, y plataformas como Spotify normalizan el \textit{loudness} para evitar cambios abruptos en el volumen entre las canciones.
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.8\textwidth]{distribucion_de_loudness.pdf} 
+    \caption[Distribución de Loudness]{Distribución de \textit{loudness} en el catálogo.}
+    \label{fig:dist_loudness}
+\end{figure}
+
+Desafíos y tratamiento:
+\begin{itemize}
+    \item Desafío 1: %tema distrib variable en el tiempo, etc, nulls, ceros silencios, etc
+    \item Desafío n: %Existencia de valores extremadamente bajos (silencios prolongados) que distorsionan la escala.
+\end{itemize}
+
+% \paragraph{Tonalidad y modalidad (Key y Mode)} 
+% La combinación de ambas variables conforma un espacio discreto de 24 clases únicas. La figura \ref{fig:dist_key_mode} ilustra la distribución de las pistas, evidenciando un sesgo significativo en la composición musical del catálogo.
+
+% \textbf{Desafíos:}
+% \begin{itemize}
+%     \item Existe un desbalance extremo en las categorías musicales.
+%     \item Predominan escalas como [DO MAYOR Y LA MENOR], mientras que tonalidades como [RE SOSTENIDO MENOR] presentan escasez de ejemplos, propiciando que los modelos colapsen hacia las clases mayoritarias.
+% \end{itemize}
+
+% \textbf{Tratamiento:}
+% \begin{itemize}
+%     \item Para evitar la pérdida de información musical intrínseca, no se eliminaron ni fusionaron clases.
+%     \item El desbalance se abordó directamente en la fase de modelado mediante [PONDERACIÓN DE CLASES (CLASS WEIGHTS) / SUBMUESTREO / SMOTE].
+% \end{itemize}
+
+% \begin{itemize}
+%     \item \textbf{Tempo (BPM):} 
+%     \begin{itemize}
+%         \item Distribución: La variable objetivo presentó una distribución [bimodal / normal sesgada], concentrando la mayoría de las pistas entre los [70] y [130] BPM. 
+%         \item \textit{Desafíos:} Se detectaron valores atípicos severos originados por errores en el etiquetado manual o pistas con métricas irregulares (valores cercanos a 0 o superiores a [250] BPM).
+%         \item \textit{Tratamiento:} Se aplicó un filtro para excluir pistas fuera del rango de [40] a [220] BPM. Para el modelado, la variable se mantuvo en su escala continua (regresión).
+%     \end{itemize}
+
+
+%     \item \textbf{Key y Mode:}
+%     \begin{itemize}
+%         \item \textit{Distribución:} La tonalidad (\textit{Key}) comprende 12 clases discretas, mientras que la modalidad (\textit{Mode}) es binaria (Mayor/Menor). El análisis reveló un fuerte desbalance de clases, predominando escalas como [Do Mayor y La Menor], mientras que tonalidades como [Re Sostenido Menor] presentaron escasos ejemplos.
+%         \item \textit{Desafíos:} El principal reto fue el desbalance extremo, lo que propicia que los modelos de clasificación colapsen hacia las clases mayoritarias.
+%         \item \textit{Tratamiento:} Para evitar la pérdida de información musical, no se eliminaron clases. En su lugar, el desbalance se abordó [combinando Key y Mode en 24 clases únicas / aplicando ponderación de clases (class weights) durante el entrenamiento / mediante submuestreo].
+%     \end{itemize}
+% \end{itemize}
+
+% todo lo siguiente se podría incluir
+% El alto costo computacional de la extracción justifica esta estrategia de recopilación exhaustiva trasladando el desafío técnico hacia la selección rigurosa de las variables más relevantes durante la etapa de modelado, proceso que se detalla en la sección \ref{sec:seleccion_variables} %.
+
+
+\subsection{Selección de variables de entrada}
 \label{sec:seleccion_variables}
 % Aquí se describirán las técnicas de selección y reducción para una arquitectura mixta.
-
 
 \section{Modelado y optimización}
 \label{sec:modelado_optimizacion}
 % Aquí se abordará el proceso de modelado y la búsqueda de hiperparámetros.
-
-
-\section{Iteración productiva}
-\label{sec:iteracion_productiva}
-% Aquí se presentarán los resultados generales de la iteración.
-
 
 \section{Arquitectura de despliegue e integración}
 \label{sec:arquitectura_despliegue}
@@ -163,45 +375,45 @@ Pruebas con distintas ventanas resultaron ser ineficientes en el proceso de extr
 
 
 
-\begin{verbatim}
-\begin{lstlisting}[caption= "un epígrafe descriptivo"]
-	las líneas de código irían aquí...
-\end{lstlisting}
-\end{verbatim}
+% \begin{verbatim}
+% \begin{lstlisting}[caption= "un epígrafe descriptivo"]
+% 	las líneas de código irían aquí...
+% \end{lstlisting}
+% \end{verbatim}
 
-A modo de ejemplo, se muestra el fragmento de código \ref{cod:vControl}:
+% A modo de ejemplo, se muestra el fragmento de código \ref{cod:vControl}:
 
-\begin{lstlisting}[label=cod:vControl,caption=Pseudocódigo del lazo principal de control.]  % Start your code-block
+% \begin{lstlisting}[label=cod:vControl,caption=Pseudocódigo del lazo principal de control.]  % Start your code-block
 
-#define MAX_SENSOR_NUMBER 3
-#define MAX_ALARM_NUMBER  6
-#define MAX_ACTUATOR_NUMBER 6
+% #define MAX_SENSOR_NUMBER 3
+% #define MAX_ALARM_NUMBER  6
+% #define MAX_ACTUATOR_NUMBER 6
 
-uint32_t sensorValue[MAX_SENSOR_NUMBER];		
-FunctionalState alarmControl[MAX_ALARM_NUMBER];	//ENABLE or DISABLE
-state_t alarmState[MAX_ALARM_NUMBER];						//ON or OFF
-state_t actuatorState[MAX_ACTUATOR_NUMBER];			//ON or OFF
+% uint32_t sensorValue[MAX_SENSOR_NUMBER];		
+% FunctionalState alarmControl[MAX_ALARM_NUMBER];	//ENABLE or DISABLE
+% state_t alarmState[MAX_ALARM_NUMBER];						//ON or OFF
+% state_t actuatorState[MAX_ACTUATOR_NUMBER];			//ON or OFF
 
-void vControl() {
+% void vControl() {
 
-	initGlobalVariables();
+% 	initGlobalVariables();
 	
-	period = 500 ms;
+% 	period = 500 ms;
 		
-	while(1) {
+% 	while(1) {
 
-		ticks = xTaskGetTickCount();
+% 		ticks = xTaskGetTickCount();
 		
-		updateSensors();
+% 		updateSensors();
 		
-		updateAlarms();
+% 		updateAlarms();
 		
-		controlActuators();
+% 		controlActuators();
 		
-		vTaskDelayUntil(&ticks, period);
-	}
-}
-\end{lstlisting}
+% 		vTaskDelayUntil(&ticks, period);
+% 	}
+% }
+% \end{lstlisting}
 
 
 

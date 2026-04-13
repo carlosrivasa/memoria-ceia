@@ -31,6 +31,9 @@ La extracción de información musical, comúnmente conocida como MIR (por su si
 
 Los sistemas MIR abarcan el procesamiento digital de señales (DSP) y el aprendizaje automático, y permiten automatizar tareas como el etiquetado de canciones, la clasificación de géneros o el reconocimiento de estados de ánimo a partir del audio digital \citep{Casey2008}.
 
+La aplicación de estas tecnologías en el contexto comercial resulta fundamental para la personalización y ambientación de espacios físicos. La literatura académica señala que la música de fondo (\textit{background music}) no es un elemento pasivo, sino un factor ambiental estratégico. Investigaciones en el área muestran que componentes estructurales de la música alteran de forma predecible la excitación emocional (\textit{arousal}), la percepción del tiempo y la intención de compra de los consumidores en entornos minoristas y de servicios \citep{bruner1990music, garlin2006setting, roschk2017calibrating}. 
+
+Para lograr una personalización ambiental efectiva en cada comercio, es necesario seleccionar pistas musicales que se ajusten a criterios sonoros y emocionales específicos dictados por la identidad de cada marca. La curaduría manual resulta inescalable debido a la gran magnitud de los catálogos musicales; en consecuencia, es importante desarrollar un producto que implemente técnicas MIR para caracterizar automáticamente los archivos de audio de las canciones de grandes repositorios de audio, para el uso de las características en sistemas que llevan música a espacios comerciales, según las necesidades específicas de cada lugar.
 % Acá tiene un ejemplo de una ``subsubsección'' que es el cuarto nivel de ordenamiento del texto, después de capítulo, sección y subsección.  Como se puede ver, las subsubsecciones no van numeradas en el cuerpo del documento ni en el índice.  El formato está definido por la plantilla y no debe ser modificado.
 
 % \subsection{Guía matemática rápida para \LaTeX{}}
@@ -153,8 +156,17 @@ La biblioteca Essentia también incorpora modelos preentrenados para inferir atr
 
 Por su parte, soluciones comerciales como Spotify \citep{spotify} y Gracenote \citep{gracenote} operan en la modalidad de software como servicio (SaaS) y entregan predicciones mediante su interfaz de programación de aplicaciones (API). La gran desventaja es que introducen costos operativos recurrentes y generan dependencia tecnológica hacia el proveedor.
 
-También existen plataformas web que permiten consultar esta información de manera individual. Un ejemplo es Tunebat \citep{Tunebat}, que permite visualizar un conjunto de características, pero restringe la consulta a una canción a la vez. En la figura~\ref{fig:tunebat_screenshot} se presenta un ejemplo de la plataforma web Tunebat.
+También existen plataformas web que permiten consultar esta información de manera individual. Un ejemplo es Tunebat \citep{Tunebat}, que permite visualizar un conjunto de características, pero restringe la consulta a una canción a la vez. En la figura~\ref{fig:tunebat_screenshot} se presenta un ejemplo de perfil de características musicales de una canción en la plataforma web Tunebat.
+En la interfaz se exponen algunas características, como la tonalidad (Si menor o \textit{B Minor}), el \textit{tempo} (153 BPM) y la duración. Asimismo, la herramienta cuantifica algunas características en una escala porcentual de 0 a 100, mostrando para este caso específico niveles de acusticidad (77\%) e instrumentalidad (76\%), una baja probabilidad de presencia de habla (\textit{speechiness} en 4\%) y público en vivo (\textit{liveness} en 9\%), además de registrar el volumen medio en decibelios (-8 dB).
 
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=1\textwidth]{Figures/weirdfishes.pdf}
+    \caption[Interfaz de consulta en Tunebat]{Ejemplo de visualización de características musicales en Tunebat\protect\footnotemark.}
+    \label{fig:tunebat_screenshot}
+\end{figure}
+\footnotetext{Imagen tomada de \url{https://tunebat.com/Info/Weird-Fishes-Arpeggi-Radiohead/4wajJ1o7jWIg62YqpkHC7S}}
+% \subsection{Carpetas}
 
 \subsection{Síntesis comparativa}
 \label{subsec:sintesis_estado_arte}
@@ -165,15 +177,6 @@ Sin embargo, persisten limitaciones operativas para su aplicación directa en el
 
 Por estos motivos, resulta necesario desarrollar una solución propia. El propósito de este trabajo es aprovechar las técnicas actuales de inteligencia artificial para crear un sistema independiente. Esto permite analizar directamente los archivos de audio, etiquetarlos según las necesidades de la empresa y así reducir la dependencia de proveedores externos.
 
-
-\begin{figure}[htpb]
-    \centering
-    \includegraphics[width=1\textwidth]{Figures/weirdfishes.pdf}
-    \caption[Interfaz de consulta en Tunebat]{Ejemplo de visualización de características musicales en Tunebat\protect\footnotemark.}
-    \label{fig:tunebat_screenshot}
-\end{figure}
-\footnotetext{Imagen tomada de \url{https://tunebat.com/Info/Weird-Fishes-Arpeggi-Radiohead/4wajJ1o7jWIg62YqpkHC7S}}.
-% \subsection{Carpetas}
 
 
 % Esta plantilla se distribuye como una único archivo .zip que se puede descomprimir en varios archivos y carpetas. Asimismo, se puede consultar el repositorio git para obtener la última versión de los archivos, \url{https://github.com/patriciobos/Plantilla-CESE.git}. Los nombres de las carpetas son, o pretender ser, auto-explicativos.
