@@ -102,6 +102,7 @@ Cabe mencionar que, a pesar de que en algunas de las fuentes de datos públicas 
 
 % En la tabla \ref{tab:variables_datasets} se presentan algunas de las variables predictivas más relevantes de cada conjunto de datos.
 \subsection{Reducción de dimensionalidad mediante estadísticas}
+\label{sec:algoritmo}
 
 En el ámbito del procesamiento de señales, la información de un archivo de audio se representa como una serie de tiempo multivariada: una secuencia de puntos de datos \cite{muller2015fundamentals}, en este caso, descriptores numéricos y semánticos, indexados y ordenados cronológicamente.
 
@@ -146,7 +147,7 @@ El diagrama de flujo de este algoritmo se muestra en la figura \ref{fig:pipeline
     \node[process, text width=11cm] (concat) at (-0.5, -10.5) {Aplanado y concatenación (Flatten)};
 
     % Nivel 7 (Centro)
-    \node[output] (out) at (-0.5, -12.3) {Vector unidimensional \\ (\textbf{9591 variables})};
+    \node[output] (out) at (-0.5, -12.3) {Vector unidimensional \\ (\textbf{9590 variables})};
 
 
     % --- 2. ENRUTAMIENTO DE FLECHAS (Salida .south -> Entrada .north) ---
@@ -212,11 +213,11 @@ El algoritmo de extracción, es el resultado de pruebas con distintas configurac
 El procesamiento computacional sobre el catálogo de canciones requirió más de una semana de ejecución para procesar y extraer la información de más de 60~000 canciones completas.
 El alto costo computacional se justificó por la necesidad de garantizar la disponibilidad de información para los experimentos de modelos predictivos de múltiples características musicales. 
 
-La aplicación del algoritmo final generó un conjunto de datos masivo compuesto por 9591 variables, resumido en la tabla \ref{tab:espacio_variables}.
+La aplicación del algoritmo final generó un conjunto de datos masivo compuesto por 9590 variables, resumido en la tabla \ref{tab:espacio_variables}.
 
 \begin{table}[htpb]
     \centering
-    \caption[Desglose detallado del espacio de variables]{Desglose estructural de las 9591 variables extraídas por canción.}
+    \caption[Desglose detallado del espacio de variables]{Desglose estructural de las 9590 variables extraídas por canción.}
     \renewcommand{\arraystretch}{1.3}
     \small
     \makebox[\textwidth][c]{%
@@ -226,7 +227,7 @@ La aplicación del algoritmo final generó un conjunto de datos masivo compuesto
         \midrule
         Representaciones DSP (Librosa) & MFCC (20), Deltas (40), Centroide, Ancho de banda, Rolloff, Contraste (7), Flatness, Flux, Chroma (12), Tonnetz (6), RMS, ZCR. & 92 & Media, Desv. Estándar, Asimetría, Curtosis, Percentiles (10, 50, 90). & 7 & 644 \\
         \midrule
-        Atributos globales y ritmo & LUFS, Entropía espectral, Tempo Librosa/Essentia (2), Complejidad dinámica, Tasa de onsets, Estadísticos de onset (3), Pitch, Fracción de voz, Claridad tonal (2), Factor de cresta. & 15 & Cálculo único por pista completa. & 1 & 15 \\
+        Atributos globales y ritmo & LUFS, Entropía espectral, Tempo, Complejidad dinámica, Tasa de onsets, Estadísticos de onset (3), Pitch, Fracción de voz, Claridad tonal (2), Factor de cresta, Desviación de latidos. & 14 & Cálculo único por pista completa. & 1 & 14 \\
         \midrule
         Estimación tonal (Perfiles) & Vectores de correlación Krumhansl (Mayor/Menor) y Temperley (Mayor/Menor). & 48 & Cálculo único por pista completa (4 perfiles $\times$ 12 semitonos). & 1 & 48 \\
         \midrule
@@ -234,7 +235,7 @@ La aplicación del algoritmo final generó un conjunto de datos masivo compuesto
         \midrule
         Probabilidades (PANNs) & Clases filtradas (Voz, Instrumentos, Géneros, Público en vivo, Distorsión). & 173 & Media, Máximo, Desv. Estándar, Percentil 90. & 4 & 692 \\
         \bottomrule
-        \multicolumn{5}{r}{\textbf{Total de variables por canción:}} & \textbf{9591} \\
+        \multicolumn{5}{r}{\textbf{Total de variables por canción:}} & \textbf{9590} \\
     \end{tabular}
     }
     \label{tab:espacio_variables}
@@ -249,7 +250,7 @@ Esta sección presenta las variables objetivo y sus distribuciones, el tratamien
 Las variables objetivo se dividen en tres grupos: básicas, perceptibles y géneros/estados de ánimo sugeridos. Y se definen en la tabla \ref{tab:caracteristicas_ia}.
 \begin{table}[htpb]
   \centering
-  \caption[Características predictivas]{Definición, ejemplos y tipo de problema de aprendizaje supervisado por característica.}
+  \caption[Características objetivo]{Definición, ejemplos y tipo de problema de aprendizaje supervisado por característica.}
   \label{tab:caracteristicas_ia}
   \renewcommand{\arraystretch}{1.2}
   \begin{tabular}{@{}l p{5.5cm} p{3.5cm} l@{}}
@@ -286,10 +287,18 @@ Las variables objetivo se dividen en tres grupos: básicas, perceptibles y géne
 \label{sec:distribuciones_variables_objetivo}
 % Aquí se detallarán las distribuciones de las variables objetivo, dificultades encontradas y estrategias de muestreo.
 
+Durante la extracción de variables descrita en el algoritmo de la sección \ref{sec:algoritmo}, se aplicaron dos estrategias de adicionales para el tratamiento de los datos previos al modelado:
+
+\begin{itemize}
+    \item Recorte de silencios y manejo de valores nulos: Tras la primera iteración de extracción de variables (DSP), se detectó la precensia de valores nulos y ceros en algunas variables. El análisis exploratorio reveló que estos artefactos eran generados por las colas de silencio o *fade-outs* prolongados al final de las pistas. Para corregirlo, se aplicó un algoritmo de recorte automático (*trimming*) eliminando los segmentos con amplitud inferior a -60 dB. Esta operación eliminó la gran mayoría de los nulos. Después de la reducción, El restante se concentró exclusivamente en un 6\% del descriptor \textit{spectral\_entropy\_global}. Matemáticamente, el cálculo de la entropía espectral requiere normalizar la magnitud del espectro para interpretarlo como una distribución de probabilidad. En ventanas de análisis correspondientes a silencios absolutos, la energía espectral es nula \cite{lerch2012introduction}.
+    \item Filtrado de fiabilidad histórica: Al analizar las variables objetivo, a excepción de los géneros y estados de ánimo, se identificó un cambio en las fuentes de los datos en una fecha específica. Hasta mediados de diciembre de 2024, los valores provenían de la integración con una API externa. Los registros generados durante 2025, ingresados mediante consultas manuales a sitios web de terceros, introdujeron ruido estadístico, caracterizado por una abundancia de ceros y unos anómalos en variables continuas y valores diferentes de los esperados en algunos casos discretos. Para proteger el entrenamiento de los modelos, el conjunto de datos de análisis fue truncado, conservando únicamente los registros históricos fiables hasta diciembre de 2024, excepto para géneros y estados de ánimo donde la información es más uniforme en el tiempo.
+    Las gráficas a continuación muestran los valores tratados.
+\end{itemize}
+
 \subsubsection{Características básicas}
 Este grupo incluye el \textit{loudness}, \textit{key}, \textit{mode} y \textit{tempo}: 
 
-% \paragraph{Tempo (BPM)} 
+% \paragraph{Tempo (BPM)}  
 % Como se observa en la figura \ref{fig:dist_tempo}, la variable presenta una distribución [NORMAL / BIMODAL / ASIMÉTRICA], concentrando la mayoría de las pistas en el rango de [X] a [Y] BPM. 
 
 % \textbf{Desafíos:}
@@ -304,54 +313,97 @@ Este grupo incluye el \textit{loudness}, \textit{key}, \textit{mode} y \textit{t
 %     \item La variable se mantuvo en su escala continua para abordarla mediante tareas de regresión.
 % \end{itemize}
 
-\paragraph{Loudness}
-
-La figura \ref{fig:dist_loudness} muestra el valor del \textit{loudness} en el eje x y la frecuencia en las canciones del catálogo en el eje y. Se observa que presenta un sesgo negativo, con una concentración principal cerca de los -7 dB. Esto es predecible dada la guerra del \textit{loudness} \cite{vickers2010loudness}, donde muchos artistas y productores quieren que sus canciones suenen fuertes, y plataformas como Spotify normalizan el \textit{loudness} para evitar cambios abruptos en el volumen entre las canciones.
+\paragraph{\textit{Loudness}}: la figura \ref{fig:dist_loudness} muestra la distribución de frecuencia de los valores del \textit{loudness}. Se observa que presenta un sesgo negativo, con una concentración principal cerca de los -7 dB. Esto se explica dada la guerra del \textit{loudness} \cite{vickers2010loudness}, donde muchos artistas y productores buscan que sus canciones suenen con alto volumen, y plataformas como Spotify normalizan el \textit{loudness} para evitar cambios abruptos en el volumen entre las canciones.
 
 \begin{figure}[htpb]
     \centering
     \includegraphics[width=0.8\textwidth]{distribucion_de_loudness.pdf} 
-    \caption[Distribución de Loudness]{Distribución de \textit{loudness} en el catálogo.}
+    \caption[Distribución de loudness]{Distribución de \textit{loudness} en el catálogo de Plusyc.}
     \label{fig:dist_loudness}
 \end{figure}
 
-Desafíos y tratamiento:
+Desafíos:
 \begin{itemize}
-    \item Desafío 1: %tema distrib variable en el tiempo, etc, nulls, ceros silencios, etc
-    \item Desafío n: %Existencia de valores extremadamente bajos (silencios prolongados) que distorsionan la escala.
+    \item Existencia de asimetría negativa (sesgo a la izquierda) y presencia de valores extremos negativos (llegando hasta -60 dB), lo cual dificulta la convergencia de ciertos algoritmos de optimización.
 \end{itemize}
 
-% \paragraph{Tonalidad y modalidad (Key y Mode)} 
-% La combinación de ambas variables conforma un espacio discreto de 24 clases únicas. La figura \ref{fig:dist_key_mode} ilustra la distribución de las pistas, evidenciando un sesgo significativo en la composición musical del catálogo.
+Tratamiento:
+\begin{itemize}
+    \item Se aplicó una transformación logarítmica desplazada (\textit{Shifted Log-Transformation}). Primero, se realizó una traslación de la escala sumando una constante ($y + 60.1$) para garantizar que todos los registros fueran estrictamente mayores a cero.
+    \item Posteriormente, se aplicó la función matemática $\log(1+x)$ (`np.log1p`). Este preprocesamiento comprime la cola izquierda de la distribución, mitigando el sesgo original y estabilizando la varianza para mejorar el rendimiento del modelo de regresión.
+\end{itemize}
 
-% \textbf{Desafíos:}
-% \begin{itemize}
-%     \item Existe un desbalance extremo en las categorías musicales.
-%     \item Predominan escalas como [DO MAYOR Y LA MENOR], mientras que tonalidades como [RE SOSTENIDO MENOR] presentan escasez de ejemplos, propiciando que los modelos colapsen hacia las clases mayoritarias.
-% \end{itemize}
+\paragraph{\textit{Key} y \textit{Mode}}: la figura \ref{fig:dist_key_mode} muestra la distribución conjunta de las frecuencias de los valores discretos de las 24 tonalidades de la música occidental. Se observa preferencia por tonalidades como Do mayor, Re mayor y Sol mayor; y menor frecuencia de canciones en Re sostenido mayor y menor.  
 
-% \textbf{Tratamiento:}
-% \begin{itemize}
-%     \item Para evitar la pérdida de información musical intrínseca, no se eliminaron ni fusionaron clases.
-%     \item El desbalance se abordó directamente en la fase de modelado mediante [PONDERACIÓN DE CLASES (CLASS WEIGHTS) / SUBMUESTREO / SMOTE].
-% \end{itemize}
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.8\textwidth]{distribucion_de_key_y_mode.pdf} 
+    \caption[Distribución de key y mode]{Distribución conjunta de \textit{key} y \textit{mode} en el catálogo de Plusyc.}
+    \label{fig:dist_key_mode}
+\end{figure}
 
-% \begin{itemize}
-%     \item \textbf{Tempo (BPM):} 
-%     \begin{itemize}
-%         \item Distribución: La variable objetivo presentó una distribución [bimodal / normal sesgada], concentrando la mayoría de las pistas entre los [70] y [130] BPM. 
-%         \item \textit{Desafíos:} Se detectaron valores atípicos severos originados por errores en el etiquetado manual o pistas con métricas irregulares (valores cercanos a 0 o superiores a [250] BPM).
-%         \item \textit{Tratamiento:} Se aplicó un filtro para excluir pistas fuera del rango de [40] a [220] BPM. Para el modelado, la variable se mantuvo en su escala continua (regresión).
-%     \end{itemize}
+Desafíos:
+\begin{itemize}
+    \item Existe un desbalance marcado en las tonalidades, propiciando que los modelos de clasificación colapsen hacia las clases mayoritarias.
+    \item Los algoritmos de aprendizaje automático requieren que las variables categóricas (como las notas musicales) estén representadas en un formato numérico procesable.
+\end{itemize}
+
+Tratamiento:
+\begin{itemize}
+    \item Para adaptar las etiquetas alfanuméricas de las tonalidades al entrenamiento, se aplicó codificación de etiquetas (\textit{Label Encoding}), transformando cada clase en un identificador entero único.
+    \item Para mitigar el desbalance sin eliminar información musical intrínseca, el problema se abordó directamente en la fase de modelado mediante la ponderación de clases (\texttt{class\_weights='balanced'}).
+\end{itemize}
+
+Se decide abordar el problema de clasificación conjunto de \textit{key} y \textit{mode} como una variable categórica con 24 clases (12 tonalidades × 2 modos).
+El motivo de la decisión se basa en que el caso de equivocación de mode es más problemático que el de \textit{key} y \textit{mode}, ya que afecta la familia armónica.
+Predicciones de un top-k de \textit{key} y \textit{mode} conjuntos muestran usualmente relaciones armónicas de la canción, lo cual tiene sentido en el contexto de la ambientación. 
+
+\paragraph{\textit{Tempo}}: la figura \ref{fig:dist_tempo} muestra la distribución de frecuencia de los valores del \textit{tempo}. Se observa una concentración principal en el rango de los 90 a 130 BPM, con un pico destacado alrededor de los 120 BPM, predominante en la música popular contemporanea.
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.8\textwidth]{distribucion_de_tempo.pdf} 
+    \caption[Distribución de tempo]{Distribución de \textit{tempo} en el catálogo de Plusyc.}
+    \label{fig:dist_tempo}
+\end{figure}
+
+Desafíos:
+\begin{itemize}
+    \item Errores de octava y métrica: se identificaron inconsistencias en las etiquetas, donde el valor objetivo registrado representaba exactamente la mitad, el doble o proporciones fraccionarias (ej. 1.5x) del tempo real. Este es un problema documentado en la recuperación de información musical conocido como «error de octava» (\textit{octave error}) \cite{muller2015fundamentals}.
+    \item El problema anterior puede explicar la presencia de valores atípicos en los extremos de la distribución.
+\end{itemize}
+
+Tratamiento:
+\begin{itemize}
+    \item La presencia de errores de octava hace inviable el uso de algoritmos de regresión lineal pura, ya que la función de pérdida penaliza desproporcionadamente predicciones que son musicalmente congruentes (ej. predecir 60 BPM para una pista etiquetada en 120 BPM). 
+    % todo revisar "octava" en tempo, ref, gráfica.
+    \item Dada esta limitación y el ruido en las etiquetas, se determinó abandonar el modelado predictivo para esta característica, optando por extraer el \textit{tempo} directamente desde la señal de audio utilizando los algoritmos de DSP integrados en las bibliotecas de análisis.
+\end{itemize}
 
 
-%     \item \textbf{Key y Mode:}
-%     \begin{itemize}
-%         \item \textit{Distribución:} La tonalidad (\textit{Key}) comprende 12 clases discretas, mientras que la modalidad (\textit{Mode}) es binaria (Mayor/Menor). El análisis reveló un fuerte desbalance de clases, predominando escalas como [Do Mayor y La Menor], mientras que tonalidades como [Re Sostenido Menor] presentaron escasos ejemplos.
-%         \item \textit{Desafíos:} El principal reto fue el desbalance extremo, lo que propicia que los modelos de clasificación colapsen hacia las clases mayoritarias.
-%         \item \textit{Tratamiento:} Para evitar la pérdida de información musical, no se eliminaron clases. En su lugar, el desbalance se abordó [combinando Key y Mode en 24 clases únicas / aplicando ponderación de clases (class weights) durante el entrenamiento / mediante submuestreo].
-%     \end{itemize}
-% \end{itemize}
+ % todo perceptibles 
+ % MLP estos valores residuales fueron imputados con cero, solo en el caso de MLP no en arboles.
+ % Escalado y estandarización también aplica en el caso de MLP no en arboles.
+
+
+% \begin{figure}[htpb]
+%     \centering
+%     \begin{subfigure}[b]{0.48\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{distribucion_de_key.pdf}
+%         \caption{Distribución de \textit{key}}
+%         \label{fig:dist_key}
+%     \end{subfigure}
+%     \hfill
+%     \begin{subfigure}[b]{0.48\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{distribucion_de_mode.pdf}
+%         \caption{Distribución de \textit{mode}}
+%         \label{fig:dist_mode}
+%     \end{subfigure}
+%     \caption[Distribución de tonalidad y modalidad]{Distribuciones individuales de las variables discretas de tonalidad (\textit{key}) y modalidad (\textit{mode}) en el catálogo.}
+%     \label{fig:dist_key_mode}
+% \end{figure}
 
 % todo lo siguiente se podría incluir
 % El alto costo computacional de la extracción justifica esta estrategia de recopilación exhaustiva trasladando el desafío técnico hacia la selección rigurosa de las variables más relevantes durante la etapa de modelado, proceso que se detalla en la sección \ref{sec:seleccion_variables} %.
