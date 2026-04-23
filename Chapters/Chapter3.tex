@@ -247,40 +247,40 @@ La aplicación del algoritmo final generó un conjunto de datos masivo compuesto
 Esta sección presenta las variables objetivo y sus distribuciones, el tratamiento aplicado a los datos y las técnicas de selección y reducción de variables predictivas.
 
 Las variables objetivo se dividen en tres grupos: básicas, perceptibles y géneros/estados de ánimo sugeridos. Y se definen en la tabla \ref{tab:caracteristicas_ia}.
-\begin{table}[htpb]
-  \centering
-  \caption[Características objetivo]{Definición, ejemplos y tipo de problema de aprendizaje supervisado por característica.}
-  \label{tab:caracteristicas_ia}
-  \renewcommand{\arraystretch}{1.2}
-  \begin{tabular}{@{}p{2.5cm} p{4.7cm} p{2.7cm} p{1.8cm}@{}}
-    \toprule
-    \textbf{Característica} & \textbf{Definición} & \textbf{Ejemplos} & \textbf{Tipo de problema} \\
-    \midrule
-    \multicolumn{4}{@{}l}{\textbf{Básicas}} \\
-    \midrule
-    \textit{Loudness} & Volumen global promedio en decibeles, más negativa, más silenciosa (dB) & -5.2 dB, -12.4 dB & Regresión \\
-    \textit{Key} & Tonalidad estimada de la pista mapeada a números enteros (\textit{Pitch Class}). & 0 (Do), 1 (Do\#), 2 (Re) & Clasificación \\
-    \textit{Mode} & Modalidad (mayor o menor) del contenido melódico. & 1 (Mayor), 0 (Menor) & Clasificación \\
-    \textit{Tempo} & Tempo global estimado en pulsaciones por minuto (BPM). & 120 BPM, 85 BPM & Regresión \\
-    \midrule
-    \multicolumn{4}{@{}l}{\textbf{Perceptibles}} \\
-    \midrule
-    \textit{Acousticness} & Confianza de que la pista es acústica (0,0 a 1,0). & 0,95, 0,10 & Regresión \\
-    \textit{Danceability} & Capacidad de ser bailable según tempo y ritmo (0,0 a 1,0). & 0,85, 0,20 & Regresión \\
-    \textit{Energy} & Medida de intensidad y actividad (0,0 a 1,0). & 0,90 & Regresión \\
-    \textit{Instrumentalness} & Probabilidad de ausencia de contenido vocal (0,0 a 1,0). & 0,90 (sin voz), 0,05 (cantada) & Regresión \\
-    \textit{Liveness} & Confianza de grabación con público en vivo (0,0 a 1,0). & 0,85 (concierto), 0,10 (estudio) & Regresión \\
-    \textit{Speechiness} & Presencia de palabras habladas (0,0 a 1,0). & 0,85 (conversación), 0,5 (rap), 0,05 (música) & Regresión \\
-    \textit{Valence} & Positividad musical transmitida (0,0 a 1,0). & 0,90, 0,15 & Regresión \\
-    \midrule
-    \multicolumn{4}{@{}l}{\textbf{ánimo y género sugeridos}} \\
-    \midrule
-    \textit{Primary Mood} & Estado de ánimo o emoción predominante. & \textit{Energizing, Lively, Empowering} & Clasificación \\
-    \textit{Secondary Mood} & Estados de ánimo complementarios. & \textit{Euphoric Energy, Energetic Anxious} & Clasificación \\
-    \textit{Suggested Genres} & Género musical. & \textit{Chill House, EDM} & Clasificación \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+% \begin{table}[htpb]
+%   \centering
+%   \caption[Características objetivo]{Definición, ejemplos y tipo de problema de aprendizaje supervisado por característica.}
+%   \label{tab:caracteristicas_ia}
+%   \renewcommand{\arraystretch}{1.2}
+%   \begin{tabular}{@{}p{2.5cm} p{4.7cm} p{2.7cm} p{1.8cm}@{}}
+%     \toprule
+%     \textbf{Característica} & \textbf{Definición} & \textbf{Ejemplos} & \textbf{Tipo de problema} \\
+%     \midrule
+%     \multicolumn{4}{@{}l}{\textbf{Básicas}} \\
+%     \midrule
+%     \textit{Loudness} & Volumen global promedio en decibeles, más negativa, más silenciosa (dB) & -5.2 dB, -12.4 dB & Regresión \\
+%     \textit{Key} & Tonalidad estimada de la pista mapeada a números enteros (\textit{Pitch Class}). & 0 (Do), 1 (Do\#), 2 (Re) & Clasificación \\
+%     \textit{Mode} & Modalidad (mayor o menor) del contenido melódico. & 1 (Mayor), 0 (Menor) & Clasificación \\
+%     \textit{Tempo} & Tempo global estimado en pulsaciones por minuto (BPM). & 120 BPM, 85 BPM & Regresión \\
+%     \midrule
+%     \multicolumn{4}{@{}l}{\textbf{Perceptibles}} \\
+%     \midrule
+%     \textit{Acousticness} & Confianza de que la pista es acústica (0,0 a 1,0). & 0,95, 0,10 & Regresión \\
+%     \textit{Danceability} & Capacidad de ser bailable según tempo y ritmo (0,0 a 1,0). & 0,85, 0,20 & Regresión \\
+%     \textit{Energy} & Medida de intensidad y actividad (0,0 a 1,0). & 0,90 & Regresión \\
+%     \textit{Instrumentalness} & Probabilidad de ausencia de contenido vocal (0,0 a 1,0). & 0,90 (sin voz), 0,05 (cantada) & Regresión \\
+%     \textit{Liveness} & Confianza de grabación con público en vivo (0,0 a 1,0). & 0,85 (concierto), 0,10 (estudio) & Regresión \\
+%     \textit{Speechiness} & Presencia de palabras habladas (0,0 a 1,0). & 0,85 (conversación), 0,5 (rap), 0,05 (música) & Regresión \\
+%     \textit{Valence} & Positividad musical transmitida (0,0 a 1,0). & 0,90, 0,15 & Regresión \\
+%     \midrule
+%     \multicolumn{4}{@{}l}{\textbf{ánimo y género sugeridos}} \\
+%     \midrule
+%     \textit{Primary Mood} & Estado de ánimo o emoción predominante. & \textit{Energizing, Lively, Empowering} & Clasificación \\
+%     \textit{Secondary Mood} & Estados de ánimo complementarios. & \textit{Euphoric Energy, Energetic Anxious} & Clasificación \\
+%     \textit{Suggested Genres} & Género musical. & \textit{Chill House, EDM} & Clasificación \\
+%     \bottomrule
+%   \end{tabular}
+% \end{table}
 
 \subsection{Distribución y tratamiento de las variables objetivo}
 \label{sec:distribuciones_variables_objetivo}
@@ -289,14 +289,14 @@ Las variables objetivo se dividen en tres grupos: básicas, perceptibles y géne
 Durante la extracción de variables descrita en el algoritmo de la sección \ref{sec:algoritmo}, se aplicaron dos estrategias adicionales para el tratamiento de los datos previos al modelado:
 
 \begin{itemize}
-    \item Recorte de silencios y manejo de valores nulos: Tras la primera iteración de extracción de variables (DSP), se detectó la precensia de valores nulos y ceros en algunas variables. El análisis exploratorio reveló que estos artefactos eran generados por las colas de silencio o fade-outs prolongados al final de las pistas. Para corregirlo, se aplicó un algoritmo de recorte para eliminar los segmentos con amplitud inferior a -60 dB. Esta operación eliminó la gran mayoría de los nulos. Después de la reducción, El restante se concentró exclusivamente en un 6\% del descriptor \textit{spectral\_entropy\_global}. Matemáticamente, el cálculo de la entropía espectral requiere normalizar la magnitud del espectro para interpretarlo como una distribución de probabilidad. En ventanas de análisis correspondientes a silencios absolutos, la energía espectral es nula \cite{lerch2012introduction}.
-    \item Filtrado del etiquetado manual: Al analizar las variables objetivo, se identificó un cambio en una fecha específica en la fuente de los datos: hasta mediados de diciembre de 2024, los valores provenían de la integración con una API externa. Los registros generados durante 2025, ingresados manualmente por el equipo de curadores, introdujeron error, caracterizado por la presencia de valores por fuera del rango en variables discretas, valores extremos en cero y uno en variables continuas. Para proteger el entrenamiento de los modelos, el conjunto de datos de análisis fue truncado para conservar únicamente los registros fiables hasta diciembre de 2024. Resulta en el uso de un 92.5\% aproximado de las canciones del catálogo de Plusyc y aplica para todas las variables, excepto para géneros y estados de ánimo donde la información no dependía de la API.
+    \item Recorte de silencios y manejo de valores nulos: tras la primera iteración de extracción de variables (DSP), se detectó la precensia de valores nulos y ceros en algunas variables. El análisis exploratorio reveló que estos artefactos eran generados por las colas de silencio o fade-outs prolongados al final de las pistas. Para corregirlo, se aplicó un algoritmo de recorte para eliminar los segmentos con amplitud inferior a -60 dB. Esta operación eliminó la gran mayoría de los nulos. Después de la reducción, El restante se concentró exclusivamente en un 6\% del descriptor \textit{spectral\_entropy\_global}. Matemáticamente, el cálculo de la entropía espectral requiere normalizar la magnitud del espectro para interpretarlo como una distribución de probabilidad. En ventanas de análisis correspondientes a silencios absolutos, la energía espectral es nula \cite{lerch2012introduction}.
+    \item Filtrado del etiquetado manual: al analizar las variables objetivo, se identificó un cambio en una fecha específica en la fuente de los datos: hasta mediados de diciembre de 2024, los valores provenían de la integración con una API externa. Los registros generados durante 2025, ingresados manualmente por el equipo de curadores, introdujeron error, caracterizado por la presencia de valores por fuera del rango en variables discretas, valores extremos en cero y uno en variables continuas. Para proteger el entrenamiento de los modelos, el conjunto de datos de análisis fue truncado para conservar únicamente los registros fiables hasta diciembre de 2024. Resulta en el uso de un 92{,}5\% aproximado de las canciones del catálogo de Plusyc y aplica para todas las variables, excepto para géneros y estados de ánimo donde la información no dependía de la API.
 \end{itemize}
 
-A continuación se presentan las distribuciones de las variables objetivo después del filtrado y el preprocesamiento adicional aplicado.
+A continuación, se presentan las distribuciones de las variables objetivo después del filtrado y el preprocesamiento adicional aplicado.
 
-\subsubsection{\textit{Loudness}}
-la figura \ref{fig:dist_loudness} muestra la distribución de frecuencia de los valores del \textit{loudness}. Se observa que presenta un sesgo negativo, con una concentración principal cerca de los -7 dB. Esto se explica dada la guerra del \textit{loudness} \cite{vickers2010loudness}, donde muchos artistas y productores buscan que sus canciones suenen con alto volumen, y plataformas como Spotify normalizan el \textit{loudness} para evitar cambios abruptos en el volumen entre las canciones.
+\subsubsection{Loudness}
+La figura \ref{fig:dist_loudness} muestra la distribución de frecuencia de los valores del \textit{loudness}. Se observa que presenta un sesgo negativo, con una concentración principal cerca de los -7 dB. Esto se explica dada la guerra del \textit{loudness} \cite{vickers2010loudness}, donde muchos artistas y productores buscan que sus canciones suenen con alto volumen, y plataformas como Spotify normalizan el \textit{loudness} para evitar cambios abruptos en el volumen entre las canciones.
 
 \begin{figure}[htpb]
     \centering
@@ -316,7 +316,7 @@ la figura \ref{fig:dist_loudness} muestra la distribución de frecuencia de los 
     \item Posteriormente, se aplicó la función matemática $\log(1+x)$ (`np.log1p`). Este preprocesamiento comprime la cola izquierda de la distribución, mitiga el sesgo original y estabiliza la varianza para mejorar el rendimiento del modelo de regresión \citep{goodfellow2016deep}.
 \end{itemize}
 
-\subsubsection{\textit{Key} y \textit{Mode}}
+\subsubsection{Key y Mode}
 La figura \ref{fig:dist_key_mode} muestra la distribución conjunta de las frecuencias de los valores discretos de las 24 tonalidades de la música occidental. Se observa preferencia por tonalidades como Do mayor, Re mayor y Sol mayor; y menor frecuencia de canciones en Re sostenido mayor y menor.  
 
 \begin{figure}[htpb]
@@ -342,7 +342,7 @@ Se decide abordar el problema de clasificación conjunto de \textit{key} y \text
 El motivo de la decisión se basa en que el caso de equivocación de mode es más problemático que el de \textit{key} y \textit{mode}, ya que afecta la familia armónica.
 La predicción de un top-k de \textit{key} y \textit{mode} conjuntos, generalmente muestran relaciones armónicas de la canción, esto sentido en el contexto de la ambientación. 
 
-\subsubsection{\textit{Tempo}}
+\subsubsection{Tempo}
 La figura \ref{fig:dist_tempo} muestra la distribución de frecuencia de los valores del \textit{tempo}. Se observa una concentración principal en el rango de los 90 a 130 BPM, con un pico destacado alrededor de los 120 BPM, predominante en la música popular contemporanea \citep{muller2015fundamentals}.
 
 \begin{figure}[htpb]
@@ -357,7 +357,7 @@ Se encuentra que \textit{tempo} es un caso especial ya que presenta errores de o
 \textbf{Desafíos}:
 
 \begin{itemize}
-    \item Se identificaron inconsistencias en las etiquetas, donde el valor objetivo registrado representaba exactamente la mitad, el doble o proporciones fraccionarias (ej. 1.5x) del tempo real. Este es un problema documentado en la recuperación de información musical conocido como «error de octava» (\textit{octave error}) \cite{muller2015fundamentals}.
+    \item Se identificaron inconsistencias en las etiquetas, donde el valor objetivo registrado representaba exactamente la mitad, el doble o proporciones fraccionarias (ej. 1{,}5x) del tempo real. Este es un problema documentado en la recuperación de información musical conocido como «error de octava» (\textit{octave error}) \cite{muller2015fundamentals}.
     \item El problema anterior también puede explicar la presencia de valores atípicos en los extremos de la distribución.
     \item La presencia de errores de octava complica el uso de algoritmos de regresión lineal ya que se observan múltiples relaciones lineales entre variables rítmicas predictivas y el \textit{tempo global} (ej. predecir 60 BPM para una pista etiquetada en 120 BPM). Un ejemplo de esta relación se muestra en la figura \ref{fig:multi_linear_tempo}, donde el \textit{tempo} real etiquetado muestra múltiples relaciones lineales con la variable predictiva \textit{tempo} estimada desde Essentia. 
 \end{itemize}
@@ -373,7 +373,7 @@ Se contempla la evaluación de los algoritmos DSP de estimación de \textit{temp
 %todo enlace a secciónes modelado y validación 
 
 
-\subsubsection{\textit{Acousticness}, \textit{Danceability}, \textit{Energy}, \textit{Instrumentalness} y \textit{Valence}} 
+\subsubsection{Acousticness, Danceability, Energy, Instrumentalness y Valence} 
 La figura \ref{fig:dist_fivep} muestra las distribuciones de frecuencia de los valores de estas características.
 Aunque todas comparten un rango de $[0, 1]$, presentan comportamientos distintos: \textit{danceability} muestra una distribución aproximadamente normal; \textit{energy} presenta sesgo negativo; \textit{valence} tiende a la uniformidad; mientras que \textit{acousticness} y, de forma extrema, \textit{instrumentalness}, exhiben un sesgo positivo con una concentración masiva de valores cercanos a cero.
 
@@ -486,7 +486,7 @@ El modelado conjunto de estas cinco características se aborda convencionalmente
     \item Finalmente, se aplica estandarización estadística (\texttt{StandardScaler}) a todo el conjunto de entrada para garantizar una media de cero y varianza unitaria ($\mu=0, \sigma^2=1$). Este paso es necesario para homogeneizar el espacio de variables predictivas para el entrenamiento del modelo neuronal \citep{goodfellow2016deep}.
 \end{itemize}
 
-\subsubsection{\textit{Speechiness}} 
+\subsubsection{Speechiness} 
 La figura \ref{fig:dist_speechiness} muestra las distribuciones de frecuencia del \textit{speechiness}.
 
 \begin{figure}[htpb]
@@ -499,7 +499,7 @@ La figura \ref{fig:dist_speechiness} muestra las distribuciones de frecuencia de
 \textbf{Desafíos:}
 \textbf{Tratamiento:}
 
-\subsubsection{\textit{Liveness}}
+\subsubsection{Liveness}
 La figura \ref{fig:dist_liveness} muestra las distribuciones de frecuencia del \textit{liveness}.
 
 \begin{figure}[htpb]
@@ -514,7 +514,7 @@ La figura \ref{fig:dist_liveness} muestra las distribuciones de frecuencia del \
 
 \noindent\textbf{Estados de ánimo y géneros sugeridos}: este grupo incluye la variable \textit{primary mood} y algunas variables también discretas y de alta cardinalidad: \textit{secondary mood}, \textit{suggested genres}. 
 
-\subsubsection{\textit{Top-5 primary mood}}
+\subsubsection{Top-5 primary mood}
 La figura \ref{fig:dist_primary} muestra los \textit{primary mood} de Plusyc y sus frecuencias.
 
 \begin{figure}[htpb]
@@ -527,7 +527,7 @@ La figura \ref{fig:dist_primary} muestra los \textit{primary mood} de Plusyc y s
 \textbf{Desafíos:}
 \textbf{Tratamiento:}
 
-\subsubsection{\textit{Top-5 secondary mood}}
+\subsubsection{Top-5 secondary mood}
 La figura \ref{fig:dist_secondary} muestra los \textit{primary mood} de Plusyc y sus frecuencias.
 
 \begin{figure}[htpb]
@@ -540,7 +540,7 @@ La figura \ref{fig:dist_secondary} muestra los \textit{primary mood} de Plusyc y
 \textbf{Desafíos:}
 \textbf{Tratamiento:}
 
-\subsubsection{\textit{Suggested genres}}
+\subsubsection{Suggested genres}
 La figura \ref{fig:dist_genres} muestra las distribuciones de frecuencia de los \textit{suggested genres}.
 
 \begin{figure}[htpb]
