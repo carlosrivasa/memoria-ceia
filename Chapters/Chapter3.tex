@@ -491,7 +491,7 @@ Se implementaron las siguientes medidas:
 \end{itemize}
 
 \subsubsection{Speechiness}
-El \textit{speechiness} detecta la presencia de palabras habladas en la pista en $[0, 1]$, donde valores altos indican contenido exclusivamente hablado y valores bajos indican música (ej. 0,85 para conversación, 0,05 para música y 0.5 es rap) \citep{spotify2024audiofeatures}.
+El \textit{speechiness} detecta la presencia de palabras habladas en la pista y se define en $[0, 1]$, donde valores altos indican contenido exclusivamente hablado y valores bajos indican música (ej. 0,85 para conversación, 0,05 para música y 0.5 es rap) \citep{spotify2024audiofeatures}.
 La figura \ref{fig:dist_speechiness} muestra la distribución de frecuencia del \textit{speechiness}. 
 
 \begin{figure}[htpb]
@@ -504,10 +504,12 @@ La figura \ref{fig:dist_speechiness} muestra la distribución de frecuencia del 
 La distribución muestra la presencia de un sesgo positivo extremo, ya que el catálogo musical carece de pistas de palabra hablada pura y concentra los valores muy cerca de cero.
 Los valores cerca del uno indican contenido exclusivamente hablado como podcast o streaming conversacional, ausentes en el catálogo de Plusyc.
 
-El mejor resultado experimental en términos de las métricas de evaluación se obtuvo al aplicar técnicas de submuestreo. Se discretizó el dominio de la variable en rangos estratégicos y se aplicó un submuestreo estratificado para limitar la cantidad de registros en la moda, reducir el sesgo y conservar la totalidad de registros de la cola, tal como se detalla en la Tabla \ref{tab:submuestreo_speechiness}.
+El mejor resultado experimental en términos de las métricas de evaluación se obtuvo al aplicar técnicas de submuestreo. Se discretizó el dominio de la variable en rangos estratégicos y se aplicó un submuestreo con tope por rangos para limitar la cantidad de registros en la moda, reducir el sesgo y conservar la totalidad de registros de la cola. 
+Los rangos se presentan en la Tabla \ref{tab:submuestreo_speechiness}.
+
 \begin{table}[htpb]
 \centering
-\caption{Distribución porcentual de los rangos de locución (speechiness) antes y después del submuestreo}
+\caption{Distribución porcentual de \textit{speechiness}, antes y después del submuestreo}
 \label{tab:submuestreo_speechiness}
 \begin{tabular}{llrr}
 \toprule
@@ -522,7 +524,8 @@ $(0.33, 1.00]$ & Rap & 2.1\% & 15.7\% \\
 \end{tabular}
 \end{table}
 
-Finalmente, se mitigó el ruido en las etiquetas al eliminar un porcentaje menor de registros contradictorios: se compararon los valores de la variable objetivo con la evidencia acústica vocal en las probabilidades de clases como \textit{speech} y \textit{rapping} extraídas de PANNs para descartar las pistas que presentaban discrepancias considerables entre su etiqueta manual y su contenido acústico real.
+Cabe mencionar que se aplicó muestreo estratificado a nivel de los rangos durante la división de conjuntos de entrenamiento y pruebas.
+Finalmente, se mitigó el ruido en las etiquetas al eliminar un porcentaje menor de registros contradictorios: se compararon los valores de la variable objetivo con la evidencia acústica vocal en las probabilidades de clases como \textit{speech} y \textit{rapping} extraídas de PANNs para descartar las pistas que presentaban discrepancias considerables entre su etiqueta manual y su contenido semántico real.
 
 \subsubsection{Liveness}
 El \textit{liveness} representa la confianza de que la pista fue grabada con público en vivo $[0, 1]$, (ej. 0,85 para un concierto, 0,10 para un estudio) \citep{spotify2024audiofeatures}.
@@ -535,22 +538,22 @@ La figura \ref{fig:dist_liveness} muestra la distribución de frecuencia del \te
     \label{fig:dist_liveness}
 \end{figure}
 
-La distribución también muestra la presencia de un sesgo positivo extremo, ya que concentra la inmensa mayoría de los registros por debajo de 0,2. Adicionalmente, se identificó un problema de ruido sistemático en las etiquetas manuales, donde pistas de estudio con una alta percepción de energía o intensidad eran catalogadas erróneamente como "vivo".
+Esta distribución, como en el caso anterior, también muestra la presencia de un sesgo positivo extremo, ya que concentra la inmensa mayoría de los registros por debajo de 0,2. Adicionalmente, se identificó un problema de ruido sistemático en las etiquetas manuales, donde pistas de estudio con una alta percepción de energía o intensidad eran catalogadas erróneamente como "vivo".
 
-Se aplicó una técnica similar a la anterior para balancear el objetivo continuo, se dividió el dominio con base en la definición teórica de la característica y se aplicó un submuestreo estratificado. 
-Se aplicó reducción en la clase mayoritaria y en la zona intermedia para evitar que el regresor se sobreajuste a la ambigüedad, y se conservan todos los registros minoritarios de la clase de interés: canción en vivo. 
+Se aplicó una técnica similar a la anterior para balancear el objetivo continuo, se dividió el dominio con base en la definición teórica de la característica y se aplicó un submuestreo con tope por rangos. 
+Se aplicó reducción en la clase mayoritaria y en la zona intermedia para evitar sesgos, y se conservan todos los registros minoritarios de la clase de interés: canción en vivo. 
 El resultado de esta reestructuración se detalla en la Tabla \ref{tab:submuestreo_liveness}.
 
 \begin{table}[htpb]
 \centering
-\caption{Distribución porcentual de los rangos teóricos de grabación (\textit{liveness}) antes y después del submuestreo}
+\caption{Distribución porcentual de (\textit{liveness}) antes y después del submuestreo}
 \label{tab:submuestreo_liveness}
 \begin{tabular}{llrr}
 \toprule
 \textbf{Intervalo} & \textbf{Descripción del Rango} & \textbf{\% Original} & \textbf{\% Final} \\
 \midrule
-$[0.0, 0.2)$ & Alta probabilidad estudio & 74.4\% & 67.4\% \\
-$[0.2, 0.8)$ & Rango intermedio & 24.8\% & 22.5\% \\
+$[0.0, 0.2)$ & Muy baja probabilidad de vivo & 74.4\% & 67.4\% \\
+$[0.2, 0.8)$ & Baja probabilidad de vivo & 24.8\% & 22.5\% \\
 $[0.8, 1.0]$ & Alta probabilidad de vivo & 0.8\% & 10.1\% \\
 \midrule
 \textbf{Total} & & \textbf{100.0\%} & \textbf{100.0\%} \\
@@ -558,7 +561,7 @@ $[0.8, 1.0]$ & Alta probabilidad de vivo & 0.8\% & 10.1\% \\
 \end{tabular}
 \end{table}
 
-Como en el caso de \textit{speechiness}, se implementó un filtrado cruzando la variable objetivo con la evidencia de presencia de audiencia extraída por la red PANNs, de las probabilidades de clases asociadas a multitudes, aplausos y aclamaciones. Se descartaron las pistas que presentaban discrepancias severas (ej. registros etiquetados como 'en vivo' sin evidencia de sonido de público, o viceversa), para eliminar ruido.
+Como en el caso de \textit{speechiness}, también se aplica muestreo estratificado por rangos durante la separación de conjuntos de entrenamiento y pruebas. Y se implementó un filtrado cruzando la variable objetivo con la evidencia de presencia de audiencia extraída por la red PANNs, de las probabilidades de clases asociadas a multitudes, aplausos y aclamaciones. Se descartaron las pistas que presentaban discrepancias severas (ej. registros etiquetados como 'en vivo' sin evidencia de sonido de público, o viceversa), para eliminar ruido.
 
 % Algunos desafíos inherentes a la distribución:
 % \begin{itemize}
@@ -585,7 +588,7 @@ Se observan los siguientes desafíos en esta variable categórica:
 \begin{itemize}
     \item Alta cardinalidad y un marcado desbalance de clases, donde ciertas emociones predominan debido a la orientación comercial y de ambientación del catálogo. Algunas clases se han dejado de usar en el pasado.
     \item La predicción se fundamenta exclusivamente en variables numéricas extraidas del audio, ya que se carece de información de lenguaje, como las letras de las canciones.
-    \item Ambigüedad, incluso para un humano, algunos de los estados de ánimo pueden ser confusos.
+    \item Ambigüedad; incluso para un humano, algunos de los estados de ánimo pueden ser confusos.
 \end{itemize}
 
 Se aplicaron las siguientes transformaciones como parte del preprocesamiento:
@@ -593,7 +596,7 @@ Se aplicaron las siguientes transformaciones como parte del preprocesamiento:
     \item Se define con el negocio prescindir de las clases minoritarias \textit{Urgent}, \textit{Aggressive}, \textit{Upbeat} y \textit{Fiery} que no son usadas para ambientación.
     \item Submuestreo de clases mayoritarias para equilibrar la distribución con techo de 2~000 muestras por clase.
     \item Aplicación de codificación de etiquetas (\textit{Label Encoding}) para traducir las categorías de texto a un formato numérico procesable.
-    \item Para mitigar el desbalance, se aplicó la técnica de ponderación de clases (\texttt{class\_weights='balanced'}) directamente durante la fase de modelado algorítmico.
+    \item Para mitigar el desbalance, se aplicó la técnica de ponderación de clases (\texttt{class\_weights='balanced'}) directamente durante la fase de modelado.
 \end{itemize}
 
 \subsubsection{Top-5 secondary mood}
@@ -607,14 +610,14 @@ La figura \ref{fig:dist_secondary} muestra los \textit{secondary mood} de Plusyc
     \label{fig:dist_secondary}
 \end{figure}
 
-En este caso las dificultades son similares al caso de \textit{primary mood}, con el desbalance de clases, pero con mayor cardinalidad, 100 clases. Además de la delgada frontera en muchos de los estados de ánimo que incluso para el humano resultan confusos.
+En este caso las dificultades son similares al caso de \textit{primary mood}, en el desbalance de clases, pero con mayor cardinalidad, con 100 clases en total. Además de la delgada frontera en muchos de los estados de ánimo que incluso para el humano resultan confusos.
 
 Medidas aplicadas en el preprocesamiento:
 \begin{itemize}
-    \item Se define con el negocio prescindir de las clases minoritarias \textit{Aggressive Power}, \textit{Alienated / Brooding}, \textit{Bittersweet Pop}, \textit{Chaotic / Intense}, \textit{Creepy / Ominous}, \textit{Energetic Dreamy}, \textit{Evocative / Intriguing}, \textit{Focused Sparkling}, \textit{Hard Dark Excitement}, \textit{Heavy Triumphant}, \textit{Hypnotic Rhythm}, \textit{Mysterious / Dreamy}, \textit{Wild / Rowdy} que no son usadas para ambientación.
+    \item Se define con el negocio prescindir de las clases minoritarias \textit{Aggressive Power}, \textit{Alienated / Brooding}, \textit{Bittersweet Pop}, \textit{Chaotic / Intense}, \textit{Creepy / Ominous}, \textit{Energetic Dreamy}, \textit{Evocative / Intriguing}, \textit{Focused Sparkling}, \textit{Hard Dark Excitement}, \textit{Heavy Triumphant}, \textit{Hypnotic Rhythm}, \textit{Mysterious / Dreamy}, \textit{Wild / Rowdy} que no son usadas para ambientación en Plusyc.
     \item Submuestreo de clases mayoritarias para equilibrar la distribución con techo de 1~000 muestras por clase.
     \item Al igual que con el estado de ánimo principal, se aplicó \textit{Label Encoding} para la adaptación numérica.
-    \item Se mantuvo la estrategia de balanceo algorítmico (\texttt{class\_weights='balanced'}) para evitar sesgos hacia las combinaciones mayoritarias.
+    \item Se mantuvo la estrategia de balanceo algorítmico (\texttt{class\_weights='balanced'}) para evitar sesgos.
 \end{itemize}
 
 \subsubsection{Suggested genres}
@@ -628,16 +631,16 @@ La figura \ref{fig:dist_genres} muestra las distribuciones de frecuencia de los 
     \label{fig:dist_genres}
 \end{figure}
 
-Se observan extrema diversidad de clases, 585 y presencia de géneros que no son géneros, sino marcas o artistas. También se observa que hay muchas clases con muy pocas muestras, lo que genera una distribución de cola larga altamente desbalanceada.
+Se observa la extrema diversidad de clases, 585 en total, y presencia de géneros que no son géneros sino marcas o artistas. También se observa que hay muchas clases con muy pocas muestras, lo que genera una distribución de cola larga altamente desbalanceada.
 
 
 Se aplicaron las siguientes estrategias:
 \begin{itemize}
     \item Se filtran géneros que no son géneros musicales, sino marcas o artistas.
-    \item Se seleccionan un tope mínumo de 100 muestras por clase para el modelo. De las 585 clases totales, se seleccionan 200 clases que cumplen el criterio, y las demás quedan pendientes de llegar al tope de 100 muestras para ser incluidas en el entrenamiento.
+    \item Se seleccionan un tope mínumo de 100 muestras por clase para el modelo. De las 585 clases totales, se seleccionan 200 clases que cumplen el criterio, y se acuerda con el negocio que las demás quedan pendientes de llegar al tope de 100 muestras para ser incluidas en el entrenamiento.
     \item Submuestreo de clases mayoritarias para equilibrar la distribución con techo de 400 muestras por clase. 
     \item Transformación de las categorías mediante \textit{Label Encoding}.
-    \item Delegación del manejo del desbalance al hiperparámetro de ponderación (\texttt{class\_weights='balanced'}) durante el entrenamiento de los clasificadores.
+    \item Delegación del manejo del desbalance al hiperparámetro de ponderación (\texttt{class\_weights='balanced'}) durante el entrenamiento del clasificador.
 \end{itemize}
 
 % \begin{figure}[htpb]
@@ -664,7 +667,111 @@ Se aplicaron las siguientes estrategias:
 % El alto costo computacional de la extracción justifica esta estrategia de recopilación exhaustiva trasladando el desafío técnico hacia la selección rigurosa de las variables más relevantes durante la etapa de modelado, proceso que se detalla en la sección \ref{sec:seleccion_variables} %.
 \subsection{Selección de variables de entrada}
 \label{sec:seleccion_variables}
-% Aquí se describirán las técnicas de selección y reducción para una arquitectura mixta.
+% Aquí se describirán las técnicas de selección y reducción.
+
+La aplicación del algoritmo de extracción generó un espacio predictivo masivo compuesto por 9590 variables. Modelar directamente sobre esta dimensionalidad introduce riesgo de sobreajuste y alto costo computacional. Por ello, la estrategia de diseño trasladó el esfuerzo hacia el proceso de selección de variables predictivas.
+
+Para todas las variables objetivo, el proceso de selección se ejecutó estrictamente sobre los datos de entrenamiento ($X_{train}$) mediante un flujo secuencial de tres etapas:
+
+% \textbf{1. Filtro por varianza (\textit{Variance Threshold}):} \\
+% Como primera medida de limpieza, se aplicó un filtro univariado para remover variables constantes o cuasi-constantes que no aportan información discriminativa. Dependiendo de la sensibilidad del objetivo, se eliminaron aquellas características cuya varianza numérica era cero (umbrales estrictos) o aquellas donde la inmensa mayoría de las muestras compartían el mismo valor (umbral de 0,01 para características de alta cardinalidad como los géneros).
+
+% \textbf{2. Selección integrada mediante ganancia de información (\textit{Embedded Selection}):} \\
+% Para evaluar el valor predictivo real de las características supervivientes, se entrenaron modelos basados en árboles de decisión con la técnica de \textit{Gradient Boosting} (LightGBM), con ajuste de hiperparámetros según la naturaleza de cada objetivo. Al utilizar arquitecturas robustas y regularizadas (con penalizaciones L1 y L2, y submuestreos de características por árbol), se obligó al modelo a explorar todo el espacio dimensional.
+% \begin{itemize}
+%     \item La métrica de selección utilizada fue la ganancia de información (\textit{Gain}), la cual mide numéricamente la reducción real de la función de pérdida (error predictivo) que aporta cada variable en las particiones de los árboles. 
+%     \item Para los objetivos continuos fuertemente correlacionados (las cinco variables perceptibles), esta etapa se robusteció evaluando la importancia promedio a lo largo de una validación cruzada (\textit{K-Fold} con $K=5$).
+%     \item Se conservaron únicamente las características "élite", definidas como aquellas responsables de explicar el 95\,\% de la ganancia acumulada del modelo, o bien, aquellas que superaron un umbral mínimo de ganancia absoluta.
+% \end{itemize}
+
+% \textbf{3. Filtro multivariado por colinealidad (Pearson):} \\
+% Debido a la naturaleza superpuesta de las extracciones DSP, muchas variables evaluadas por la red neuronal o los descriptores espectrales resultan altamente colineales. Se calculó una matriz de correlación cruzada absoluta de Pearson sobre las características "élite". Todo par de variables con un coeficiente $|r| > 0,95$ fue etiquetado como redundante.
+% Para resolver la eliminación de estas redundancias, se cruzó la matriz con el ranking de importancia del paso anterior: ante dos variables redundantes, se conservó exclusivamente la característica con mayor ganancia de información histórica, eliminando su "clon" débil.
+
+\begin{enumerate}
+    \item Filtro por varianza: se implementó \texttt{VarianceThreshold} para evaluar cada característica de forma aislada y descartar aquellas que eran constantes o carecían de varianza.
+    \item Selección basada en árboles, con las siguientes características:
+    \begin{itemize}
+        \item La métrica utilizada fue la ganancia de información (\textit{Gain}) para medir la reducción del error predictivo en las particiones de los árboles.
+        \item Para forzar la exploración dimensional y evitar la memorización durante el cálculo de la importancia, se aplicaron penalizaciones L1/L2 y submuestreos de filas y columnas.
+        \item Se conservaron únicamente las características con mayor importancia, responsables de explicar el 95\,\% de la ganancia acumulada del modelo.
+    \end{itemize}
+
+    \item Filtro por dependencia lineal: se calculó la matriz de correlación de Pearson para analizar las características en conjunto y eliminar aquellas que presentaban redundancia lineal.
+\end{enumerate}
+
+En la tabla \ref{tab:resultados_seleccion} se detalla la configuración del proceso y la reducción progresiva del espacio dimensional para cada variable objetivo.
+
+% \begin{table}[htpb]
+% \centering
+% \caption{Progresión dimensional y parámetros en la selección de características por variable objetivo.}
+% \label{tab:resultados_seleccion}
+% \makebox[\textwidth][c]{%
+% \renewcommand{\arraystretch}{1.2}
+% \small
+% \begin{tabular}{@{}llccrr@{}}
+% \toprule
+% \textbf{Variable Objetivo} & \textbf{Espacio Inicial} & \textbf{Umbral Varianza} & \textbf{Criterio de Ganancia} & \textbf{Umbral Colinealidad} & \textbf{Subconjunto Final} \\
+% \midrule
+% \textit{Key} y \textit{Mode} & 226 (Sub. tonal) & 0,00 & 95\,\% acumulado & No aplicado & \textbf{173} \\
+% \textit{Loudness} & 9590 & 0,00 & 95\,\% acumulado & No aplicado & \textbf{856} \\
+% \textit{Perceptibles} (Las 5) & 9590 (Evaluación CV) & 0,00 & 95\,\% (Unión de 5) & $|r| > 0,95$ & \textbf{2140} \\
+% \textit{Speechiness} & 5868 (Sub. predictivo) & 0,00 & Ganancia $> 0,50$ & $|r| > 0,95$ & \textbf{92} \\
+% \textit{Liveness} & 360 (Sub. predictivo) & 0,00 & Ganancia $> 0,25$ & $|r| > 0,95$ & \textbf{69} \\
+% \textit{Primary Mood} & 9590 & 0,01 & 95\,\% acumulado & $|r| > 0,95$ & \textbf{1423} \\
+% \textit{Secondary Mood} & 9590 & 0,01 & 95\,\% acumulado & $|r| > 0,95$ & \textbf{1397} \\
+% \textit{Suggested Genres} & 9590 & 0,01 & 95\,\% acumulado & $|r| > 0,95$ & \textbf{1309} \\
+% \bottomrule
+% \multicolumn{6}{l}{\footnotesize \textit{Nota:} Para \textit{Loudness} y el subsistema tonal se descartó el filtro de colinealidad dado el volumen de muestras (>60k) y el tamaño reducido del subconjunto.} \\
+% \end{tabular}
+% }
+% \end{table}
+
+\begin{table}[htpb]
+\centering
+\caption{Parámetros de selección y dimensionalidad final por variable objetivo.}
+\label{tab:resultados_seleccion}
+\renewcommand{\arraystretch}{1.2}
+\small
+\begin{tabular}{@{}l c c c c r@{}}
+\toprule
+\textbf{Variable} & \textbf{Varianza} & \textbf{Validación} & \textbf{Colinealidad} & \textbf{Total} \\
+\midrule
+\textit{Key} y \textit{Mode} & 0,00 & Simple &  -- & \textbf{173} \\
+\textit{Loudness} & 0,00 & Simple & -- & \textbf{856} \\
+\textit{Perceptibles} (5) & 0,00 & K-Fold ($K=5$) & $> 0,95$ & \textbf{2140} \\
+\textit{Speechiness} & 0,00 & Simple  & $> 0,95$ & \textbf{92} \\
+\textit{Liveness} & 0,00 & K-Fold ($K=5$) & $> 0,95$ & \textbf{69} \\
+\textit{Primary Mood} & 0,01 & Simple & $> 0,95$ & \textbf{1423} \\
+\textit{Secondary Mood} & 0,01 & Simple & $> 0,95$ & \textbf{1397} \\
+\textit{Suggested Genres} & 0,01 & Simple & $> 0,95$ & \textbf{1309} \\
+\bottomrule
+\multicolumn{6}{p{13cm}}{\footnotesize \textit{Nota:} El filtro de colinealidad no se aplicó en \textit{Loudness} ni en \textit{Key/Mode} dado el gran volumen de muestras de entrenamiento y el tamaño reducido de sus subconjuntos resultantes.} \\
+\end{tabular}
+\end{table}
+
+% \begin{table}[htpb]
+% \centering
+% \caption{Parámetros de selección y dimensionalidad final por variable objetivo.}
+% \label{tab:resultados_seleccion}
+% \renewcommand{\arraystretch}{1.2}
+% \small
+% \begin{tabular}{@{}l c c c r@{}}
+% \toprule
+% \textbf{Variable} & \textbf{Varianza} & \textbf{Ganancia} & \textbf{Colinealidad} & \textbf{Total} \\
+% \midrule
+% \textit{Key} y \textit{Mode} & 0,00 & 95\,\% & -- & \textbf{173} \\
+% \textit{Loudness} & 0,00 & 95\,\% & -- & \textbf{856} \\
+% \textit{Perceptibles} (5) & 0,00 & 95\,\% & $> 0,95$ & \textbf{2140} \\
+% \textit{Speechiness} & 0,00 & $> 0,50$ & $> 0,95$ & \textbf{92} \\
+% \textit{Liveness} & 0,00 & $> 0,25$ & $> 0,95$ & \textbf{69} \\
+% \textit{Primary Mood} & 0,01 & 95\,\% & $> 0,95$ & \textbf{1423} \\
+% \textit{Secondary Mood} & 0,01 & 95\,\% & $> 0,95$ & \textbf{1397} \\
+% \textit{Suggested Genres} & 0,01 & 95\,\% & $> 0,95$ & \textbf{1309} \\
+% \bottomrule
+% \multicolumn{5}{p{11.5cm}}{\footnotesize \textit{Nota:} El filtro de colinealidad no se aplicó en \textit{Loudness} ni en \textit{Key/Mode} dado el gran volumen de muestras de entrenamiento y el tamaño reducido de sus subconjuntos resultantes.} \\
+% \end{tabular}
+% \end{table}
 
 \section{Modelado y optimización}
 \label{sec:modelado_optimizacion}
