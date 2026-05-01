@@ -57,7 +57,7 @@ El objetivo de este análisis previo fue entender cómo repositorios de referenc
 
 En un comienzo se contempló el uso de algunos de estos conjuntos de datos, pero se encontró que presentan varias limitaciones frente a la solución propuesta: algunos restringen el análisis a segmentos cortos de audio, mientras que otros requieren tamaños de almacenamiento excesivamente pesados o estructuras de datos difíciles de replicar durante el proceso de inferencia y dependientes de las versiones de las bibliotecas de extracción.
 
-Por otro lado, el análisis resultó positivo; estas restricciones motivaron que el proceso de extracción se ejecute directamente sobre el catálogo privado para eliminar las limitaciones, y su análisis permitió conocer las variables numéricas en la música, cómo se segmentan las canciones, cómo se reduce la dimensionalidad y hacer los primeros experimentos predictivos de las variables objetivo requeridas.
+Por otro lado, el análisis resultó positivo; estas restricciones motivaron que el proceso de extracción se ejecute directamente sobre el catálogo privado para eliminar las limitaciones y su análisis permitió conocer las variables numéricas en la música, cómo se segmentan las canciones, cómo se reduce la dimensionalidad y hacer los primeros experimentos predictivos de las variables objetivo requeridas.
 
 \subsubsection{GTZAN}
 Este conjunto de datos se considera el equivalente al MNIST \cite{lecun1998gradient} para el análisis de audio \cite{sturm2014state}, dada su adopción histórica como estándar de evaluación en tareas de clasificación de géneros musicales. Con el análisis de este conjunto de datos se pudo identificar los siguientes puntos:
@@ -317,7 +317,7 @@ Se observan dos desafíos principales inherentes a la distribución:
 Esto potencialmente podría generar un error matemático que desvíe la atención del algoritmo durante el entrenamiento \citep{goodfellow2016deep}. 
 Se aplicaron las siguientes transformaciones como parte del preprocesamiento:
 \begin{itemize}
-    \item Se aplicó una transformación logarítmica desplazada (\textit{Shifted Log-Transformation}). Primero, se realizó una traslación de la escala ($y + 60.1$) para garantizar que todos los registros fueran estrictamente mayores a cero.
+    \item Se aplicó una transformación logarítmica desplazada (\textit{Shifted Log-Transformation}). Primero, se realizó una traslación de la escala ($y + 60,1$) para garantizar que todos los registros fueran estrictamente mayores a cero.
     \item Posteriormente, se aplicó la función matemática $\log(1+x)$ (`np.log1p`). Este preprocesamiento comprime la cola izquierda de la distribución, mitiga el sesgo original y estabiliza la varianza para mejorar el rendimiento del modelo de regresión \citep{goodfellow2016deep}.
 \end{itemize}
 
@@ -380,7 +380,7 @@ Se contempla la evaluación de los algoritmos DSP de estimación de \textit{temp
 \subsubsection{Acousticness, Danceability, Energy, Instrumentalness y Valence}
 Este grupo comprende variables perceptibles continuas evaluadas en el rango $[0, 1]$: \textit{acousticness}: confianza acústica, \textit{danceability}: bailaibilidad métrica, \textit{energy}: intensidad enérgica, \textit{instrumentalness}: ausencia vocal y \textit{valence}: positividad musical \citep{spotify2024audiofeatures}.
 La figura \ref{fig:dist_fivep} muestra las distribuciones de frecuencia de los valores de estas características.
-Aunque todas comparten un rango de $[0, 1]$, presentan comportamientos distintos: \textit{danceability} muestra una distribución aproximadamente normal; \textit{energy} presenta sesgo negativo; \textit{valence} tiende a la uniformidad; mientras que \textit{acousticness} y, de forma extrema, \textit{instrumentalness}, exhiben un sesgo positivo con una concentración masiva de valores cercanos a cero.
+Aunque todas comparten un rango de $[0, 1]$, presentan comportamientos distintos: \textit{danceability} muestra una distribución aproximadamente normal; \textit{energy} presenta sesgo negativo; \textit{valence} tiende a la uniformidad; mientras que \textit{acousticness} y de forma extrema, \textit{instrumentalness}, exhiben un sesgo positivo con una concentración masiva de valores cercanos a cero.
 
  % todo
  % MLP estos valores residuales fueron imputados con cero, solo en el caso de MLP no en arboles.
@@ -486,12 +486,12 @@ El modelado conjunto de múltiples características se aborda convencionalmente 
 Se implementaron las siguientes medidas:
 \begin{itemize}
     \item A diferencia del \textit{loudness}, las variables objetivo ya se encuentran acotadas matemáticamente en el intervalo $[0, 1]$. Por tanto, no requirieron transformaciones, ya que este rango es compatible con las funciones de activación continuas, como la sigmoide, en la capa de salida de la red neuronal.
-    \item Se garantizó la integridad de la matriz de características al imputar los nulos residuales con el valor cero, y así reflejar la falta de información acústica.
+    \item Se garantizó la integridad de la matriz de características al imputar los nulos residuales con el valor cero y así reflejar la falta de información acústica.
     \item Finalmente, se aplica estandarización estadística (\texttt{StandardScaler}) a todo el conjunto de entrada para garantizar una media de cero y varianza unitaria ($\mu=0, \sigma^2=1$). Este paso es necesario para homogeneizar el espacio de variables predictivas para el entrenamiento del modelo neuronal \citep{goodfellow2016deep}.
 \end{itemize}
 
 \subsubsection{Speechiness}
-El \textit{speechiness} detecta la presencia de palabras habladas en la pista y se define en $[0, 1]$, donde valores altos indican contenido exclusivamente hablado y valores bajos indican música (ej. 0,85 para conversación, 0,05 para música y 0.5 es rap) \citep{spotify2024audiofeatures}.
+El \textit{speechiness} detecta la presencia de palabras habladas en la pista y se define en $[0, 1]$, donde valores altos indican contenido exclusivamente hablado y valores bajos indican música (ej. 0,85 para conversación, 0,05 para música y 0,5 es rap) \citep{spotify2024audiofeatures}.
 La figura \ref{fig:dist_speechiness} muestra la distribución de frecuencia del \textit{speechiness}. 
 
 \begin{figure}[htpb]
@@ -502,7 +502,7 @@ La figura \ref{fig:dist_speechiness} muestra la distribución de frecuencia del 
 \end{figure}
 
 La distribución muestra la presencia de un sesgo positivo extremo, ya que el catálogo musical carece de pistas de palabra hablada pura y concentra los valores muy cerca de cero.
-Los valores cerca del uno indican contenido exclusivamente hablado como podcast o streaming conversacional, ausentes en el catálogo de Plusyc.
+Los valores cerca del uno indican contenido exclusivamente hablado como pódcast o streaming conversacional, ausentes en el catálogo de Plusyc.
 
 El mejor resultado experimental en términos de las métricas de evaluación se obtuvo al aplicar técnicas de submuestreo. Se discretizó el dominio de la variable en rangos estratégicos y se aplicó un submuestreo con tope por rangos para limitar la cantidad de registros en la moda, reducir el sesgo y conservar la totalidad de registros de la cola. 
 Los rangos se presentan en la Tabla \ref{tab:submuestreo_speechiness}.
@@ -515,11 +515,11 @@ Los rangos se presentan en la Tabla \ref{tab:submuestreo_speechiness}.
 \toprule
 \textbf{Intervalo} & \textbf{Descripción del Rango} & \textbf{\% Original} & \textbf{\% Final} \\
 \midrule
-$[0.00, 0.05]$ & Menor presencia de canto & 56.0\% & 42.1\% \\
-$(0.05, 0.33]$ & Canto & 41.9\% & 42.1\% \\
-$(0.33, 1.00]$ & Rap & 2.1\% & 15.7\% \\
+$[0,00, 0,05]$ & Menor presencia de canto & 56,0\% & 42,1\% \\
+$(0,05, 0,33]$ & Canto & 41,9\% & 42,1\% \\
+$(0,33, 1,00]$ & Rap & 2,1\% & 15,7\% \\
 \midrule
-\textbf{Total} & & \textbf{100.0\%} & \textbf{100.0\%} \\
+\textbf{Total} & & \textbf{100\%} & \textbf{100\%} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -541,7 +541,7 @@ La figura \ref{fig:dist_liveness} muestra la distribución de frecuencia del \te
 Esta distribución, como en el caso anterior, también muestra la presencia de un sesgo positivo extremo, ya que concentra la inmensa mayoría de los registros por debajo de 0,2. Adicionalmente, se identificó un problema de ruido sistemático en las etiquetas manuales, donde pistas de estudio con una alta percepción de energía o intensidad eran catalogadas erróneamente como "vivo".
 
 Se aplicó una técnica similar a la anterior para balancear el objetivo continuo, se dividió el dominio con base en la definición teórica de la característica y se aplicó un submuestreo con tope por rangos. 
-Se aplicó reducción en la clase mayoritaria y en la zona intermedia para evitar sesgos, y se conservan todos los registros minoritarios de la clase de interés: canción en vivo. 
+Se aplicó reducción en la clase mayoritaria y en la zona intermedia para evitar sesgos y se conservan todos los registros minoritarios de la clase de interés: canción en vivo. 
 El resultado de esta reestructuración se detalla en la Tabla \ref{tab:submuestreo_liveness}.
 
 \begin{table}[htpb]
@@ -552,11 +552,11 @@ El resultado de esta reestructuración se detalla en la Tabla \ref{tab:submuestr
 \toprule
 \textbf{Intervalo} & \textbf{Descripción del Rango} & \textbf{\% Original} & \textbf{\% Final} \\
 \midrule
-$[0.0, 0.2)$ & Muy baja probabilidad de vivo & 74.4\% & 67.4\% \\
-$[0.2, 0.8)$ & Baja probabilidad de vivo & 24.8\% & 22.5\% \\
-$[0.8, 1.0]$ & Alta probabilidad de vivo & 0.8\% & 10.1\% \\
+$[0,0, 0,2)$ & Muy baja probabilidad de vivo & 74,4\% & 67,4\% \\
+$[0,2, 0,8)$ & Baja probabilidad de vivo & 24,8\% & 22,5\% \\
+$[0,8, 1,0]$ & Alta probabilidad de vivo & 0,8\% & 10,1\% \\
 \midrule
-\textbf{Total} & & \textbf{100.0\%} & \textbf{100.0\%} \\
+\textbf{Total} & & \textbf{100\%} & \textbf{100\%} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -593,7 +593,7 @@ Se observan los siguientes desafíos en esta variable categórica:
 
 Se aplicaron las siguientes transformaciones como parte del preprocesamiento:
 \begin{itemize}
-    \item Se define con el negocio prescindir de las clases minoritarias \textit{Urgent}, \textit{Aggressive}, \textit{Upbeat} y \textit{Fiery} que no son usadas para ambientación.
+    \item Se definió con el negocio prescindir de las clases minoritarias \textit{Urgent}, \textit{Aggressive}, \textit{Upbeat} y \textit{Fiery} que no son usadas para ambientación.
     \item Submuestreo de clases mayoritarias para equilibrar la distribución con techo de 2~000 muestras por clase.
     \item Aplicación de codificación de etiquetas (\textit{Label Encoding}) para traducir las categorías de texto a un formato numérico procesable.
     \item Para mitigar el desbalance, se aplicó la técnica de ponderación de clases (\texttt{class\_weights='balanced'}) directamente durante la fase de modelado.
@@ -631,13 +631,12 @@ La figura \ref{fig:dist_genres} muestra las distribuciones de frecuencia de los 
     \label{fig:dist_genres}
 \end{figure}
 
-Se observa la extrema diversidad de clases, 585 en total, y presencia de géneros que no son géneros sino marcas o artistas. También se observa que hay muchas clases con muy pocas muestras, lo que genera una distribución de cola larga altamente desbalanceada.
-
+Se observa la extrema diversidad de clases, 585 en total y presencia de géneros que no son géneros sino marcas o artistas. También se observa que hay muchas clases con muy pocas muestras, lo que genera una distribución de cola larga altamente desbalanceada.
 
 Se aplicaron las siguientes estrategias:
 \begin{itemize}
     \item Se filtran géneros que no son géneros musicales, sino marcas o artistas.
-    \item Se seleccionan un tope mínumo de 100 muestras por clase para el modelo. De las 585 clases totales, se seleccionan 200 clases que cumplen el criterio, y se acuerda con el negocio que las demás quedan pendientes de llegar al tope de 100 muestras para ser incluidas en el entrenamiento.
+    \item Se seleccionan un tope mínumo de 100 muestras por clase para el modelo. De las 585 clases totales, se seleccionan 200 clases que cumplen el criterio y se determinó que las demás quedan pendientes de llegar al tope de 100 muestras para ser incluidas en el entrenamiento.
     \item Submuestreo de clases mayoritarias para equilibrar la distribución con techo de 400 muestras por clase. 
     \item Transformación de las categorías mediante \textit{Label Encoding}.
     \item Delegación del manejo del desbalance al hiperparámetro de ponderación (\texttt{class\_weights='balanced'}) durante el entrenamiento del clasificador.
@@ -666,24 +665,22 @@ Se aplicaron las siguientes estrategias:
 \subsection{Selección de variables de entrada}
 \label{sec:seleccion_variables}
 
-La aplicación del algoritmo de extracción generó un espacio predictivo masivo compuesto por 9590 variables. Modelar directamente sobre esta dimensionalidad introduce riesgo de sobreajuste y alto costo computacional. Por ello, la estrategia de diseño trasladó el esfuerzo hacia el proceso de selección de variables predictivas.
+La aplicación del algoritmo de extracción generó un espacio predictivo masivo compuesto por 9590 variables. Modelar directamente sobre esta dimensionalidad introduce riesgo de sobreajuste y alto costo computacional \citep{hastie2009elements, bishop2006pattern}. Por ello, la estrategia de diseño trasladó el esfuerzo hacia el proceso de selección de variables predictivas.
 
-Para todas las variables objetivo, el proceso de selección se ejecutó estrictamente sobre los datos de entrenamiento ($X_{train}$) mediante un flujo secuencial de tres etapas:
+Para todas las variables objetivo, el proceso de selección se ejecutó estrictamente sobre los datos de entrenamiento ($X_{train}$) para evitar srobreajuste, mediante un flujo secuencial de tres etapas:
 
 \begin{enumerate}
-    \item Filtro por varianza: se implementó \texttt{VarianceThreshold} para evaluar cada característica de forma aislada y descartar aquellas constantes o sin varianza (umbral 0,00). Se aplicó un umbral de 0,01 en objetivos de alta cardinalidad.
+    \item Filtro por varianza: se implementó \texttt{VarianceThreshold} \citep{scikit-learn} para evaluar cada característica de forma aislada y descartar aquellas constantes o sin varianza (umbral 0,00). Se aplicó un umbral de 0,01 en objetivos de alta cardinalidad para purgar características dispersas que carecen de valor predictivo \citep{kuhn2013applied}.
     \item Selección basada en árboles, con las siguientes características:
     \begin{itemize}
-        \item La métrica utilizada fue la ganancia de información (\textit{Gain}) para medir la reducción del error predictivo en las particiones de los árboles.
-        \item La extracción se realizó mediante validación simple por eficiencia computacional, y se aplica \textit{K-Fold} ($K=5$) en variables continuas específicas.
-        \item Para forzar la exploración dimensional y evitar la memorización durante el cálculo de la importancia, se aplicaron penalizaciones L1/L2 y submuestreos de filas y columnas.
+        \item El cálculo de la importancia se realizó predominantemente mediante un entrenamiento simple, para priorizar la eficiencia computacional. Excepcionalmente, en las variables perceptibles continuas, se implementó validación cruzada (\textit{K-Fold} con $K=5$) para mitigar el sobreajuste al ruido en este tipo de etiquetas subjetivas \citep{kohavi1995study}.
+        \item La métrica utilizada fue la ganancia (\textit{Gain}) para medir el aporte de las variables en las particiones de los árboles \citep{breiman1984classification, ke2017lightgbm}.
         \item Se conservaron únicamente las características con mayor importancia, responsables de explicar el 95\,\% de la ganancia acumulada del modelo.
     \end{itemize}
-    \item Filtro por dependencia lineal: se calculó la matriz de correlación de Pearson para analizar las características en conjunto y eliminar aquellas que presentaban redundancia lineal.
+    \item Filtro por dependencia lineal: se calculó la matriz de correlación de Pearson para analizar las características en conjunto y eliminar aquellas que presentaban redundancia lineal \citep{guyon2003introduction, kuhn2013applied}.
 \end{enumerate}
 
 En la tabla \ref{tab:resultados_seleccion} se detalla la configuración del proceso y la reducción progresiva del espacio dimensional para cada variable objetivo.
-
 \begin{table}[htpb]
 \centering
 \caption{Parámetros de selección y dimensionalidad final por variable objetivo.}
@@ -698,18 +695,43 @@ En la tabla \ref{tab:resultados_seleccion} se detalla la configuración del proc
 \textit{Loudness} & 0,00 & Simple & -- & \textbf{856} \\
 \textit{Perceptibles} (5) & 0,00 & K-Fold ($K=5$) & $> 0,95$ & \textbf{2140} \\
 \textit{Speechiness} & 0,00 & Simple  & $> 0,95$ & \textbf{92} \\
-\textit{Liveness} & 0,00 & K-Fold ($K=5$) & $> 0,95$ & \textbf{69} \\
+\textit{Liveness} & 0,00 & K-Fold ($K=5$) & $> 0,95$ & \textbf{67} \\
 \textit{Primary Mood} & 0,01 & Simple & $> 0,95$ & \textbf{1423} \\
 \textit{Secondary Mood} & 0,01 & Simple & $> 0,95$ & \textbf{1397} \\
 \textit{Suggested Genres} & 0,01 & Simple & $> 0,95$ & \textbf{1309} \\
 \bottomrule
-\multicolumn{5}{p{13cm}}{\footnotesize \textit{Nota:} El filtro de colinealidad no se aplicó en \textit{Loudness} ni en \textit{Key/Mode} dado el gran volumen de muestras de entrenamiento y el tamaño reducido de sus subconjuntos resultantes.} \\
+%\multicolumn{5}{p{13cm}}{\footnotesize \textit{Nota:} El filtro de colinealidad no se aplicó en \textit{Loudness} ni en \textit{Key/Mode} dado el gran volumen de muestras de entrenamiento y el tamaño reducido de sus subconjuntos resultantes.} \\
 \end{tabular}
 \end{table}
+
+La columna 'Varianza', indica el umbral del filtro por varianza, 'Validación', indica el tipo de validación utilizada (Simple o K-Fold), y 'Colinealidad', indica el umbral de correlación para el filtro por dependencia lineal.
+
+% todo una tabla de las principales predictivas por modelo
+% todo una imagen de ejemplo de la curva de importancia reducción
+% todo otra imagen quizas en sección 4 de resultados con el feature importance del modelo final  
 
 \section{Modelado y optimización}
 \label{sec:modelado_optimizacion}
 % Aquí se abordará el proceso de modelado y la búsqueda de hiperparámetros.
+
+\subsubsection{Modelado mediante perceptrón multicapa (MLP)}
+
+Para la predicción simultánea de las cinco variables perceptibles continuas (\textit{acousticness, danceability, energy, instrumentalness, valence}), se implementó una red neuronal de tipo perceptrón multicapa. La arquitectura diseñada consta de tres capas ocultas densas con una reducción progresiva de dimensionalidad (512, 256 y 128 neuronas, respectivamente). La capa de salida cuenta con cinco neuronas y emplea una función de activación sigmoidea (\textit{Sigmoid}), para garantizar que las predicciones conjuntas se acoten estrictamente dentro del rango físico $[0, 1]$ característico de estos descriptores acústicos.
+
+Para la optimización de pesos se empleó el algoritmo AdamW. Este método incorpora un desacoplamiento de la penalización de peso (\textit{weight decay}) para favorecer la generalización. Como función de pérdida se seleccionó \textit{Huber Loss} debido a su robustez frente a valores atípicos en las etiquetas subjetivas. 
+Su ventaja radica en combinar el comportamiento del error absoluto medio (MAE) para penalizar linealmente los errores grandes y el del error cuadrático medio (MSE) para los errores pequeños, asegurando una convergencia suave al acercarse a la solución óptima. Por último, el entrenamiento se ejecutó en lotes de 512 muestras.
+
+Para el ajuste de los hiperparámetros de aprendizaje, la tasa inicial se fijó en $10^{-4}$ y fue gestionada dinámicamente mediante un planificador adaptativo (\texttt{ReduceLROnPlateau}). Este mecanismo redujo la tasa de aprendizaje a la mitad automáticamente al detectar estancamientos (mesetas) de tres épocas en la métrica de validación, para permitir un ajuste fino (\textit{fine-tuning}) en las etapas finales de convergencia.
+
+Dado el amplio espacio de características (2~140 variables de entrada) y la alta capacidad del modelo, se implementó una estrategia rigurosa de regularización para mitigar el sobreajuste:
+\begin{itemize}
+    \item Capas de normalización por lotes (\textit{Batch Normalization}) después de cada transformación lineal, para estabilizar las distribuciones internas y suavizar la superficie de pérdida.
+    \item Desactivación aleatoria de neuronas (\textit{Dropout}) con tasas de 0,30 en la primera capa oculta y 0,20 en las subsiguientes, para forzar a la red a no depender de características individuales aisladas.
+    \item Penalización L2 (regularización de Tikhonov) integrada en el optimizador con un factor de $10^{-5}$.
+    \item Parada anticipada (\textit{Early Stopping}) basada en el conjunto de validación, la cual interrumpió el entrenamiento tras 15 iteraciones sin mejoras y restauró los pesos de la época con menor error empírico.
+\end{itemize}
+
+
 
 \section{Arquitectura de despliegue e integración}
 \label{sec:arquitectura_despliegue}
