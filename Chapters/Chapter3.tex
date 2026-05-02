@@ -787,6 +787,38 @@ El resumen de los hiperparámetros definitivos se detalla en la tabla \ref{tab:h
 % Se puede agregar código o pseudocódigo dentro de un entorno lstlisting con el siguiente código:
 
 
+El sistema de inferencia fue diseñado para operar como un servicio integrable con la infraestructura existente de Plusyc. El despliegue se realizó en una instancia de cómputo sobre Oracle Cloud Infrastructure.
+
+\subsection{Diseño del servicio predictivo}
+El núcleo de procesamiento se expuso a través de una API RESTful desarrollada con FastAPI. Esta interfaz expone el ciclo de inferencia: carga del audio, extracción de variables predictivas que son entrada a los modelos predictivos MLP y LightGBM.
+
+Para garantizar la reproducibilidad y estabilidad del entorno, la aplicación fue contenedorizada utilizando Docker. Dada la alta exigencia computacional y de memoria del modelo preentrenado PANNs inference, se aplicaron configuraciones a nivel de contenedor para asegurar la viabilidad en producción:
+\begin{itemize}
+    \item Concurrencia y memoria: se limitó el servidor Uvicorn a un único proceso. Esto previene la duplicación masiva de los modelos y pesos preentrenados en la memoria RAM, para optimizar el consumo de los recursos de la máquina virtual.
+    \item Restricción de hilos subyacentes: las bibliotecas de álgebra lineal y procesamiento numérico en C/C++ (OpenMP, MKL, OpenBLAS) se restringieron explícitamente a un solo hilo de ejecución (\texttt{OMP\_NUM\_THREADS=1}). Esto evita cuellos de botella por contención de CPU y bloqueos cruzados (deadlocks) durante la extracción paralela de características.
+    \item Gestión de recursos y tolerancia a fallos: se asignó un bloque extendido de memoria compartida (\texttt{shm\_size: '5gb'}) y se establecieron tiempos de espera (timeouts) holgados (120 segundos) para prevenir interrupciones abruptas provocadas por el análisis de pistas de audio de larga duración, restringidas a 15 minutos por canción máximo.
+\end{itemize}
+
+\subsection{Flujo de integración}
+La interacción del motor predictivo con el ecosistema web no se realiza mediante peticiones directas de los usuarios front-end, sino a través de un flujo de procesamiento por lotes (\textit{batch}) asíncrono. Este puente de comunicación es orquestado por una herramienta de línea de comandos interna denominada \textit{Beethoven}.
+
+El ciclo de vida de la integración, ilustrado en la figura \ref{fig:diagrama_arquitectura}, sigue esta secuencia lógica:
+\begin{enumerate}
+    \item Una tarea programada (cron job) en el sistema ejecuta el CLI Beethoven a intervalos regulares de tiempo.
+    \item El proceso escanea un directorio de almacenamiento específico en el servidor para identificar nuevos archivos de audio que aún no han sido caracterizados.
+    \item Por cada nueva pista detectada, \textit{Beethoven} envía el archivo al microservicio de inferencia (API) mediante una petición HTTP POST.
+    \item Inferencia: La API ejecuta el pipeline predictivo, que recibe la señal cruda y rertorna en un diccionario estructurado (JSON) que contiene todas las etiquetas predichas (\textit{Key, Moods, Liveness, etc.}).
+    \item Persistencia: El script captura la respuesta de la API, extrae las características musicales y las persiste en la base de datos de información musical de Plusyc.
+    \item Una vez en la base de datos, los metadatos quedan disponibles para revisión de curadores en un portal web.
+\end{enumerate}
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.9\textwidth]{infra.png}
+    \caption{Arquitectura de despliegue e integración continua entre el almacenamiento, el motor de inferencia encapsulado en OCI y la plataforma web de consumo.}
+    \label{fig:diagrama_arquitectura}
+\end{figure}
+
 % todo falta imágenes corregidas, 
 % todo ver si algunas nuevas o tablas que reemplazan las anteriores?
 % todo referencias cruzadas si las hay
