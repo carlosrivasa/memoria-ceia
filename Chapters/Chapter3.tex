@@ -364,15 +364,8 @@ Se encuentra que \textit{tempo} es un caso especial ya que presenta errores de o
 \begin{itemize}
     \item Se identificaron inconsistencias en las etiquetas, donde el valor objetivo registrado representaba exactamente la mitad, el doble o proporciones fraccionarias (ej. 1{,}5x) del tempo real. Este es un problema documentado en la extracción de información musical conocido como error de octava (octave error) \cite{muller2015fundamentals}.
     \item Este problema puede explicar la presencia de valores atípicos en los extremos de la distribución.
-    \item La presencia de errores de octava complica el uso de algoritmos de regresión lineal ya que se observan múltiples relaciones lineales entre variables rítmicas predictivas y el tempo global (ej. predecir 60 BPM para una pista etiquetada en 120 BPM). Un ejemplo de esta relación se muestra en la figura \ref{fig:multi_linear_tempo}, donde el \textit{tempo} real etiquetado muestra múltiples relaciones lineales con la variable predictiva \textit{tempo} estimada desde Essentia. 
+    \item La presencia de errores de octava complica el uso de algoritmos de regresión lineal ya que se observan múltiples relaciones lineales entre variables rítmicas predictivas y el tempo global (ej. predecir 60 BPM para una pista etiquetada en 120 BPM).% Un ejemplo de esta relación se muestra en la figura \ref{fig:multi_linear_tempo}, donde el \textit{tempo} real etiquetado muestra múltiples relaciones lineales con la variable predictiva \textit{tempo} estimada desde Essentia. 
 \end{itemize}
-
-\begin{figure}[htpb]
-    \centering
-    \includegraphics[width=0.8\textwidth]{multi_linear_tempo.png} 
-    \caption[Múltiples relaciones lineales de tempo real y estimado]{Relación multilineal del \textit{tempo} real y el tempo global estimado de Essentia.}
-    \label{fig:multi_linear_tempo}
-\end{figure}
 
 Se contempla la evaluación de los algoritmos DSP de estimación de \textit{tempo} integrados en las bibliotecas de DSP, esta comparación se muestra en la sección de validación. 
 %todo enlace a secciónes modelado y validación 
@@ -380,92 +373,46 @@ Se contempla la evaluación de los algoritmos DSP de estimación de \textit{temp
 \subsubsection{Acousticness, Danceability, Energy, Instrumentalness y Valence}
 Este grupo comprende variables perceptibles continuas evaluadas en el rango $[0, 1]$: \textit{acousticness}: confianza acústica, \textit{danceability}: bailaibilidad métrica, \textit{energy}: intensidad enérgica, \textit{instrumentalness}: ausencia vocal y \textit{valence}: positividad musical \citep{spotify2024audiofeatures}.
 La figura \ref{fig:dist_fivep} muestra las distribuciones de frecuencia de los valores de estas características.
-Aunque todas comparten un rango de $[0, 1]$, presentan comportamientos distintos: \textit{danceability} muestra una distribución aproximadamente normal; \textit{energy} presenta sesgo negativo; \textit{valence} tiende a la uniformidad; mientras que \textit{acousticness} y de forma extrema, \textit{instrumentalness}, exhiben un sesgo positivo con una concentración masiva de valores cercanos a cero.
-
- % todo
- % MLP estos valores residuales fueron imputados con cero, solo en el caso de MLP no en arboles.
- % Escalado y estandarización también aplica en el caso de MLP no en arboles.
-
-% \begin{figure}[htpb]
-%     \centering
-%     \begin{subfigure}[b]{0.45\textwidth}
-%         \centering
-%         \includegraphics[width=\textwidth]{distribucion_de_acousticness.pdf}
-%         \caption{Distribución de acousticness}
-%         \label{fig:dist1}
-%     \end{subfigure}
-%     \hfill
-%     \begin{subfigure}[b]{0.45\textwidth}
-%         \centering
-%         \includegraphics[width=\textwidth]{distribucion_de_danceability.pdf}
-%         \caption{Distribución de danceability}
-%         \label{fig:dist2}
-%     \end{subfigure}
-    
-%     \vspace{0.3cm}
-    
-%     \begin{subfigure}[b]{0.45\textwidth}
-%         \centering
-%         \includegraphics[width=\textwidth]{distribucion_de_energy.pdf}
-%         \caption{Distribución de energy}
-%         \label{fig:dist3}
-%     \end{subfigure}
-%     \hfill
-%     \begin{subfigure}[b]{0.45\textwidth}
-%         \centering
-%         \includegraphics[width=\textwidth]{distribucion_de_instrumentalness.pdf}
-%         \caption{Distribución de instrumentalness}
-%         \label{fig:dist4}
-%     \end{subfigure}
-    
-%     \vspace{0.3cm}
-    
-%     \begin{subfigure}[b]{0.4\textwidth}
-%         \centering
-%         \includegraphics[width=\textwidth]{distribucion_de_valence.pdf}
-%         \caption{Distribución de valence}
-%         \label{fig:dist5}
-%     \end{subfigure}
-    
-%     \caption[Distribuciones de características perceptibles]{Distribuciones de \textit{acousticness}, \textit{danceability}, \textit{energy}, \textit{instrumentalness} y \textit{valence} en el catálogo de Plusyc.}
-%     \label{fig:dist_fivep}
-% \end{figure}
 
 \begin{figure}[htpb]
     \centering
-    % Primera fila: 3 imágenes
-    \begin{subfigure}[b]{0.32\textwidth}
+    
+    % Primera fila: 2 imágenes
+    \begin{subfigure}[b]{0.45\textwidth}  % Aumentado de 0.32 a 0.45
         \centering
         \includegraphics[width=\textwidth]{distribucion_de_acousticness.pdf}
         \caption{Acousticness}
         \label{fig:dist_acousticness}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.32\textwidth}
+    \begin{subfigure}[b]{0.45\textwidth}  % Aumentado de 0.32 a 0.45
         \centering
         \includegraphics[width=\textwidth]{distribucion_de_danceability.pdf}
         \caption{Danceability}
         \label{fig:dist_danceability}
     \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.32\textwidth}
+    
+    \vspace{0.3cm}
+    
+    % Segunda fila: 1 imagen centrada (más grande)
+    \begin{subfigure}[b]{0.6\textwidth}  % Cambiado de 0.32 a 0.6
         \centering
         \includegraphics[width=\textwidth]{distribucion_de_energy.pdf}
         \caption{Energy}
         \label{fig:dist_energy}
     \end{subfigure}
     
-    \vspace{0.4cm}
+    \vspace{0.3cm}
     
-    % Segunda fila: 2 imágenes centradas
-    \begin{subfigure}[b]{0.32\textwidth}
+    % Tercera fila: 2 imágenes más pequeñas
+    \begin{subfigure}[b]{0.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{distribucion_de_instrumentalness.pdf}
         \caption{Instrumentalness}
         \label{fig:dist_instrumentalness}
     \end{subfigure}
-    \hspace{0.05\textwidth} % Espaciado manual para centrar las dos inferiores
-    \begin{subfigure}[b]{0.32\textwidth}
+    \hspace{0.05\textwidth}
+    \begin{subfigure}[b]{0.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{distribucion_de_valence.pdf}
         \caption{Valence}
@@ -475,6 +422,59 @@ Aunque todas comparten un rango de $[0, 1]$, presentan comportamientos distintos
     \caption[Distribuciones de características perceptibles]{Distribuciones de características perceptibles en el catálogo de Plusyc.}
     \label{fig:dist_fivep}
 \end{figure}
+
+Aunque todas comparten un rango de $[0, 1]$, presentan comportamientos distintos: \textit{danceability} muestra una distribución aproximadamente normal; \textit{energy} presenta sesgo negativo; \textit{valence} tiende a la uniformidad; mientras que \textit{acousticness} y de forma extrema, \textit{instrumentalness}, exhiben un sesgo positivo con una concentración masiva de valores cercanos a cero.
+
+ % todo
+ % MLP estos valores residuales fueron imputados con cero, solo en el caso de MLP no en arboles.
+ % Escalado y estandarización también aplica en el caso de MLP no en arboles.
+
+
+
+% \begin{figure}[htpb]
+%     \centering
+%     % Primera fila: 3 imágenes
+%     \begin{subfigure}[b]{0.32\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{distribucion_de_acousticness.pdf}
+%         \caption{Acousticness}
+%         \label{fig:dist_acousticness}
+%     \end{subfigure}
+%     \hfill
+%     \begin{subfigure}[b]{0.32\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{distribucion_de_danceability.pdf}
+%         \caption{Danceability}
+%         \label{fig:dist_danceability}
+%     \end{subfigure}
+%     \hfill
+%     \begin{subfigure}[b]{0.32\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{distribucion_de_energy.pdf}
+%         \caption{Energy}
+%         \label{fig:dist_energy}
+%     \end{subfigure}
+    
+%     \vspace{0.4cm}
+    
+%     % Segunda fila: 2 imágenes centradas
+%     \begin{subfigure}[b]{0.32\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{distribucion_de_instrumentalness.pdf}
+%         \caption{Instrumentalness}
+%         \label{fig:dist_instrumentalness}
+%     \end{subfigure}
+%     \hspace{0.05\textwidth} % Espaciado manual para centrar las dos inferiores
+%     \begin{subfigure}[b]{0.32\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{distribucion_de_valence.pdf}
+%         \caption{Valence}
+%         \label{fig:dist_valence}
+%     \end{subfigure}
+    
+%     \caption[Distribuciones de características perceptibles]{Distribuciones de características perceptibles en el catálogo de Plusyc.}
+%     \label{fig:dist_fivep}
+% \end{figure}
 
 El modelado conjunto de múltiples características se aborda convencionalmente mediante redes neuronales, como el Perceptrón Multicapa (MLP), dada su capacidad para aprender de forma simultánea las relaciones complejas y dependencias no lineales entre ellas \citep{goodfellow2016deep}. Bajo esta premisa, el preprocesamiento requiere prestar atención específica en:
 
@@ -601,12 +601,13 @@ Se aplicaron las siguientes transformaciones como parte del preprocesamiento:
 
 \subsubsection{Top-5 secondary mood}
 El \textit{secondary mood} identifica los estados de ánimo complementarios (ej. \textit{Euphoric Energy, Energetic Anxious}).
-La figura \ref{fig:dist_secondary} muestra los \textit{secondary mood} de Plusyc y sus frecuencias.
+La figura \ref{fig:dist_secondary} muestra las frecuencias de los \textit{secondary mood} de Plusyc. 
+Las clases más populares del catálogo son \textit{Cheerful / Playful} con 4 322 muestras, \textit{Happy Excitement} con 3 738 y \textit{Sweet / Sincere} con 3 154. 
 
 \begin{figure}[htpb]
     \centering
     \includegraphics[width=0.8\textwidth]{distribucion_de_secondary_mood.pdf} 
-    \caption[Distribución de secondary mood]{Distribución de \textit{secondary mood} en el catálogo de Plusyc.}
+    \caption[Distribución de freciencias secondary mood]{Distribución de freciencias de \textit{secondary mood} en el catálogo de Plusyc.}
     \label{fig:dist_secondary}
 \end{figure}
 
@@ -622,16 +623,18 @@ Medidas aplicadas en el preprocesamiento:
 
 \subsubsection{Suggested genres}
 Los \textit{suggested genres} indican las etiquetas de género musical asociadas a la pista (ej. \textit{Chill House, EDM}).
-La figura \ref{fig:dist_genres} muestra las distribuciones de frecuencia de los \textit{suggested genres}.
+La figura \ref{fig:dist_genres} muestra las frecuencias de los \textit{suggested genres}.
+Las clases más populares del catálogo son \textit{EDM} con 819 muestras, \textit{Pop Vocal} con 764 y \textit{General Latin Pop } con 708. 
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.8\textwidth]{distribucion_de_genre.png} 
-    \caption[Distribución de suggested genres]{Distribución de \textit{suggested genres} en el catálogo de Plusyc.}
+    \includegraphics[width=0.8\textwidth]{distribucion_de_genre.pdf} 
+    \caption[Distribución de frecuencias de suggested genres]{Distribución de frecuencias \textit{suggested genres} en el catálogo de Plusyc.}
     \label{fig:dist_genres}
 \end{figure}
 
 Se observa la extrema diversidad de clases, 585 en total y presencia de géneros que no son géneros sino marcas o artistas. También se observa que hay muchas clases con muy pocas muestras, lo que genera una distribución de cola larga altamente desbalanceada.
+Se entiende que al tener solo audio, se puede perder el contexto regional de géneros como \textit{Rock}, \textit{Latin Rock} o \textit{French Rock}, que podrían ser confundidos.
 
 Se aplicaron las siguientes estrategias:
 \begin{itemize}
@@ -640,6 +643,7 @@ Se aplicaron las siguientes estrategias:
     \item Submuestreo de clases mayoritarias para equilibrar la distribución con techo de 400 muestras por clase. 
     \item Transformación de las categorías mediante Label Encoding.
     \item Delegación del manejo del desbalance al hiperparámetro de ponderación (\texttt{class\_weights='balanced'}) durante el entrenamiento del clasificador.
+    \item Estrategia de clasificación por top-k, para mitigar el problema de contexto al seleccionar los más probables.
 \end{itemize}
 
 % \begin{figure}[htpb]
@@ -794,28 +798,28 @@ El núcleo de procesamiento se expuso a través de una API RESTful desarrollada 
 
 Para garantizar la reproducibilidad y estabilidad del entorno, la aplicación fue contenedorizada utilizando Docker. Dada la alta exigencia computacional y de memoria del modelo preentrenado PANNs inference, se aplicaron configuraciones a nivel de contenedor para asegurar la viabilidad en producción:
 \begin{itemize}
-    \item Concurrencia y memoria: se limitó el servidor Uvicorn a un único proceso. Esto previene la duplicación masiva de los modelos y pesos preentrenados en la memoria RAM, para optimizar el consumo de los recursos de la máquina virtual.
-    \item Restricción de hilos subyacentes: las bibliotecas de álgebra lineal y procesamiento numérico en C/C++ (OpenMP, MKL, OpenBLAS) se restringieron explícitamente a un solo hilo de ejecución (\texttt{OMP\_NUM\_THREADS=1}). Esto evita cuellos de botella por contención de CPU y bloqueos cruzados (deadlocks) durante la extracción paralela de características.
-    \item Gestión de recursos y tolerancia a fallos: se asignó un bloque extendido de memoria compartida (\texttt{shm\_size: '5gb'}) y se establecieron tiempos de espera (timeouts) holgados (120 segundos) para prevenir interrupciones abruptas provocadas por el análisis de pistas de audio de larga duración, restringidas a 15 minutos por canción máximo.
+    \item Concurrencia y memoria: se limitó el servidor a una instancia. Esto previene la duplicación masiva de los modelos y pesos preentrenados en la memoria RAM, para optimizar el consumo de los recursos de la máquina virtual.
+    \item Restricción de hilos: las operaciones matemáticas requeridas para la extracción de características se restringieron explícitamente a un solo hilo de ejecución (\texttt{OMP\_NUM\_THREADS=1}). Esto evita cuellos de botella por saturación de la CPU y bloqueos cruzados (deadlocks) durante la extracción paralela de variables.
+    \item Gestión de recursos y tolerancia a fallos: se asignó un bloque extendido de memoria compartida (\texttt{shm\_size: '5gb'}) y se establecieron timeouts holgados (120 segundos) para prevenir interrupciones abruptas provocadas por el análisis de pistas de audio de larga duración, a su vez restringidas a 15 minutos por canción máximo.
 \end{itemize}
 
 \subsection{Flujo de integración}
-La interacción del motor predictivo con el ecosistema web no se realiza mediante peticiones directas de los usuarios front-end, sino a través de un flujo de procesamiento por lotes (\textit{batch}) asíncrono. Este puente de comunicación es orquestado por una herramienta de línea de comandos interna denominada \textit{Beethoven}.
+La interacción del motor predictivo con el ecosistema web no se realiza mediante peticiones directas de los usuarios, sino a través de un flujo de procesamiento asíncrono. Este puente de comunicación es orquestado por una herramienta de línea de comandos interna denominada Beethoven.
 
 El ciclo de vida de la integración, ilustrado en la figura \ref{fig:diagrama_arquitectura}, sigue esta secuencia lógica:
 \begin{enumerate}
     \item Una tarea programada (cron job) en el sistema ejecuta el CLI Beethoven a intervalos regulares de tiempo.
-    \item El proceso escanea un directorio de almacenamiento específico en el servidor para identificar nuevos archivos de audio que aún no han sido caracterizados.
-    \item Por cada nueva pista detectada, \textit{Beethoven} envía el archivo al microservicio de inferencia (API) mediante una petición HTTP POST.
-    \item Inferencia: La API ejecuta el pipeline predictivo, que recibe la señal cruda y rertorna en un diccionario estructurado (JSON) que contiene todas las etiquetas predichas (\textit{Key, Moods, Liveness, etc.}).
-    \item Persistencia: El script captura la respuesta de la API, extrae las características musicales y las persiste en la base de datos de información musical de Plusyc.
+    \item El proceso detecta nuevos archivos de audio que aún no han sido caracterizados.
+    \item Por cada nueva pista detectada, Beethoven envía el archivo al servicio de inferencia (API) mediante una petición HTTP POST.
+    \item \textbf{Inferencia}: La API ejecuta el pipeline predictivo, que recibe la señal cruda y rertorna un diccionario estructurado (JSON) que contiene todas las etiquetas estimadas (\textit{Key, Moods, Liveness, etc.}).
+    \item El script captura la respuesta de la API, extrae las características musicales y las persiste en la base de datos de información musical de Plusyc.
     \item Una vez en la base de datos, los metadatos quedan disponibles para revisión de curadores en un portal web.
 \end{enumerate}
 
 \begin{figure}[htpb]
     \centering
     \includegraphics[width=0.9\textwidth]{infra.png}
-    \caption{Arquitectura de despliegue e integración continua entre el almacenamiento, el motor de inferencia encapsulado en OCI y la plataforma web de consumo.}
+    \caption{Arquitectura de despliegue e integración.}
     \label{fig:diagrama_arquitectura}
 \end{figure}
 
