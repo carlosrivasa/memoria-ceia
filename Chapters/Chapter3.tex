@@ -297,7 +297,7 @@ A continuación, se presentan las distribuciones de las variables objetivo despu
 
 \subsubsection{Loudness}
 El \textit{loudness} define el volumen global promedio de la pista acústica en decibeles (dB) (ej. -5,2 dB o -12,4 dB). Los valores más negativos indican menor intensidad  \citep{spotify2024audiofeatures}.
-La figura \ref{fig:dist_loudness} muestra la distribución de frecuencia de los valores del \textit{loudness}. Se observa que presenta un sesgo negativo, con una concentración principal cerca de los -7 dB. Esto se explica dada la guerra del \textit{loudness} \cite{vickers2010loudness}, donde muchos artistas y productores buscan que sus canciones suenen con alto volumen, y plataformas como Spotify normalizan el \textit{loudness} para evitar cambios abruptos en el volumen entre las canciones.
+La figura \ref{fig:dist_loudness} muestra la distribución de frecuencia de los valores del \textit{loudness}. Se observa que presenta un sesgo negativo, con una concentración principal cerca de los -7 dB. Esto se explica dada la guerra del \textit{loudness} \cite{vickers2010loudness}, donde muchos artistas y productores buscan que sus canciones suenen con volumen alto, y plataformas como Spotify normalizan el \textit{loudness} para evitar cambios abruptos en el volumen entre las canciones.
 
 \newpage
 
@@ -480,14 +480,14 @@ El modelado conjunto de múltiples características se aborda convencionalmente 
 
 \begin{itemize}
     \item La heterogeneidad en las formas de las distribuciones y sus varianzas. En arquitecturas sensibles a la escala, como los MLP, las variables con mayor varianza empírica pueden dominar el cálculo de los gradientes, ralentizar o sesgar la convergencia de los pesos \citep{goodfellow2016deep}.
-    \item Las MLP son sensibles a los valores nulos y está presente en un 6\% de \texttt{spectral\_entropy\_global}.
+    \item Las MLP son sensibles a los valores nulos y están presentes en un 6\% de \texttt{spectral\_entropy\_global}.
 \end{itemize}
 
 Se implementaron las siguientes medidas:
 \begin{itemize}
     \item A diferencia del \textit{loudness}, las variables objetivo ya se encuentran acotadas matemáticamente en el intervalo $[0, 1]$. Por tanto, no requirieron transformaciones, ya que este rango es compatible con las funciones de activación continuas, como la sigmoid, en la capa de salida de la red neuronal.
     \item Se garantizó la integridad de la matriz de características al imputar los nulos residuales con el valor cero y así reflejar la falta de información acústica.
-    \item Finalmente, se aplica estandarización estadística (StandardScaler) a todo el conjunto de entrada para garantizar una media de cero y varianza unitaria ($\mu=0, \sigma^2=1$). Este paso es necesario para homogeneizar el espacio de variables predictivas para el entrenamiento del modelo neuronal \citep{goodfellow2016deep}.
+    \item Finalmente, se aplica estandarización estadística (StandardScaler) a todo el conjunto de entrada para garantizar una media de cero y varianza unitaria ($\mu=0, \sigma^2=1$). Este paso es necesario para homogeneizar el espacio de variables predictivas para el entrenamiento de la red neuronal \citep{goodfellow2016deep}.
 \end{itemize}
 
 \subsubsection{Speechiness}
@@ -509,7 +509,7 @@ Los rangos se presentan en la Tabla \ref{tab:submuestreo_speechiness}.
 
 \begin{table}[htpb]
 \centering
-\caption{Distribución porcentual de \textit{speechiness}, antes y después del submuestreo}
+\caption{Distribución porcentual de speechiness antes y después del preprocesamiento}
 \label{tab:submuestreo_speechiness}
 \begin{tabular}{llrr}
 \toprule
@@ -525,7 +525,7 @@ $(0,33, 1,00]$ & Rap & 2,1\% & 15,7\% \\
 \end{table}
 
 Cabe mencionar que se aplicó muestreo estratificado a nivel de los rangos durante la división de conjuntos de entrenamiento y pruebas.
-Finalmente, se mitigó el ruido en las etiquetas al eliminar un porcentaje menor de registros contradictorios: se compararon los valores de la variable objetivo con la evidencia acústica vocal en las probabilidades de clases como \textit{speech} y \textit{rapping} extraídas de PANNs para descartar las pistas que presentaban discrepancias considerables entre su etiqueta manual y su contenido semántico real.
+Finalmente, se mitigó el ruido en las etiquetas al eliminar un porcentaje menor de registros contradictorios: se compararon los valores de la variable objetivo con la evidencia acústica vocal en las probabilidades de clases como \textit{speech} y \textit{rapping} extraídas de PANNs para descartar las pistas que presentaban discrepancias entre su etiqueta manual y su contenido semántico real.
 
 \subsubsection{Liveness}
 El \textit{liveness} representa la confianza de que la pista fue grabada con público en vivo $[0, 1]$, (ej. 0,85 para un concierto, 0,10 para un estudio) \citep{spotify2024audiofeatures}.
@@ -546,7 +546,7 @@ El resultado de esta reestructuración se detalla en la Tabla \ref{tab:submuestr
 
 \begin{table}[htpb]
 \centering
-\caption{Distribución porcentual de (\textit{liveness}) antes y después del submuestreo}
+\caption{Distribución porcentual de liveness antes y después del preprocesamiento}
 \label{tab:submuestreo_liveness}
 \begin{tabular}{llrr}
 \toprule
@@ -561,7 +561,7 @@ $[0,8, 1,0]$ & Alta probabilidad de vivo & 0,8\% & 10,1\% \\
 \end{tabular}
 \end{table}
 
-Como en el caso de \textit{speechiness}, también se aplica muestreo estratificado por rangos durante la separación de conjuntos de entrenamiento y pruebas. Y se implementó un filtrado cruzando la variable objetivo con la evidencia de presencia de audiencia extraída por la red PANNs, de las probabilidades de clases asociadas a multitudes, aplausos y aclamaciones. Se descartaron las pistas que presentaban discrepancias severas (ej. registros etiquetados como 'en vivo' sin evidencia de sonido de público, o viceversa), para eliminar ruido.
+Como en el caso de \textit{speechiness}, también se aplica muestreo estratificado por rangos durante la separación de conjuntos de entrenamiento y pruebas. Y se implementó un filtrado cruzando la variable objetivo con la evidencia de presencia de audiencia extraída por la red PANNs, de las probabilidades de clases asociadas a multitudes, aplausos y aclamaciones. Se descartaron las pistas que presentaban discrepancias severas para eliminar ruido (ej. registros etiquetados como 'en vivo' sin evidencia de sonido de público, o viceversa).
 
 % Algunos desafíos inherentes a la distribución:
 % \begin{itemize}
@@ -618,7 +618,7 @@ Medidas aplicadas en el preprocesamiento:
     \item Se define con el negocio prescindir de las clases minoritarias \textit{Aggressive Power}, \textit{Alienated / Brooding}, \textit{Bittersweet Pop}, \textit{Chaotic / Intense}, \textit{Creepy / Ominous}, \textit{Energetic Dreamy}, \textit{Evocative / Intriguing}, \textit{Focused Sparkling}, \textit{Hard Dark Excitement}, \textit{Heavy Triumphant}, \textit{Hypnotic Rhythm}, \textit{Mysterious / Dreamy}, \textit{Wild / Rowdy} que no son usadas para ambientación en Plusyc.
     \item Submuestreo de clases mayoritarias para equilibrar la distribución con techo de 1~000 muestras por clase.
     \item Al igual que con el estado de ánimo principal, se aplicó Label Encoding para la adaptación numérica.
-    \item Se mantuvo la estrategia de balanceo algorítmico (\texttt{class\_weights='balanced'}) para evitar sesgos.
+    \item Se mantuvo la estrategia de balanceo (\texttt{class\_weights='balanced'}) para evitar sesgos.
 \end{itemize}
 
 \subsubsection{Suggested genres}
@@ -633,13 +633,14 @@ Las clases más populares del catálogo son \textit{EDM} con 819 muestras, \text
     \label{fig:dist_genres}
 \end{figure}
 
-Se observa la extrema diversidad de clases, 585 en total y presencia de géneros que no son géneros sino marcas o artistas. También se observa que hay muchas clases con muy pocas muestras, lo que genera una distribución de cola larga altamente desbalanceada.
-Se entiende que al tener solo audio, se puede perder el contexto regional de géneros como \textit{Rock}, \textit{Latin Rock} o \textit{French Rock}, que podrían ser confundidos.
+Se observa la extrema diversidad de clases, 585 en total y muchas clases con muy pocas muestras, lo que genera una distribución de cola larga altamente desbalanceada.
+Por otro lado al revisar algunas clases aparecen géneros que no son géneros sino marcas o artistas como \textit{Shakira}, \textit{Juanes} o \textit{Decathlon}.
+Otra dificultad radica en que al analizar solo el audio, se puede perder el contexto regional de géneros como \textit{Rock}, \textit{Latin Rock}, que podrían ser confusos en las predicciones.
 
 Se aplicaron las siguientes estrategias:
 \begin{itemize}
     \item Se filtran géneros que no son géneros musicales, sino marcas o artistas.
-    \item Se seleccionan un tope mínumo de 100 muestras por clase para el modelo. De las 585 clases totales, se seleccionan 200 clases que cumplen el criterio y se determinó que las demás quedan pendientes de llegar al tope de 100 muestras para ser incluidas en el entrenamiento.
+    \item Se seleccionan un tope mínumo de 100 muestras por clase para el modelo. De las 585 clases totales, se seleccionan 200 clases que cumplen el criterio y se determinó que las demás quedan pendientes de alcanzar el mínimo de 100 muestras para ser incluidas en el entrenamiento.
     \item Submuestreo de clases mayoritarias para equilibrar la distribución con techo de 400 muestras por clase. 
     \item Transformación de las categorías mediante Label Encoding.
     \item Delegación del manejo del desbalance al hiperparámetro de ponderación (\texttt{class\_weights='balanced'}) durante el entrenamiento del clasificador.
@@ -684,10 +685,10 @@ Para todas las variables objetivo, el proceso de selección se ejecutó estricta
     \item Filtro por dependencia lineal: se calculó la matriz de correlación de Pearson para analizar las características en conjunto y eliminar aquellas que presentaban redundancia lineal \citep{guyon2003introduction, kuhn2013applied}.
 \end{enumerate}
 
-En la tabla \ref{tab:resultados_seleccion} se detalla la configuración del proceso y la reducción progresiva del espacio dimensional para cada variable objetivo.
+En la tabla \ref{tab:resultados_seleccion} se resume la configuración del proceso y el total de variables predictivas resultantes para cada variable objetivo.
 \begin{table}[htpb]
 \centering
-\caption{Parámetros de selección y dimensionalidad final por variable objetivo.}
+\caption{Resumen de parámetros usados en la selección de variables.}
 \label{tab:resultados_seleccion}
 \renewcommand{\arraystretch}{1.2}
 \small
@@ -719,52 +720,54 @@ La columna 'Varianza', indica el umbral del filtro por varianza, 'Validación', 
 % Aquí se abordará el proceso de modelado y la búsqueda de hiperparámetros.
 
 \subsubsection{Modelado mediante perceptrón multicapa (MLP)}
+\label{sec:mlp}
 
-Para la predicción de las cinco variables perceptibles (\textit{acousticness, danceability, energy, instrumentalness, valence}), se implementó una red neuronal de tipo perceptrón multicapa. La arquitectura diseñada consta de tres capas ocultas densas con una reducción progresiva de dimensionalidad (512, 256 y 128 neuronas, respectivamente). La capa de salida cuenta con cinco neuronas y emplea una función de activación sigmoid, para garantizar que las predicciones se acoten dentro del rango físico $[0, 1]$.
+Para la predicción de las cinco variables perceptibles (\textit{acousticness, danceability, energy, instrumentalness, valence}), se implementó una red neuronal de tipo perceptrón multicapa. La arquitectura diseñada consta de tres capas ocultas con una reducción progresiva de neuronas (512, 256 y 128 neuronas, respectivamente). La capa de salida cuenta con cinco neuronas y emplea una función de activación sigmoid, para garantizar que las predicciones se acoten dentro del rango físico $[0, 1]$.
 
 Para la optimización de pesos se empleó el algoritmo AdamW \citep{loshchilov2017decoupled}. Este método incorpora un desacoplamiento de la penalización de peso (weight decay) para favorecer la generalización. Como función de pérdida se seleccionó Huber Loss debido a su robustez frente a valores atípicos en las etiquetas subjetivas \citep{huber1964robust, hastie2009elements}. 
 Su ventaja radica en combinar el comportamiento del error absoluto medio (MAE) para penalizar los errores grandes y el del error cuadrático medio (MSE) para los errores pequeños y así asegurar una convergencia suave al acercarse a la solución óptima. Por último, el entrenamiento se ejecutó en lotes de 512 muestras.
 
 Para el ajuste de los hiperparámetros de aprendizaje, la tasa inicial se fijó en $10^{-4}$ y fue gestionada dinámicamente mediante \texttt{ReduceLROnPlateau}. Este mecanismo redujo la tasa de aprendizaje a la mitad automáticamente al detectar estancamientos.
 
-Dado el amplio espacio de características (2~140 variables de entrada) y la alta capacidad del modelo, se implementó la siguiente estrategia de regularización para mitigar el sobreajuste \citep{goodfellow2016deep}:
+Dado el amplio espacio de variables (2~140 variables de entrada) y la alta capacidad del modelo, se implementó la siguiente estrategia de regularización para mitigar el sobreajuste \citep{goodfellow2016deep}:
 \begin{itemize}
     \item Capas de normalización por lotes (Batch Normalization) después de cada transformación lineal ($Wx + b$) en \texttt{nn.Linear}, para evitar que los valores numéricos se disparen entre las capas y facilitar la convergencia \citep{ioffe2015batch}.
-    \item Inactivación aleatoria de neuronas (Dropout) con tasas de 0,30 en la primera capa oculta y 0,20 en las subsiguientes, como filtro más agresivo de ruido en las características iniciales y proteger las representaciones más abstractas en las capas profundas \citep{srivastava2014dropout}.
+    \item Inactivación aleatoria de neuronas (Dropout) con tasas de 0,30 en la primera capa oculta y 0,20 en las subsiguientes, como filtro más agresivo de ruido en las variables iniciales y proteger las representaciones más abstractas en las capas profundas \citep{srivastava2014dropout}.
     \item Penalización L2 (regularización de Tikhonov) integrada en el optimizador con un factor de $10^{-5}$.
     \item Parada anticipada (Early Stopping) basada en el conjunto de validación que interrumpió el entrenamiento tras 15 iteraciones sin mejoras.
 \end{itemize}
 
 \subsubsection{Modelado mediante Gradient Boosting (LightGBM)}
 \label{sec:modelado_lightgbm}
+\label{sec:lightgbm}
 
 Para la predicción del resto de las variables, se implementaron modelos basados en árboles de decisión potenciados por gradiente, LightGBM \citep{ke2017lightgbm}. Esta arquitectura se seleccionó por su eficiencia computacional al procesar espacios dimensionales complejos y su capacidad para modelar relaciones no lineales sin requerir transformaciones y tratamiento de valores atípicos en las variables de entrada.
 
-El diseño de los modelos se adaptó a la naturaleza de cada variable objetivo, con base en el preprocesamiento y la selección de características detallados en las etapas anteriores:
+El diseño de los modelos se adaptó a la naturaleza de cada variable objetivo, con base en el preprocesamiento detallado en etapas anteriores:
 
 \begin{itemize}
-    \item \textit{Key / Mode, Primary, Secondary Moods} y \textit{Suggested Genres}: se delegó un peso algorítmico a las clases minoritarias mediante el parámetro \texttt{class\_weight='balanced'} y se evaluó el desempeño estructural con la métrica F1-Score macro. 
+    \item \textit{Key / Mode, Primary, Secondary Moods} y \textit{Suggested Genres}: mayor peso a las clases minoritarias mediante el parámetro \texttt{class\_weight='balanced'} y se evaluó el desempeño con la métrica F1-Score macro. 
     \item \textit{Liveness, Speechiness}: la separación de los conjuntos de entrenamiento y validación se ejecutó de forma estratificada tras discretizar las variables en rangos probabilísticos.
     % todo quizas esto es de la sección de validación
-    \item \textit{Loudness}: la optimización evaluó el error absoluto medio (MAE), y el modelado definitivo se configuró mediante regresión estándar (penalización L2) para minimizar el error cuadrático medio (RMSE). Esto demostró una mejora en la predicción en volúmenes extremos.
+    \item \textit{Loudness}: la optimización evaluó el error absoluto medio (MAE), y el modelado definitivo se configuró mediante regresión estándar (L2) para minimizar el error cuadrático medio (RMSE). Esto demostró una mejora en la predicción en volúmenes extremos.
 \end{itemize}
 
 \subsubsection{Optimización de hiperparámetros y regularización}
 
 Se implementó una búsqueda automatizada de hiperparámetros para cada objetivo mediante la librería Optuna \citep{akiba2019optuna}.
-A continuación algunas decisiones relacionadas con los parámetros:
+A continuación un resumen de los parámetros y algunas decisiones relacionadas:
 \begin{itemize}
-    \item Se acotó la profundidad máxima de los árboles (\texttt{max\_depth}) y se forzó una restricción en el número máximo de hojas (\texttt{num\_leaves}) para evitar el crecimiento asimétrico descontrolado. Además, se exigió un volumen mínimo de muestras por hoja (\texttt{min\_child\_samples}) para evitar que el modelo creara reglas exclusivas para registros aislados \citep{ke2017lightgbm}.
-    \item Se usó submuestreo de filas (\texttt{subsample}) y columnas (\texttt{colsample\_bytree}) para mejorar la generalización. En las tareas de clasificación se utilizó un enfoque aleatorio, mientras que en \textit{Loudness} se implementó el muestreo unilateral basado en gradientes (GOSS) \citep{ke2017lightgbm}, una técnica que optimiza el entrenamiento al retener únicamente las instancias con mayor error predictivo y descartar las que el modelo ya ha dominado.
-    \item Se aplicaron penalizaciones (L1 y L2) para frenar el peso excesivo de las ramas \citep{hastie2009elements}. Adicionalmente, en la mayoría de los objetivos, se exigió una mejora mínima (\texttt{min\_split\_gain}) antes de permitir que el árbol se dividiera.
-    \item Se implementó el mecanismo de early stopping, configurado entre 30 y 50 iteraciones, para interrumpir el entrenamiento cuando el modelo dejara de mejorar.
+    \item Profundidad máxima de los árboles (\texttt{max\_depth}) y restricción en el número máximo de hojas (\texttt{num\_leaves}) para evitar el crecimiento asimétrico descontrolado. Además, se exigió un volumen mínimo de muestras por hoja (\texttt{min\_child\_samples} o \texttt{min\_data\_in\_leaf}) para evitar que los modelos crearan reglas exclusivas para registros aislados \citep{ke2017lightgbm}.
+    \item Submuestreo de filas y columnas para mejorar la generalización. En la mayoría de los modelos se utilizó el algoritmo (\texttt{GBDT}) combinado con un submuestreo de filas aleatorio (\texttt{subsample}). Excepto para \textit{Loudness}, donde se implementó el algoritmo de muestreo basado en gradientes (\texttt{GOSS}) \citep{ke2017lightgbm}, para retener ejemplos con mayor error predictivo y descartar una fracción de las que el modelo ya aprendió.
+    \item Penalizaciones (L1 y L2) para frenar el peso excesivo de las ramas \citep{hastie2009elements}. Adicionalmente, en la mayoría de los objetivos, se exigió una mejora mínima (\texttt{min\_split\_gain}) antes de permitir que el árbol se dividiera.
+    \item Early stopping, configurado entre 30 y 50 iteraciones, para interrumpir el entrenamiento cuando el modelo dejara de mejorar.
 \end{itemize}
 
-El resumen de los hiperparámetros definitivos se detalla en la tabla \ref{tab:hiperparametros_lgbm}. Para el entrenamiento de los modelos finales, se configuró una alta cantidad de árboles (hasta 10 000 en algunos casos) y se delegó el control total al mecanismo de early stopping. Esto, combinado con tasas de aprendizaje muy bajas, mejora el desempeño \citep{hastie2009elements}.
+El resumen de los hiperparámetros resultantes se detalla en la tabla \ref{tab:hiperparametros_lgbm}. Para el entrenamiento de los modelos finales, se configuró una alta cantidad de árboles (hasta 10 000 en algunos casos) y se delegó el control total al mecanismo de early stopping. Esto, combinado con tasas de aprendizaje muy bajas, mejora el desempeño \citep{hastie2009elements}.
 
 \begin{table}[htpb]
 \centering
-\caption{Hiperparámetros resultantes por objetivo.}
+\caption{Resumen de hiperparámetros óptimos por objetivo.}
 \label{tab:hiperparametros_lgbm}
 \renewcommand{\arraystretch}{1.2}
 \small
@@ -794,17 +797,17 @@ El resumen de los hiperparámetros definitivos se detalla en la tabla \ref{tab:h
 El sistema de inferencia fue diseñado para operar como un servicio integrable con la infraestructura existente de Plusyc. El despliegue se realizó en una instancia de cómputo sobre Oracle Cloud Infrastructure.
 
 \subsection{Diseño del servicio predictivo}
-El núcleo de procesamiento se expuso a través de una API RESTful desarrollada con FastAPI. Esta interfaz expone el ciclo de inferencia: carga del audio, extracción de variables predictivas que son entrada a los modelos predictivos MLP y LightGBM.
+El núcleo de procesamiento se expuso a través de una API RESTful desarrollada con FastAPI. Esta interfaz expone el ciclo de inferencia: carga del audio, extracción de variables predictivas de entrada a los modelos MLP y LightGBM, que retornanan los valores de las predicciones de las características musicales.
 
 Para garantizar la reproducibilidad y estabilidad del entorno, la aplicación fue contenedorizada utilizando Docker. Dada la alta exigencia computacional y de memoria del modelo preentrenado PANNs inference, se aplicaron configuraciones a nivel de contenedor para asegurar la viabilidad en producción:
 \begin{itemize}
-    \item Concurrencia y memoria: se limitó el servidor a una instancia. Esto previene la duplicación masiva de los modelos y pesos preentrenados en la memoria RAM, para optimizar el consumo de los recursos de la máquina virtual.
-    \item Restricción de hilos: las operaciones matemáticas requeridas para la extracción de características se restringieron explícitamente a un solo hilo de ejecución (\texttt{OMP\_NUM\_THREADS=1}). Esto evita cuellos de botella por saturación de la CPU y bloqueos cruzados (deadlocks) durante la extracción paralela de variables.
-    \item Gestión de recursos y tolerancia a fallos: se asignó un bloque extendido de memoria compartida (\texttt{shm\_size: '5gb'}) y se establecieron timeouts holgados (120 segundos) para prevenir interrupciones abruptas provocadas por el análisis de pistas de audio de larga duración, a su vez restringidas a 15 minutos por canción máximo.
+    \item Se limitó a una instancia. Esto previene la duplicación masiva de los modelos y pesos preentrenados en la memoria RAM, para optimizar el consumo de los recursos de la máquina virtual y evitar nuevos costos \citep{treveil2020introducing}.
+    \item Restricción de hilos: las operaciones matemáticas requeridas para la extracción de variables se restringieron a un solo hilo (\texttt{OMP\_NUM\_THREADS=1}). Esto evita cuellos de botella por saturación de la CPU y bloqueos cruzados (deadlocks) durante la extracción paralela de variables \citep{gorelick2020high}.
+    \item Gestión de memoria y tiempo de respuesta: se asignó un bloque de memoria compartida (\texttt{shm\_size: '5gb'}) y se establecieron timeouts holgados (120 segundos) para prevenir interrupciones provocadas por el análisis de pistas de audio de larga duración, restringidas a 15 máximo máximo por canción.
 \end{itemize}
 
 \subsection{Flujo de integración}
-La interacción del motor predictivo con el ecosistema web no se realiza mediante peticiones directas de los usuarios, sino a través de un flujo de procesamiento asíncrono. Este puente de comunicación es orquestado por una herramienta de línea de comandos interna denominada Beethoven.
+La interacción del motor predictivo con el ecosistema web se realiza a través de un flujo de procesamiento asíncrono. La comunicación entre componentes es orquestada por una herramienta de Plusyc denominada Beethoven.
 
 El ciclo de vida de la integración, ilustrado en la figura \ref{fig:diagrama_arquitectura}, sigue esta secuencia lógica:
 \begin{enumerate}
@@ -819,16 +822,15 @@ El ciclo de vida de la integración, ilustrado en la figura \ref{fig:diagrama_ar
 \begin{figure}[htpb]
     \centering
     \includegraphics[width=0.9\textwidth]{infra.png}
-    \caption{Arquitectura de despliegue e integración.}
+    \caption{Diagrama de despliegue e integración.}
     \label{fig:diagrama_arquitectura}
 \end{figure}
 
-% todo falta imágenes corregidas, 
-% todo ver si algunas nuevas o tablas que reemplazan las anteriores?
 % todo referencias cruzadas si las hay
+% todo ver todos
 % todo revisar si hay algo para mover a validación
 % todo checklist clase
-
+% todo siento que falta describir un poco más la arquitectura de panns inference
 
 % \begin{verbatim}
 % \begin{lstlisting}[caption= "un epígrafe descriptivo"]

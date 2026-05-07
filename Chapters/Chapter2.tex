@@ -82,6 +82,7 @@ Una vez obtenidos los descriptores numéricos y semánticos, es necesario aplica
 
 \begin{itemize}
     \item Algoritmos LightGBM: se integró la arquitectura LightGBM, basada en el ensamble de árboles de decisión. Esta herramienta destaca por su alta velocidad computacional y eficiencia en tareas generales de predicción \citep{ke2017lightgbm}.
+    En este caso también se usó Optuna para la búsqueda de parámetros optimos \citep{akiba2019optuna}.
     \item Redes MLP: los perceptrones multicapa son redes neuronales artificiales con capacidad para modelar relaciones complejas. Permiten, entre otras aplicaciones, predecir múltiples variables continuas de forma simultánea \citep{goodfellow2016deep}.
 \end{itemize}
 
@@ -89,7 +90,7 @@ Una vez obtenidos los descriptores numéricos y semánticos, es necesario aplica
 \label{sec:despliegue}
 
 La integración del sistema predictivo requirió del despliegue de una interfaz de programación de aplicaciones. Para su construcción se utilizó FastAPI \citep{ramirez2018fastapi} como marco de trabajo. Esta herramienta facilita el desarrollo de servicios web de alto rendimiento basados en Python \citep{python3}.
-
+El servicio fue contenedorizado con Docker \citep{merkel2014docker}.
 El alojamiento remoto del producto se apoyó en los servicios de infraestructura de OCI (por su sigla en inglés, \textit{Oracle Cloud Infrastructure}) \citep{oracle_oci}. Se provisionó una instancia de cómputo virtual en la nube para desplegar la aplicación y ejecutar los modelos predictivos. El uso de esta tecnología garantiza la disponibilidad continua del sistema.
 
 %     \centering
