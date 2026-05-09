@@ -15,7 +15,7 @@ Este capítulo presenta los resultados de los modelos seleccionados para cada va
 \section{Resultados predictivos}
 \label{sec:resultados_modelos}
 
-\subsection{Acousticness, Danceability, Energy, Instrumentalness y Valence}
+\subsection{Acousticness, danceability, energy, instrumentalness y valence}
 %Un Perceptrón Multicapa (MLP) superó a las regresiones estadísticas iniciales, modelando eficientemente características continuas como \textit{Acousticness} y \textit{Danceability}.
 
 En un ensayo preliminar, se entrenó un modelo multisalida únicamente con variables DSP para predecir siete variables en total, con \textit{Liveness} y \textit{Speechiness}, que comparten el rango continuo de valores entre 0 y 1.
@@ -150,7 +150,7 @@ La figura \ref{fig:loudness_rvp_comparative} compara gráficamente el comportami
     \label{fig:loudness_rvp_comparative}
 \end{figure}
 
-El análisis de importancia de variables, evaluado mediante la métrica de ganancia (\textit{gain}) en las divisiones de los árboles, confirma el impacto directo de los atributos globales. La figura \ref{fig:loudness_f_imp} detalla las 15 características predictivas principales.
+El análisis de importancia de variables, evaluado mediante la métrica de ganancia (gain) en las divisiones de los árboles, confirma el impacto directo de los atributos globales. La figura \ref{fig:loudness_f_imp} detalla las 15 características predictivas principales.
 El modelo prioriza fuertemente el Factor de cresta y los LUFS, seguidos de estadísticos de las representaciones DSP tradicionales como el RMS y el Centroide espectral. A diferencia de las variables perceptibles analizadas en la sección anterior, en este modelo sí destaca la presencia de un embedding de PANNs dentro del conjunto de mayor relevancia.
 
 \begin{figure}[htpb]
@@ -160,9 +160,9 @@ El modelo prioriza fuertemente el Factor de cresta y los LUFS, seguidos de estad
     \label{fig:loudness_f_imp}
 \end{figure}
 
-\subsection{Key y Mode}
+\subsection{Key y mode}
 
-Para la predicción conjunta de la tonalidad y el modo (\textit{Key} y \textit{Mode}), el problema se abordó como una clasificación multiclase de 24 categorías (12 tonalidades mayores y 12 menores). Se implementó un modelo LightGBM optimizado para la métrica de pérdida logarítmica multiclase (\texttt{multi\_logloss}). Durante el entrenamiento, la función de parada anticipada (\textit{early stopping}) detuvo el proceso en la iteración 736 al estabilizarse la pérdida de validación en 1,1926.
+Para la predicción conjunta de la tonalidad y el modo (\textit{Key} y \textit{Mode}), el problema se abordó como una clasificación multiclase de 24 categorías (12 tonalidades mayores y 12 menores). Se implementó un modelo LightGBM optimizado para la métrica de pérdida logarítmica multiclase (\texttt{multi\_logloss}). Durante el entrenamiento, la función de early stopping detuvo el proceso en la iteración 736 al estabilizarse la pérdida de validación en 1,1926.
 
 La evaluación global del modelo alcanzó una exactitud (\textit{accuracy}) de 0,6106 y un F1-Score ponderado de 0,6115. Destaca un AUC-ROC promedio de 0,9589, lo que indica una alta capacidad de discriminación entre las 24 clases. Adicionalmente, la exactitud Top-3 alcanzó un notable 0,8671, demostrando que la tonalidad correcta se encuentra casi siempre entre las tres primeras predicciones del sistema. 
 
@@ -225,7 +225,7 @@ A nivel general, el análisis transversal de los tres modelos desarrollados (\te
 
 A diferencia del caso de \textit{Key} y \textit{Mode}, la estimación del \textit{Tempo} representó una excepción en el flujo de trabajo, siendo un escenario donde los extractores directos de librerías DSP (como Essentia) superaron significativamente el rendimiento del modelado predictivo estándar.
 
-Un ensayo inicial utilizando un modelo de regresión con LightGBM —manteniendo el mismo diseño de variables predictivas que los modelos anteriores— demostró ser insuficiente. La evaluación de este modelo arrojó un Error Absoluto Medio (MAE) de 14,8394, un RMSE de 26,7187 y un coeficiente de determinación ($R^2$) prácticamente nulo de 0,0543. Como se evidencia en la figura \ref{fig:tempo_lgbm_rvp}, el modelo de regresión solo presenta capacidad predictiva alrededor de la moda (aproximadamente 120 BPM). Fuera de ese rango central, el algoritmo sobrestima los valores inferiores y subestima los superiores, fallando en capturar la relación con la variable objetivo.
+Un ensayo inicial utilizando un modelo de regresión con LightGBM —manteniendo el mismo diseño de variables predictivas que los modelos anteriores— demostró ser insuficiente. La evaluación de este modelo arrojó un MAE de 14,8394, un RMSE de 26,7187 y un coeficiente de determinación ($R^2$) prácticamente nulo de 0,0543. Como se evidencia en la figura \ref{fig:tempo_lgbm_rvp}, el modelo de regresión solo presenta capacidad predictiva alrededor de la moda (aproximadamente 120 BPM). Fuera de ese rango central, el algoritmo sobrestima los valores inferiores y subestima los superiores, fallando en capturar la relación con la variable objetivo.
 
 \begin{figure}[htpb]
     \centering

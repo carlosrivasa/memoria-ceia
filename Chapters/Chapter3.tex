@@ -226,16 +226,13 @@ La aplicación del algoritmo final generó un conjunto de datos masivo compuesto
         \textbf{Categoría de extracción} & \textbf{Atributos base} & \textbf{Cant.} & \textbf{Estadísticos aplicados} & \textbf{Cant.} & \textbf{Total} \\
         \midrule
         Representaciones DSP (Librosa) & MFCC (20), Deltas (40) \citep{lerch2012introduction}, Centroide, Ancho de banda, Rolloff, Contraste (7) \citep{peeters2004large}, Flatness y Flux \citep{peeters2004large}, Chroma (12), Tonnetz (6), RMS, ZCR. & 92 & Media, Desv. Estándar, Asimetría, Curtosis, Percentiles (10, 50, 90). & 7 & 644 \\
-        \midrule
         Atributos globales y ritmo & LUFS \citep{itu1770algorithms}, Entropía espectral \citep{lerch2012introduction}, Tempo, Complejidad dinámica \citep{lerch2012introduction}, Tasa y estadísticos de onset (4) \citep{muller2015fundamentals}, Pitch, Fracción de voz \citep{de2002yin}, Claridad tonal (2) \citep{muller2015fundamentals}, Factor de cresta \citep{peeters2004large}, Desviación de latidos \citep{muller2015fundamentals}. & 14 & Cálculo único por pista completa. & 1 & 14 \\
-        \midrule
         Estimación tonal (Perfiles) & Vectores de correlación Krumhansl (Mayor/Menor) y Temperley (Mayor/Menor) \citep{muller2015fundamentals}. & 48 & Cálculo único por pista completa (4 perfiles $\times$ 12 semitonos). & 1 & 48 \\
-        \midrule
-        Embeddings semánticos (PANNs) & Vector latente de la capa previa a la clasificación de la red CNN14. & 2048 & Media, Máximo, Desv. Estándar, Percentil 90. & 4 & 8192 \\
-        \midrule
+        Embeddings semánticos (PANNs) & Vector latente de la capa previa a la clasificación de la red CNN14. & 2048 & Media, Máximo, Desv. Estándar, Percentil 90. & 4 & 8 192 \\
         Probabilidades (PANNs) & Clases filtradas (Voz, Instrumentos, Géneros, Público en vivo, Distorsión). & 173 & Media, Máximo, Desv. Estándar, Percentil 90. & 4 & 692 \\
+        \multicolumn{5}{r}{Total de variables por canción:} & 9 590 \\
         \bottomrule
-        \multicolumn{5}{r}{\textbf{Total de variables por canción:}} & \textbf{9590} \\
+        \hline
     \end{tabular}
     }
     \label{tab:espacio_variables}
@@ -303,7 +300,7 @@ La figura \ref{fig:dist_loudness} muestra la distribución de frecuencia de los 
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.7\textwidth]{distribucion_de_loudness.pdf} 
+    \includegraphics[width=0.7\textwidth]{distribucion_de_loudness.png} 
     \caption[Distribución de loudness]{Distribución de \textit{loudness} en el catálogo de Plusyc.}
     \label{fig:dist_loudness}
 \end{figure}
@@ -318,16 +315,16 @@ Esto potencialmente podría generar un error matemático que desvíe la atenció
 Se aplicaron las siguientes transformaciones como parte del preprocesamiento:
 \begin{itemize}
     \item Se aplicó una transformación logarítmica desplazada (Shifted Log-Transformation). Primero, se realizó una traslación de la escala ($y + 60,1$) para garantizar que todos los registros fueran estrictamente mayores a cero.
-    \item Posteriormente, se aplicó la función matemática $\log(1+x)$ (`np.log1p`). Este preprocesamiento comprime la cola izquierda de la distribución, mitiga el sesgo original y estabiliza la varianza para mejorar el rendimiento del modelo de regresión \citep{goodfellow2016deep}.
+    \item Posteriormente, se aplicó la función matemática $\log(1+x)$. Este preprocesamiento comprime la cola izquierda de la distribución, mitiga el sesgo original y estabiliza la varianza para mejorar el rendimiento del modelo de regresión \citep{goodfellow2016deep}.
 \end{itemize}
 
-\subsubsection{Key y Mode}
+\subsubsection{Key y mode}
 Las variables \textit{key} y \textit{mode} representan la tonalidad predominante de la pista mapeada a clases de tono enteras (ej. 0 para Do, 1 para Do\#) y su modalidad armónica (1 para Mayor, 0 para Menor) \citep{spotify2024audiofeatures}.
 La figura \ref{fig:dist_key_mode} muestra la distribución conjunta de las frecuencias de los valores discretos de las 24 tonalidades de la música occidental. Se observa preferencia por tonalidades como Do mayor, Re mayor y Sol mayor; y menor frecuencia de canciones en Re sostenido mayor y menor.  
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.7\textwidth]{distribucion_de_key_y_mode.pdf} 
+    \includegraphics[width=0.7\textwidth]{distribucion_de_key_y_mode.png} 
     \caption[Distribución de key y mode]{Distribución conjunta de \textit{key} y \textit{mode} en el catálogo de Plusyc.}
     \label{fig:dist_key_mode}
 \end{figure}
@@ -340,7 +337,7 @@ Algunos desafíos inherentes a la distribución:
 
 Se siguieron las siguientes estrategias como parte del preprocesamiento:
 \begin{itemize}
-    \item Para adaptar las etiquetas alfanuméricas de las tonalidades al entrenamiento, se aplicó codificación de etiquetas (Label Encoding).
+    \item Para adaptar las etiquetas alfanuméricas de las tonalidades al entrenamiento, se aplicó codificación de etiquetas (label encoding).
     \item Para mitigar el desbalance sin eliminar información musical intrínseca, el problema se abordó directamente en la fase de modelado mediante la ponderación de clases (\texttt{class\_weights='balanced'}).
 \end{itemize}
 
@@ -354,7 +351,7 @@ La figura \ref{fig:dist_tempo} muestra la distribución de frecuencia de los val
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.8\textwidth]{distribucion_de_tempo.pdf} 
+    \includegraphics[width=0.8\textwidth]{distribucion_de_tempo.png} 
     \caption[Distribución de tempo]{Distribución de \textit{tempo} en el catálogo de Plusyc.}
     \label{fig:dist_tempo}
 \end{figure}
@@ -370,7 +367,7 @@ Se encuentra que \textit{tempo} es un caso especial ya que presenta errores de o
 Se contempla la evaluación de los algoritmos DSP de estimación de \textit{tempo} integrados en las bibliotecas de DSP, esta comparación se muestra en la sección de validación. 
 %todo enlace a secciónes modelado y validación 
 
-\subsubsection{Acousticness, Danceability, Energy, Instrumentalness y Valence}
+\subsubsection{Acousticness, danceability, energy, instrumentalness y valence}
 Este grupo comprende variables perceptibles continuas evaluadas en el rango $[0, 1]$: \textit{acousticness}: confianza acústica, \textit{danceability}: bailaibilidad métrica, \textit{energy}: intensidad enérgica, \textit{instrumentalness}: ausencia vocal y \textit{valence}: positividad musical \citep{spotify2024audiofeatures}.
 La figura \ref{fig:dist_fivep} muestra las distribuciones de frecuencia de los valores de estas características.
 
@@ -378,16 +375,16 @@ La figura \ref{fig:dist_fivep} muestra las distribuciones de frecuencia de los v
     \centering
     
     % Primera fila: 2 imágenes
-    \begin{subfigure}[b]{0.45\textwidth}  % Aumentado de 0.32 a 0.45
+    \begin{subfigure}[b]{0.49\textwidth}  % Aumentado de 0.32 a 0.45
         \centering
-        \includegraphics[width=\textwidth]{distribucion_de_acousticness.pdf}
+        \includegraphics[width=\textwidth]{distribucion_de_acousticness.png}
         \caption{Acousticness}
         \label{fig:dist_acousticness}
     \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.45\textwidth}  % Aumentado de 0.32 a 0.45
+    %\hfill
+    \begin{subfigure}[b]{0.49\textwidth}  % Aumentado de 0.32 a 0.45
         \centering
-        \includegraphics[width=\textwidth]{distribucion_de_danceability.pdf}
+        \includegraphics[width=\textwidth]{distribucion_de_danceability.png}
         \caption{Danceability}
         \label{fig:dist_danceability}
     \end{subfigure}
@@ -397,7 +394,7 @@ La figura \ref{fig:dist_fivep} muestra las distribuciones de frecuencia de los v
     % Segunda fila: 1 imagen centrada (más grande)
     \begin{subfigure}[b]{0.6\textwidth}  % Cambiado de 0.32 a 0.6
         \centering
-        \includegraphics[width=\textwidth]{distribucion_de_energy.pdf}
+        \includegraphics[width=\textwidth]{distribucion_de_energy.png}
         \caption{Energy}
         \label{fig:dist_energy}
     \end{subfigure}
@@ -405,16 +402,16 @@ La figura \ref{fig:dist_fivep} muestra las distribuciones de frecuencia de los v
     \vspace{0.3cm}
     
     % Tercera fila: 2 imágenes más pequeñas
-    \begin{subfigure}[b]{0.45\textwidth}
+    \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{distribucion_de_instrumentalness.pdf}
+        \includegraphics[width=\textwidth]{distribucion_de_instrumentalness.png}
         \caption{Instrumentalness}
         \label{fig:dist_instrumentalness}
     \end{subfigure}
-    \hspace{0.05\textwidth}
-    \begin{subfigure}[b]{0.45\textwidth}
+    %\hspace{0.05\textwidth}
+    \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{distribucion_de_valence.pdf}
+        \includegraphics[width=\textwidth]{distribucion_de_valence.png}
         \caption{Valence}
         \label{fig:dist_valence}
     \end{subfigure}
@@ -496,7 +493,7 @@ La figura \ref{fig:dist_speechiness} muestra la distribución de frecuencia del 
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.8\textwidth]{distribucion_de_speechiness.pdf} 
+    \includegraphics[width=0.8\textwidth]{distribucion_de_speechiness.png} 
     \caption[Distribución de speechiness]{Distribución de \textit{speechiness} en el catálogo de Plusyc.}
     \label{fig:dist_speechiness}
 \end{figure}
@@ -505,7 +502,7 @@ La distribución muestra la presencia de un sesgo positivo extremo, ya que el ca
 Los valores cerca del uno indican contenido exclusivamente hablado como pódcast o streaming conversacional, ausentes en el catálogo de Plusyc.
 
 El mejor resultado experimental en términos de las métricas de evaluación se obtuvo al aplicar técnicas de submuestreo. Se discretizó el dominio de la variable en rangos estratégicos y se aplicó un submuestreo con tope por rangos para limitar la cantidad de registros en la moda, reducir el sesgo y conservar la totalidad de registros de la cola. 
-Los rangos se presentan en la Tabla \ref{tab:submuestreo_speechiness}.
+Los rangos se presentan en la tabla \ref{tab:submuestreo_speechiness}.
 
 \begin{table}[htpb]
 \centering
@@ -513,7 +510,7 @@ Los rangos se presentan en la Tabla \ref{tab:submuestreo_speechiness}.
 \label{tab:submuestreo_speechiness}
 \begin{tabular}{llrr}
 \toprule
-\textbf{Intervalo} & \textbf{Descripción del Rango} & \textbf{\% Original} & \textbf{\% Final} \\
+\textbf{Intervalo} & \textbf{Descripción del rango} & \textbf{\% Original} & \textbf{\% Final} \\
 \midrule
 $[0,00, 0,05]$ & Menor presencia de canto & 56,0\% & 42,1\% \\
 $(0,05, 0,33]$ & Canto & 41,9\% & 42,1\% \\
@@ -533,7 +530,7 @@ La figura \ref{fig:dist_liveness} muestra la distribución de frecuencia del \te
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.8\textwidth]{distribucion_de_liveness.pdf} 
+    \includegraphics[width=0.8\textwidth]{distribucion_de_liveness.png} 
     \caption[Distribución de liveness]{Distribución de \textit{liveness} en el catálogo de Plusyc.}
     \label{fig:dist_liveness}
 \end{figure}
@@ -550,7 +547,7 @@ El resultado de esta reestructuración se detalla en la Tabla \ref{tab:submuestr
 \label{tab:submuestreo_liveness}
 \begin{tabular}{llrr}
 \toprule
-\textbf{Intervalo} & \textbf{Descripción del Rango} & \textbf{\% Original} & \textbf{\% Final} \\
+\textbf{Intervalo} & \textbf{Descripción del rango} & \textbf{\% Original} & \textbf{\% Final} \\
 \midrule
 $[0,0, 0,2)$ & Muy baja probabilidad de vivo & 74,4\% & 67,4\% \\
 $[0,2, 0,8)$ & Baja probabilidad de vivo & 24,8\% & 22,5\% \\
@@ -579,7 +576,7 @@ La figura \ref{fig:dist_primary} muestra los \textit{primary mood} de Plusyc y s
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.8\textwidth]{distribucion_de_primary_mood.pdf} 
+    \includegraphics[width=0.8\textwidth]{distribucion_de_primary_mood.png} 
     \caption[Distribución de primary mood]{Distribución de \textit{primary mood} en el catálogo de Plusyc.}
     \label{fig:dist_primary}
 \end{figure}
@@ -593,20 +590,20 @@ Se observan los siguientes desafíos en esta variable categórica:
 
 Se aplicaron las siguientes transformaciones como parte del preprocesamiento:
 \begin{itemize}
-    \item Se definió con el negocio prescindir de las clases minoritarias \textit{Urgent}, \textit{Aggressive}, \textit{Upbeat} y \textit{Fiery} que no son usadas para ambientación.
+    \item Se definió con el negocio prescindir de las clases minoritarias \textit{urgent}, \textit{aggressive}, \textit{upbeat} y \textit{fiery} que no son usadas para ambientación.
     \item Submuestreo de clases mayoritarias para equilibrar la distribución con techo de 2~000 muestras por clase.
-    \item Aplicación de Label Encoding para traducir las categorías de texto a un formato numérico procesable.
+    \item Aplicación de label encoding para traducir las categorías de texto a un formato numérico procesable.
     \item Para mitigar el desbalance, se aplicó la técnica de ponderación de clases (\texttt{class\_weights='balanced'}) directamente durante la fase de modelado.
 \end{itemize}
 
 \subsubsection{Top-5 secondary mood}
-El \textit{secondary mood} identifica los estados de ánimo complementarios (ej. \textit{Euphoric Energy, Energetic Anxious}).
+El \textit{secondary mood} identifica los estados de ánimo complementarios (ej. \textit{euphoric energy, energetic anxious}).
 La figura \ref{fig:dist_secondary} muestra las frecuencias de los \textit{secondary mood} de Plusyc. 
-Las clases más populares del catálogo son \textit{Cheerful / Playful} con 4 322 muestras, \textit{Happy Excitement} con 3 738 y \textit{Sweet / Sincere} con 3 154. 
+Las clases más populares del catálogo son \textit{cheerful / playful} con 4 322 muestras, \textit{happy excitement} con 3 738 y \textit{sweet / sincere} con 3 154. 
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.8\textwidth]{distribucion_de_secondary_mood.pdf} 
+    \includegraphics[width=0.8\textwidth]{distribucion_de_secondary_mood.png} 
     \caption[Distribución de freciencias secondary mood]{Distribución de freciencias de \textit{secondary mood} en el catálogo de Plusyc.}
     \label{fig:dist_secondary}
 \end{figure}
@@ -615,34 +612,34 @@ En este caso las dificultades son similares al caso de \textit{primary mood}, en
 
 Medidas aplicadas en el preprocesamiento:
 \begin{itemize}
-    \item Se define con el negocio prescindir de las clases minoritarias \textit{Aggressive Power}, \textit{Alienated / Brooding}, \textit{Bittersweet Pop}, \textit{Chaotic / Intense}, \textit{Creepy / Ominous}, \textit{Energetic Dreamy}, \textit{Evocative / Intriguing}, \textit{Focused Sparkling}, \textit{Hard Dark Excitement}, \textit{Heavy Triumphant}, \textit{Hypnotic Rhythm}, \textit{Mysterious / Dreamy}, \textit{Wild / Rowdy} que no son usadas para ambientación en Plusyc.
+    \item Se define con el negocio prescindir de las clases minoritarias \textit{aggressive power}, \textit{alienated / brooding}, \textit{bittersweet pop}, \textit{chaotic / intense}, \textit{creepy / ominous}, \textit{energetic dreamy}, \textit{evocative / intriguing}, \textit{focused sparkling}, \textit{hard dark excitement}, \textit{heavy triumphant}, \textit{hypnotic rhythm}, \textit{mysterious / dreamy}, \textit{wild / rowdy} que no son usadas para ambientación en Plusyc.
     \item Submuestreo de clases mayoritarias para equilibrar la distribución con techo de 1~000 muestras por clase.
-    \item Al igual que con el estado de ánimo principal, se aplicó Label Encoding para la adaptación numérica.
+    \item Al igual que con el estado de ánimo principal, se aplicó label encoding para la adaptación numérica.
     \item Se mantuvo la estrategia de balanceo (\texttt{class\_weights='balanced'}) para evitar sesgos.
 \end{itemize}
 
 \subsubsection{Suggested genres}
-Los \textit{suggested genres} indican las etiquetas de género musical asociadas a la pista (ej. \textit{Chill House, EDM}).
+Los \textit{suggested genres} indican las etiquetas de género musical asociadas a la pista (ej. \textit{chill house, EDM}).
 La figura \ref{fig:dist_genres} muestra las frecuencias de los \textit{suggested genres}.
-Las clases más populares del catálogo son \textit{EDM} con 819 muestras, \textit{Pop Vocal} con 764 y \textit{General Latin Pop } con 708. 
+Las clases más populares del catálogo son \textit{EDM} con 819 muestras, \textit{pop vocal} con 764 y \textit{general latin pop } con 708. 
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.8\textwidth]{distribucion_de_genre.pdf} 
+    \includegraphics[width=0.8\textwidth]{distribucion_de_genre.png} 
     \caption[Distribución de frecuencias de suggested genres]{Distribución de frecuencias \textit{suggested genres} en el catálogo de Plusyc.}
     \label{fig:dist_genres}
 \end{figure}
 
 Se observa la extrema diversidad de clases, 585 en total y muchas clases con muy pocas muestras, lo que genera una distribución de cola larga altamente desbalanceada.
 Por otro lado al revisar algunas clases aparecen géneros que no son géneros sino marcas o artistas como \textit{Shakira}, \textit{Juanes} o \textit{Decathlon}.
-Otra dificultad radica en que al analizar solo el audio, se puede perder el contexto regional de géneros como \textit{Rock}, \textit{Latin Rock}, que podrían ser confusos en las predicciones.
+Otra dificultad radica en que al analizar solo el audio, se puede perder el contexto regional de géneros como \textit{rock}, \textit{latin rock}, que podrían ser confusos en las predicciones.
 
 Se aplicaron las siguientes estrategias:
 \begin{itemize}
     \item Se filtran géneros que no son géneros musicales, sino marcas o artistas.
     \item Se seleccionan un tope mínumo de 100 muestras por clase para el modelo. De las 585 clases totales, se seleccionan 200 clases que cumplen el criterio y se determinó que las demás quedan pendientes de alcanzar el mínimo de 100 muestras para ser incluidas en el entrenamiento.
     \item Submuestreo de clases mayoritarias para equilibrar la distribución con techo de 400 muestras por clase. 
-    \item Transformación de las categorías mediante Label Encoding.
+    \item Transformación de las categorías mediante label encoding.
     \item Delegación del manejo del desbalance al hiperparámetro de ponderación (\texttt{class\_weights='balanced'}) durante el entrenamiento del clasificador.
     \item Estrategia de clasificación por top-k, para mitigar el problema de contexto al seleccionar los más probables.
 \end{itemize}
@@ -679,7 +676,7 @@ Para todas las variables objetivo, el proceso de selección se ejecutó estricta
     \item Selección basada en árboles, con las siguientes características:
     \begin{itemize}
         \item El cálculo de la importancia se realizó predominantemente mediante un entrenamiento simple, para priorizar la eficiencia computacional. Excepcionalmente, en las variables perceptibles continuas, se implementó validación cruzada (K-Fold con $K=5$) para mitigar el sobreajuste al ruido en este tipo de etiquetas subjetivas \citep{kohavi1995study}.
-        \item La métrica utilizada fue la ganancia (Gain) para medir el aporte de las variables en las particiones de los árboles \citep{breiman1984classification, ke2017lightgbm}.
+        \item La métrica utilizada fue la ganancia (gain), para medir el aporte de las variables en las particiones de los árboles \citep{breiman1984classification, ke2017lightgbm}.
         \item Se conservaron únicamente las características con mayor importancia, responsables de explicar el 95\,\% de la ganancia acumulada del modelo.
     \end{itemize}
     \item Filtro por dependencia lineal: se calculó la matriz de correlación de Pearson para analizar las características en conjunto y eliminar aquellas que presentaban redundancia lineal \citep{guyon2003introduction, kuhn2013applied}.
@@ -696,20 +693,20 @@ En la tabla \ref{tab:resultados_seleccion} se resume la configuración del proce
 \toprule
 \textbf{Variable} & \textbf{Varianza} & \textbf{Validación} & \textbf{Colinealidad} & \textbf{Total} \\
 \midrule
-\textit{Key} y \textit{Mode} & 0,00 & Simple &  -- & \textbf{173} \\
-\textit{Loudness} & 0,00 & Simple & -- & \textbf{856} \\
-\textit{Perceptibles} (5) & 0,00 & K-Fold ($K=5$) & $> 0,95$ & \textbf{2140} \\
-\textit{Speechiness} & 0,00 & Simple  & $> 0,95$ & \textbf{92} \\
-\textit{Liveness} & 0,00 & K-Fold ($K=5$) & $> 0,95$ & \textbf{67} \\
-\textit{Primary Mood} & 0,01 & Simple & $> 0,95$ & \textbf{1423} \\
-\textit{Secondary Mood} & 0,01 & Simple & $> 0,95$ & \textbf{1397} \\
-\textit{Suggested Genres} & 0,01 & Simple & $> 0,95$ & \textbf{1309} \\
+\textit{Key} y \textit{mode} & 0,00 & Simple &  -- & 173 \\
+\textit{Loudness} & 0,00 & Simple & -- & 856 \\
+\textit{Perceptibles} (5) & 0,00 & K-Fold ($K=5$) & $> 0,95$ & 2 140 \\
+\textit{Speechiness} & 0,00 & Simple  & $> 0,95$ & 92 \\
+\textit{Liveness} & 0,00 & K-Fold ($K=5$) & $> 0,95$ & 67 \\
+\textit{Primary mood} & 0,01 & Simple & $> 0,95$ & 1 423 \\
+\textit{Secondary mood} & 0,01 & Simple & $> 0,95$ & 1 397 \\
+\textit{Suggested genres} & 0,01 & Simple & $> 0,95$ & 1 309 \\
 \bottomrule
 %\multicolumn{5}{p{13cm}}{\footnotesize \textit{Nota:} El filtro de colinealidad no se aplicó en \textit{Loudness} ni en \textit{Key/Mode} dado el gran volumen de muestras de entrenamiento y el tamaño reducido de sus subconjuntos resultantes.} \\
 \end{tabular}
 \end{table}
 
-La columna 'Varianza', indica el umbral del filtro por varianza, 'Validación', indica el tipo de validación utilizada (Simple o K-Fold), y 'Colinealidad', indica el umbral de correlación para el filtro por dependencia lineal.
+La columna \enquote{Varianza}, indica el umbral del filtro por varianza, \enquote{Validación}, indica el tipo de validación utilizada (Simple o K-Fold), y \enquote{Colinealidad}, indica el umbral de correlación para el filtro por dependencia lineal.
 
 % todo una tabla de las principales predictivas por modelo
 % todo una imagen de ejemplo de la curva de importancia reducción
@@ -731,10 +728,10 @@ Para el ajuste de los hiperparámetros de aprendizaje, la tasa inicial se fijó 
 
 Dado el amplio espacio de variables (2~140 variables de entrada) y la alta capacidad del modelo, se implementó la siguiente estrategia de regularización para mitigar el sobreajuste \citep{goodfellow2016deep}:
 \begin{itemize}
-    \item Capas de normalización por lotes (Batch Normalization) después de cada transformación lineal ($Wx + b$) en \texttt{nn.Linear}, para evitar que los valores numéricos se disparen entre las capas y facilitar la convergencia \citep{ioffe2015batch}.
-    \item Inactivación aleatoria de neuronas (Dropout) con tasas de 0,30 en la primera capa oculta y 0,20 en las subsiguientes, como filtro más agresivo de ruido en las variables iniciales y proteger las representaciones más abstractas en las capas profundas \citep{srivastava2014dropout}.
+    \item Capas de normalización por lotes (batch normalization) después de cada transformación lineal ($Wx + b$) en \texttt{nn.Linear}, para evitar que los valores numéricos se disparen entre las capas y facilitar la convergencia \citep{ioffe2015batch}.
+    \item Inactivación aleatoria de neuronas (dropout) con tasas de 0,30 en la primera capa oculta y 0,20 en las subsiguientes, como filtro más agresivo de ruido en las variables iniciales y proteger las representaciones más abstractas en las capas profundas \citep{srivastava2014dropout}.
     \item Penalización L2 (regularización de Tikhonov) integrada en el optimizador con un factor de $10^{-5}$.
-    \item Parada anticipada (Early Stopping) basada en el conjunto de validación que interrumpió el entrenamiento tras 15 iteraciones sin mejoras.
+    \item Parada anticipada (early stopping) basada en el conjunto de validación que interrumpió el entrenamiento tras 15 iteraciones sin mejoras.
 \end{itemize}
 
 \subsubsection{Modelado mediante Gradient Boosting (LightGBM)}
@@ -746,10 +743,10 @@ Para la predicción del resto de las variables, se implementaron modelos basados
 El diseño de los modelos se adaptó a la naturaleza de cada variable objetivo, con base en el preprocesamiento detallado en etapas anteriores:
 
 \begin{itemize}
-    \item \textit{Key / Mode, Primary, Secondary Moods} y \textit{Suggested Genres}: mayor peso a las clases minoritarias mediante el parámetro \texttt{class\_weight='balanced'} y se evaluó el desempeño con la métrica F1-Score macro. 
-    \item \textit{Liveness, Speechiness}: la separación de los conjuntos de entrenamiento y validación se ejecutó de forma estratificada tras discretizar las variables en rangos probabilísticos.
+    \item \textit{Key / mode, primary, secondary moods} y \textit{suggested genres}: mayor peso a las clases minoritarias mediante el parámetro \texttt{class\_weight='balanced'} y se evaluó el desempeño con la métrica F1-Score macro. 
+    \item \textit{Liveness, speechiness}: la separación de los conjuntos de entrenamiento y validación se ejecutó de forma estratificada tras discretizar las variables en rangos probabilísticos.
     % todo quizas esto es de la sección de validación
-    \item \textit{Loudness}: la optimización evaluó el error absoluto medio (MAE), y el modelado definitivo se configuró mediante regresión estándar (L2) para minimizar el error cuadrático medio (RMSE). Esto demostró una mejora en la predicción en volúmenes extremos.
+    \item \textit{Loudness}: la optimización evaluó el MAE, y el modelado definitivo se configuró mediante regresión estándar (L2) para minimizar el error cuadrático medio (RMSE). Esto demostró una mejora en la predicción en volúmenes extremos.
 \end{itemize}
 
 \subsubsection{Optimización de hiperparámetros y regularización}
@@ -758,7 +755,7 @@ Se implementó una búsqueda automatizada de hiperparámetros para cada objetivo
 A continuación un resumen de los parámetros y algunas decisiones relacionadas:
 \begin{itemize}
     \item Profundidad máxima de los árboles (\texttt{max\_depth}) y restricción en el número máximo de hojas (\texttt{num\_leaves}) para evitar el crecimiento asimétrico descontrolado. Además, se exigió un volumen mínimo de muestras por hoja (\texttt{min\_child\_samples} o \texttt{min\_data\_in\_leaf}) para evitar que los modelos crearan reglas exclusivas para registros aislados \citep{ke2017lightgbm}.
-    \item Submuestreo de filas y columnas para mejorar la generalización. En la mayoría de los modelos se utilizó el algoritmo (\texttt{GBDT}) combinado con un submuestreo de filas aleatorio (\texttt{subsample}). Excepto para \textit{Loudness}, donde se implementó el algoritmo de muestreo basado en gradientes (\texttt{GOSS}) \citep{ke2017lightgbm}, para retener ejemplos con mayor error predictivo y descartar una fracción de las que el modelo ya aprendió.
+    \item Submuestreo de filas y columnas para mejorar la generalización. En la mayoría de los modelos se utilizó el algoritmo (\texttt{GBDT}) combinado con un submuestreo de filas aleatorio (\texttt{subsample}). Excepto para \textit{loudness}, donde se implementó el algoritmo de muestreo basado en gradientes (\texttt{GOSS}) \citep{ke2017lightgbm}, para retener ejemplos con mayor error predictivo y descartar una fracción de las que el modelo ya aprendió.
     \item Penalizaciones (L1 y L2) para frenar el peso excesivo de las ramas \citep{hastie2009elements}. Adicionalmente, en la mayoría de los objetivos, se exigió una mejora mínima (\texttt{min\_split\_gain}) antes de permitir que el árbol se dividiera.
     \item Early stopping, configurado entre 30 y 50 iteraciones, para interrumpir el entrenamiento cuando el modelo dejara de mejorar.
 \end{itemize}
@@ -773,7 +770,7 @@ El resumen de los hiperparámetros resultantes se detalla en la tabla \ref{tab:h
 \small
 \begin{tabular}{@{}l c c c c c c@{}}
 \toprule
-\textbf{Objetivo} & \textbf{Prof. Máx.} & \textbf{Hojas} & \textbf{Tasa de Apren.} & \textbf{Muestras/Hoja} & \textbf{L1} ($\alpha$) & \textbf{L2} ($\lambda$) \\
+\textbf{Objetivo} & \textbf{Prof. máx.} & \textbf{Hojas} & \textbf{Tasa de apren.} & \textbf{Muestras/Hoja} & \textbf{L1} ($\alpha$) & \textbf{L2} ($\lambda$) \\
 \midrule
 \textit{Key/Mode}      & 5  & 140 & 0,0259 & 34 & 3,1690 & 6,9757 \\
 \textit{Loudness}      & 10 & 21  & 0,0868 & 25 & 0,0104 & 0,0390 \\
@@ -794,7 +791,7 @@ El resumen de los hiperparámetros resultantes se detalla en la tabla \ref{tab:h
 % Se puede agregar código o pseudocódigo dentro de un entorno lstlisting con el siguiente código:
 
 
-El sistema de inferencia fue diseñado para operar como un servicio integrable con la infraestructura existente de Plusyc. El despliegue se realizó en una instancia de cómputo sobre Oracle Cloud Infrastructure.
+El sistema de inferencia fue diseñado para operar como un servicio integrable con la infraestructura existente de Plusyc. El despliegue se realizó en una instancia de cómputo sobre OCI.
 
 \subsection{Diseño del servicio predictivo}
 El núcleo de procesamiento se expuso a través de una API RESTful desarrollada con FastAPI. Esta interfaz expone el ciclo de inferencia: carga del audio, extracción de variables predictivas de entrada a los modelos MLP y LightGBM, que retornanan los valores de las predicciones de las características musicales.
@@ -811,17 +808,17 @@ La interacción del motor predictivo con el ecosistema web se realiza a través 
 
 El ciclo de vida de la integración, ilustrado en la figura \ref{fig:diagrama_arquitectura}, sigue esta secuencia lógica:
 \begin{enumerate}
-    \item Una tarea programada (cron job) en el sistema ejecuta el CLI Beethoven a intervalos regulares de tiempo.
+    \item Una tarea programada en el sistema ejecuta el CLI Beethoven a intervalos regulares de tiempo.
     \item El proceso detecta nuevos archivos de audio que aún no han sido caracterizados.
     \item Por cada nueva pista detectada, Beethoven envía el archivo al servicio de inferencia (API) mediante una petición HTTP POST.
-    \item \textbf{Inferencia}: La API ejecuta el pipeline predictivo, que recibe la señal cruda y rertorna un diccionario estructurado (JSON) que contiene todas las etiquetas estimadas (\textit{Key, Moods, Liveness, etc.}).
+    \item Inferencia: la API ejecuta el pipeline predictivo, que recibe la señal cruda y rertorna un diccionario estructurado (JSON) que contiene todas las etiquetas estimadas (\textit{key, moods, liveness, etc.}).
     \item El script captura la respuesta de la API, extrae las características musicales y las persiste en la base de datos de información musical de Plusyc.
     \item Una vez en la base de datos, los metadatos quedan disponibles para revisión de curadores en un portal web.
 \end{enumerate}
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.9\textwidth]{infra.png}
+    \includegraphics[width=0.9\textwidth]{infra2.png}
     \caption{Diagrama de despliegue e integración.}
     \label{fig:diagrama_arquitectura}
 \end{figure}

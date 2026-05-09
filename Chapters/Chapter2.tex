@@ -90,7 +90,7 @@ Una vez obtenidos los descriptores numéricos y semánticos, es necesario aplica
 \label{sec:despliegue}
 
 La integración del sistema predictivo requirió del despliegue de una interfaz de programación de aplicaciones. Para su construcción se utilizó FastAPI \citep{ramirez2018fastapi} como marco de trabajo. Esta herramienta facilita el desarrollo de servicios web de alto rendimiento basados en Python \citep{python3}.
-El servicio fue contenedorizado con Docker \citep{merkel2014docker}.
+El servicio fue contenedorizado con Docker \citep{merkel2014docker} y es llamado de manera asíncrona, desde una herramienta interna de Plusyc denominada Beethoven.
 El alojamiento remoto del producto se apoyó en los servicios de infraestructura de OCI (por su sigla en inglés, \textit{Oracle Cloud Infrastructure}) \citep{oracle_oci}. Se provisionó una instancia de cómputo virtual en la nube para desplegar la aplicación y ejecutar los modelos predictivos. El uso de esta tecnología garantiza la disponibilidad continua del sistema.
 
 %     \centering
