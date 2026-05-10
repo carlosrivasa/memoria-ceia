@@ -10,20 +10,19 @@
 \label{Chapter4} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 % los capítulos deben comenzar con un breve párrafo introductorio que indique cuál es el contenido que se encontrará al leerlo.  La redacción sobre el contenido de la memoria debe hacerse en presente y todo lo referido al proyecto en pasado, siempre de modo impersonal.
 
-Este capítulo presenta los resultados de los modelos seleccionados para cada variable objetivo, su comparacion con un experimento previo, los resultados de su evaluación con métricas de inteligencia artificial y su desempeño en un entorno de producción.
+Este capítulo presenta los resultados de los modelos seleccionados para cada variable objetivo, su comparacion con un experimento previo en casos pertinentes, los resultados de la evaluación con métricas de inteligencia artificial y un ejemplo de inferencia.
 
-\section{Resultados predictivos}
+\section{Resultados por modelo}
 \label{sec:resultados_modelos}
 
 \subsection{Acousticness, danceability, energy, instrumentalness y valence}
 %Un Perceptrón Multicapa (MLP) superó a las regresiones estadísticas iniciales, modelando eficientemente características continuas como \textit{Acousticness} y \textit{Danceability}.
 
-En un ensayo preliminar, se entrenó un modelo multisalida únicamente con variables DSP para predecir siete variables en total, con \textit{Liveness} y \textit{Speechiness}, que comparten el rango continuo de valores entre 0 y 1.
-Con este enfoque se obtuvo un rendimiento insuficiente, incapaz de predecir valores altos de \textit{Liveness} y \textit{Speechiness}, pero con métricas aceptables para las 5 variables restantes. Así se identificó la necesidad de separar las dos variables en preprocesamiento y la extracción de variables semánticas específicas de voz y presencia de público. De aquí se llegó a PANNs inference.
+En los primeros ensayos de inferencia de este grupo de variables objetivo, se entrenó un modelo multisalida únicamente con variables DSP para predecir siete variables en total: \textit{acousticness}, \textit{danceability}, \textit{energy}, \textit{instrumentalness}, \textit{valence}, \textit{Liveness} y \textit{Speechiness}, todas en el rango de 0 a 1.
+Se obtuvo un rendimiento insuficiente, incapaz de predecir \textit{Liveness} y \textit{Speechiness}, pero con señal de aprendizaje para las demás variables objetivo. Así se identificó la necesidad de separar las dos variables, en su preprocesamiento e inferencia.    
 
-El modelo definitivo se reestructuró para las 5 variables restantes y se incorporaron los embeddings y probabilidades de PANNs.
-En el entrenamiento se observa que la tasa de aprendizaje se disminuyó dinámicamente desde el $1,00\times10^{-4}$ inicial hasta $1,00\times10^{-6}$, al responder a los estancamientos en la función de pérdida, tal como se esperaba en el diseño descrito en la sección de diseño de la red neuronal \ref{sec:mlp}.
-Finalmente, el mecanismo de early stopping detuvo el proceso en la iteración 74, después de 15 épocas sin reducir el error de validación mínimo de 0,0058, alcanzado en la iteración 59.
+El diseño actual de la MLP incorpora las variables DSP, embeddings y probabilidades de PANNs inference.
+Durante el entrenamiento, el mecanismo de early stopping detuvo el proceso en la iteración 74, después de 15 épocas sin reducir el error de validación mínimo de 0,0058, alcanzado en la iteración 59.
 La figura \ref{fig:fivep_learning_curves} ilustra las curvas de aprendizaje del modelo durante el entrenamiento. 
 
 \begin{figure}[htpb]
@@ -35,11 +34,11 @@ La figura \ref{fig:fivep_learning_curves} ilustra las curvas de aprendizaje del 
 
 La evolución de la pérdida de Huber a la izquierda y el MAE a la derecha, demuestran una convergencia rápida y estable. En ambos casos, las curvas de validación y entrenamiento se cruzan y estabilizan alrededor de las iteraciones 12 y 20, respectivamente. A partir de este punto, la validación se mantiene constante mientras el error de entrenamiento presenta un descenso marginal y evidencian aprendizaje sin sobreajuste.
 
-La tabla \ref{tab:comparativa_mlp} muestra cómo la inclusión de embeddings y probabilidades de PANNs inference y la separación de \textit{speechiness} y \textit{liveness} mejoró consistentemente todas las métricas, con mejor R² global de 0,8152.
+La tabla \ref{tab:comparativa_mlp} muestra cómo la inclusión de embeddings y probabilidades de PANNs inference y la separación de \textit{speechiness} y \textit{liveness} mejoró consistentemente todas las métricas, con R² global de 0,8152.
 
 \begin{table}[htpb]
     \centering
-    \caption{Comparativa de métricas de los dos experimentos de la red neuronal MLP.}
+    \caption{Comparativa de métricas de dos experimentos de la red neuronal MLP.}
     \label{tab:comparativa_mlp}
     \renewcommand{\arraystretch}{1.2}
     \small
@@ -49,66 +48,112 @@ La tabla \ref{tab:comparativa_mlp} muestra cómo la inclusión de embeddings y p
         \cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
         & \textbf{Inicial} & \textbf{Definitivo} & \textbf{Inicial} & \textbf{Definitivo} & \textbf{Inicial} & \textbf{Definitivo} \\
         \midrule
-        \textit{Acousticness}     & 0,8178 & \textbf{0,8903} & 0,0950 & \textbf{0,0681} & 0,0171 & \textbf{0,0106} \\
-        \textit{Danceability}     & 0,6042 & \textbf{0,7381} & 0,0780 & \textbf{0,0594} & 0,0108 & \textbf{0,0063} \\
-        \textit{Energy}           & 0,7584 & \textbf{0,8626} & 0,0809 & \textbf{0,0581} & 0,0110 & \textbf{0,0062} \\
-        \textit{Instrumentalness} & 0,6733 & \textbf{0,8308} & 0,1231 & \textbf{0,0671} & 0,0355 & \textbf{0,0188} \\
-        \textit{Valence}          & 0,6523 & \textbf{0,7539} & 0,1172 & \textbf{0,0964} & 0,0221 & \textbf{0,0162} \\
+        \textit{Acousticness}     & 0,8178 & 0,8903 & 0,0950 & 0,0681 & 0,0171 & 0,0106 \\
+        \textit{Danceability}     & 0,6042 & 0,7381 & 0,0780 & 0,0594 & 0,0108 & 0,0063 \\
+        \textit{Energy}           & 0,7584 & 0,8626 & 0,0809 & 0,0581 & 0,0110 & 0,0062 \\
+        \textit{Instrumentalness} & 0,6733 & 0,8308 & 0,1231 & 0,0671 & 0,0355 & 0,0188 \\
+        \textit{Valence}          & 0,6523 & 0,7539 & 0,1172 & 0,0964 & 0,0221 & 0,0162 \\
         \textit{Liveness}         & 0,1570 & -- & -- & -- & -- & -- \\
         \textit{Speechiness}      & 0,2778 & -- & -- & -- & -- & -- \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-La figura \ref{fig:real_vs_pred_variables} muestra los resultados de los valores reales de las etiquetas y las estimaciones del modelo multisalida definitivo. En estos gráficos de dispersión, la línea diagonal de referencia representa el escenario de predicción perfecta. La proximidad y densidad de los puntos respecto a esta recta ilustran visualmente el nivel de precisión, el control de la varianza en los extremos y la capacidad de generalización frente a datos no vistos.
+La figura \ref{fig:real_vs_pred_variables} muestra los resultados de los valores reales de las etiquetas y las estimaciones del modelo. En estos gráficos de dispersión, la línea diagonal de referencia representa el escenario de predicción perfecta. La proximidad y densidad de los puntos respecto a esta recta ilustran la relación lineal, la varianza y la capacidad del modelo frente a datos no vistos.
 
 \begin{figure}[htpb]
     \centering
-    \begin{subfigure}[b]{0.19\textwidth}
+    
+    % Primera fila: 2 imágenes
+    \begin{subfigure}[b]{0.45\textwidth}  % Aumentado de 0.19 a 0.45
         \centering
         \includegraphics[width=\textwidth]{acousticness_actual_vs_predicted.pdf}
         \caption*{\scriptsize Acousticness}
         \label{fig:rvp_acousticness}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.19\textwidth}
+    \begin{subfigure}[b]{0.45\textwidth}  % Aumentado de 0.19 a 0.45
         \centering
         \includegraphics[width=\textwidth]{danceability_actual_vs_predicted.pdf}
         \caption*{\scriptsize Danceability}
         \label{fig:rvp_danceability}
     \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.19\textwidth}
+    
+    \vspace{0.3cm}
+    
+    % Segunda fila: 3 imágenes
+    \begin{subfigure}[b]{0.30\textwidth}  % Ajustado para 3 imágenes
         \centering
         \includegraphics[width=\textwidth]{energy_actual_vs_predicted.pdf}
         \caption*{\scriptsize Energy}
         \label{fig:rvp_energy}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.19\textwidth}
+    \begin{subfigure}[b]{0.30\textwidth}  % Ajustado para 3 imágenes
         \centering
         \includegraphics[width=\textwidth]{instrumentalness_actual_vs_predicted.pdf}
         \caption*{\scriptsize Instrumentalness}
         \label{fig:rvp_instrumentalness}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.19\textwidth}
+    \begin{subfigure}[b]{0.30\textwidth}  % Ajustado para 3 imágenes
         \centering
         \includegraphics[width=\textwidth]{valence_actual_vs_predicted.pdf}
         \caption*{\scriptsize Valence}
         \label{fig:rvp_valence}
     \end{subfigure}
     
-    \caption{Dispersión de valores reales vs. estimados para las cinco variables perceptibles con el modelo definitivo.}
+    \caption{Relación de valores reales y estimados en el modelo MLP.}
     \label{fig:real_vs_pred_variables}
 \end{figure}
 
-Un análisis de importancia de variables predictivas muestra predominio de atributos globales y ritmo de la tabla \ref{tab:espacio_variables}. La figura \ref{fig:feature_importance_mlp} presenta las 15 variables más relevantes del modelo MLP. En la figura, el grado de importancia equivale a la caída en el coeficiente de determinación ($R^2$) que sufre el modelo al eliminar la información de dicha variable. Se destaca el impacto principal del Factor de cresta, representaciones chroma y estadísticos de onset.
-También es interesante la ausencia de embeddings y probabilidades de PANNs en el top 15, pero muchas están presentes entre las variables seleccionadas (2 140 en total), lo que muestra que operan en conjunto
+% \begin{figure}[htpb]
+%     \centering
+%     \begin{subfigure}[b]{0.19\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{acousticness_actual_vs_predicted.pdf}
+%         \caption*{\scriptsize Acousticness}
+%         \label{fig:rvp_acousticness}
+%     \end{subfigure}
+%     \hfill
+%     \begin{subfigure}[b]{0.19\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{danceability_actual_vs_predicted.pdf}
+%         \caption*{\scriptsize Danceability}
+%         \label{fig:rvp_danceability}
+%     \end{subfigure}
+%     \hfill
+%     \begin{subfigure}[b]{0.19\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{energy_actual_vs_predicted.pdf}
+%         \caption*{\scriptsize Energy}
+%         \label{fig:rvp_energy}
+%     \end{subfigure}
+%     \hfill
+%     \begin{subfigure}[b]{0.19\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{instrumentalness_actual_vs_predicted.pdf}
+%         \caption*{\scriptsize Instrumentalness}
+%         \label{fig:rvp_instrumentalness}
+%     \end{subfigure}
+%     \hfill
+%     \begin{subfigure}[b]{0.19\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{valence_actual_vs_predicted.pdf}
+%         \caption*{\scriptsize Valence}
+%         \label{fig:rvp_valence}
+%     \end{subfigure}
+    
+%     \caption{Relación de valores reales y estimados en el modelo MLP.}
+%     \label{fig:real_vs_pred_variables}
+% \end{figure}
+
+Una lista de importancia de variables predictivas muestra predominio de las variables globales y ritmo \ref{tab:espacio_variables}. La figura \ref{fig:feature_importance_mlp} presenta las 15 variables más relevantes del modelo MLP. En la figura, el grado de importancia equivale a la caída en el coeficiente de determinación ($R^2$) que sufre el modelo al eliminar la información de dicha variable. Se destaca el impacto principal del factor de cresta, representaciones chroma y estadísticos de onset.
+También es interesante la ausencia de embeddings y probabilidades de PANNs en el top-15, pero muchas están presentes entre las variables seleccionadas (2 140 en total), lo que muestra que operan en conjunto
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.85\textwidth]{f_imp_fivep.png}
+    \includegraphics[width=0.7\textwidth]{f_imp_fivep.png}
     \caption{Top-15 variables predictivas del modelo MLP.}
     \label{fig:feature_importance_mlp}
 \end{figure}
@@ -116,19 +161,18 @@ También es interesante la ausencia de embeddings y probabilidades de PANNs en e
 
 \subsection{Loudness}
 
-Para la estimación de la variable continua \textit{Loudness}, se implementó un modelo de regresión potenciado por gradiente mediante LightGBM. La optimización inicial utilizó muestreo unilateral basado en gradientes (GOSS) y una función objetivo basada en la penalización L1 (\texttt{regression\_l1}). La figura \ref{fig:loudness_learning_curves} expone las curvas de aprendizaje para esta configuración, donde se observa un descenso suave y continuo de los errores de entrenamiento y validación a medida que se suman árboles al modelo. La trayectoria estrictamente paralela de ambas curvas y su estabilización conjunta evidencian un aprendizaje estable.
+La inferencia de \textit{loudness} consistió en un modelo de regresión LightGBM. En la configuración inicial se probó con penalización L1 (\texttt{regression\_l1}). La figura \ref{fig:loudness_learning_curves} expone las curvas de aprendizaje para este experimento, donde se observa el descenso de los errores de entrenamiento y validación a medida que se suman árboles al modelo. La trayectoria y estabilización conjunta de ambas curvas evidencian un aprendizaje estable.
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.85\textwidth]{curva_loudness_l1.png}
-    \caption{Curvas de aprendizaje del modelo LightGBM para \textit{Loudness}.}
+    \includegraphics[width=0.75\textwidth]{curva_loudness_l1.png}
+    \caption{Curvas de aprendizaje para loudness.}
     \label{fig:loudness_learning_curves}
 \end{figure}
 
-Esta primera configuración alcanzó un coeficiente de determinación ($R^2$) de 0,8300, un RMSE de 1,8534 y un MAE de 1,1469. Para evaluar posibles mejoras en la predicción de valores atípicos, se entrenó una segunda configuración equivalente empleando regresión con penalización L2 (\texttt{regression\_l2}). Las métricas globales obtenidas fueron competitivas y ligeramente superiores en varianza explicada, logrando un $R^2$ de 0,8367, un RMSE de 1,8167 y un MAE de 1,1889.
-
-A pesar de la similitud en el desempeño cuantitativo general, el modelo con penalización L2 se seleccionó como el definitivo debido a su superioridad para estimar valores en el extremo de la distribución, es decir audios con muy bajo volumen.
-La figura \ref{fig:loudness_rvp_comparative} compara gráficamente el comportamiento de ambas configuraciones. A la izquierda, el modelo L1 presenta mayor dispersión en los valores inferiores, mientras que a la derecha, las estimaciones del modelo L2 se concentran con mayor precisión sobre la diagonal de predicción perfecta.
+Esta primera configuración alcanzó un $R^2$ de 0,8300, un RMSE de 1,8534 y un MAE de 1,1469. Es un buen modelo, con leve tendencia a sobreestimar valores bajos de loudness, como se observa en la figura \ref{fig:loudness_rvp_comparative} a la izquierda. 
+A la derecha, las estimaciones de una segunda configuración equivalente, con penalización L2 (\texttt{regression\_l2}) para mitigar ese problema. 
+Las métricas globales obtenidas fueron similares en los dos casos. La segunda configuración, con $R^2$ de 0,8367, un RMSE de 1,8167 y un MAE de 1,1889, se elige al aplanar las predicciones hacia los valores extremos. 
 
 \begin{figure}[htpb]
     \centering
@@ -142,48 +186,48 @@ La figura \ref{fig:loudness_rvp_comparative} compara gráficamente el comportami
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
         \includegraphics[width=\textwidth]{loudness_l2.png}
-        \caption*{\scriptsize Penalización L2 (Definitivo)}
+        \caption*{\scriptsize Penalización L2}
         \label{fig:loudness_l2}
     \end{subfigure}
     
-    \caption{Dispersión de valores actuales vs. estimados para \textit{Loudness}.}
+    \caption{Relación de valores reales y estimados para Loudness.}
     \label{fig:loudness_rvp_comparative}
 \end{figure}
 
-El análisis de importancia de variables, evaluado mediante la métrica de ganancia (gain) en las divisiones de los árboles, confirma el impacto directo de los atributos globales. La figura \ref{fig:loudness_f_imp} detalla las 15 características predictivas principales.
-El modelo prioriza fuertemente el Factor de cresta y los LUFS, seguidos de estadísticos de las representaciones DSP tradicionales como el RMS y el Centroide espectral. A diferencia de las variables perceptibles analizadas en la sección anterior, en este modelo sí destaca la presencia de un embedding de PANNs dentro del conjunto de mayor relevancia.
+La figura \ref{fig:loudness_f_imp} detalla las 15 variables predictivas principales.
+El modelo prioriza el factor de cresta y los LUFS, seguidos de estadísticos de las representaciones DSP tradicionales como el RMS y el Centroide espectral. A diferencia de las variables perceptibles analizadas en la sección anterior, en este modelo sí destaca la presencia de un embedding de PANNs inference dentro del conjunto de mayor relevancia.
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.4\textwidth]{loudness_top15.png}
-    \caption{Top-15 variables predictivas del modelo LightGBM para \textit{Loudness}.}
+    \includegraphics[width=0.7\textwidth]{loudness_top15.png}
+    \caption{Top-15 variables predictivas para loudness.}
     \label{fig:loudness_f_imp}
 \end{figure}
 
 \subsection{Key y mode}
 
-Para la predicción conjunta de la tonalidad y el modo (\textit{Key} y \textit{Mode}), el problema se abordó como una clasificación multiclase de 24 categorías (12 tonalidades mayores y 12 menores). Se implementó un modelo LightGBM optimizado para la métrica de pérdida logarítmica multiclase (\texttt{multi\_logloss}). Durante el entrenamiento, la función de early stopping detuvo el proceso en la iteración 736 al estabilizarse la pérdida de validación en 1,1926.
+Se implementó un modelo LightGBM que optimiza la pérdida logarítmica multiclase (\texttt{multi\_logloss}).
+Durante el entrenamiento, la función de early stopping detuvo el proceso en la iteración 736 al estabilizarse la pérdida de validación en 1,1926.
 
-La evaluación global del modelo alcanzó una exactitud (\textit{accuracy}) de 0,6106 y un F1-Score ponderado de 0,6115. Destaca un AUC-ROC promedio de 0,9589, lo que indica una alta capacidad de discriminación entre las 24 clases. Adicionalmente, la exactitud Top-3 alcanzó un notable 0,8671, demostrando que la tonalidad correcta se encuentra casi siempre entre las tres primeras predicciones del sistema. 
-
-La figura \ref{fig:key_confusion_matrix} presenta la matriz de confusión absoluta. El análisis de los errores revela una fuerte coherencia armónica: cuando el modelo se equivoca en la predicción principal con datos no vistos, las confusiones más frecuentes ocurren con la tonalidad relativa (mayor o menor correspondientes) o con las tonalidades dominante y subdominante.
+La evaluación del modelo alcanzó una exactitud (accuracy) de 0,6106 y un F1-Score ponderado de 0,6115.
+Destaca un AUC-ROC promedio de 0,9589, lo que indica buena capacidad de discriminación entre las 24 clases.
+Adicionalmente, el accuracy del top-3 alcanzó 0,8671, donde la tonalidad correcta se encuentra casi siempre entre las tres primeras predicciones del sistema. 
+La figura \ref{fig:key_confusion_matrix} presenta la matriz de confusión absoluta.
 
 \begin{figure}[htpb]
     \centering
     \includegraphics[width=1.0\textwidth]{key_cr.png}
-    \caption{Matriz de confusión para la clasificación de 24 clases de \textit{Key} y \textit{Mode}.}
+    \caption{Matriz de confusión de key y mode.}
     \label{fig:key_confusion_matrix}
 \end{figure}
 
-Para contextualizar el desempeño, se compararon estos resultados con el extractor de tonalidad de la librería de estado del arte Essentia. La tabla \ref{tab:comparativa_essentia} demuestra que el modelo LightGBM entrenado supera holgadamente a la herramienta de referencia en todas las métricas globales, con una mejora cercana a los 18 puntos porcentuales en exactitud y 20 puntos en F1-Score ponderado.
+El análisis de los errores revela una fuerte coherencia armónica: cuando el modelo se equivoca en la predicción principal con datos no vistos, las confusiones más frecuentes ocurren con la tonalidad relativa (mayor o menor correspondientes) o con las tonalidades dominante y subdominante de la escala mayor o menor correspondiente.
 
-La evaluación global del modelo alcanzó métricas muy superiores a los estándares tradicionales. Destaca un AUC-ROC ponderado de 0,9579, lo que indica una alta capacidad de discriminación entre las 24 clases. 
-
-Para contextualizar este desempeño, la tabla \ref{tab:comparativa_essentia} contrasta los resultados del extractor de tonalidad de la librería Essentia con las predicciones exactas (\textit{Top-1}) y flexibles (\textit{Top-3}) del modelo LightGBM. El algoritmo entrenado supera holgadamente a la herramienta de referencia en todas las métricas. Adicionalmente, al evaluar el \textit{Top-3}, la exactitud y el F1-Score escalan por encima del 86~\%, demostrando que la tonalidad correcta se encuentra casi siempre entre las tres primeras opciones sugeridas por el sistema.
+Para contextualizar este desempeño, la tabla \ref{tab:comparativa_essentia} contrasta los resultados del extractor de tonalidad de la librería Essentia evaluado en el dataset de Plusyc, con las predicciones top-1 y top-3 del modelo LightGBM. El modelo supera a la herramienta de referencia en todas las métricas.
 
 \begin{table}[htpb]
     \centering
-    \caption{Comparativa de métricas globales entre el extractor de Essentia y las predicciones \textit{Top-1} y \textit{Top-3} del modelo LightGBM.}
+    \caption{Métricas de Essentia y del modelo de key y mode.}
     \label{tab:comparativa_essentia}
     \renewcommand{\arraystretch}{1.2}
     \small
@@ -191,26 +235,24 @@ Para contextualizar este desempeño, la tabla \ref{tab:comparativa_essentia} con
         \toprule
         \multirow{2}{*}{\textbf{Métrica}} & \multirow{2}{*}{\textbf{Essentia}} & \multicolumn{2}{c}{\textbf{Modelo LightGBM}} \\
         \cmidrule(l){3-4}
-        & & \textbf{\textit{Top-1}} & \textbf{\textit{Top-3}} \\
+        & & \textbf{Top-1} & \textbf{Top-3} \\
         \midrule
-        Exactitud (\textit{Accuracy})    & 0,4291 & 0,6106 & \textbf{0,8671} \\
-        F1-Score (Macro)                 & 0,3780 & 0,5971 & \textbf{0,8589} \\
-        F1-Score (Ponderado)             & 0,4076 & 0,6115 & \textbf{0,8672} \\
-        AUC-ROC (Ponderado)              & --     & 0,9579 & \textbf{0,9579} \\
+        Exactitud (Accuracy)             & 0,4291 & 0,6106 & 0,8671 \\
+        F1-Score (Macro)                 & 0,3780 & 0,5971 & 0,8589 \\
+        F1-Score (Ponderado)             & 0,4076 & 0,6115 & 0,8672 \\
+        AUC-ROC (Ponderado)              & --     & 0,9579 & 0,9579 \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-Finalmente, el análisis de importancia de variables predictivas confirma la relevancia lógica de los atributos armónicos detallados previamente en el diseño de la solución. La figura \ref{fig:key_feature_importance} detalla que las decisiones del algoritmo dependen primariamente del \textit{Pitch}, las redes tonales (\textit{Tonnetz}), representaciones \textit{Chroma} y los perfiles de estimación tonal (como la fuerza tonal de Temperley). 
+Finalmente, el análisis de importancia de variables predictivas confirma la relevancia de las variables armónicas DSP \ref{tab:espacio_variables}. La figura \ref{fig:key_feature_importance} detalla que las decisiones del algoritmo dependen primariamente del pitch, tonnetz, representaciones chroma y los perfiles de estimación tonal (Temperley y Krumhansl).  % todo revisar si es cierto
 
 \begin{figure}[htpb]
     \centering
     \includegraphics[width=0.85\textwidth]{key_fi.png}
-    \caption{Top-15 variables predictivas del modelo LightGBM para \textit{Key} y \textit{Mode}.}
+    \caption{Top-15 variables predictivas para key y mode.}
     \label{fig:key_feature_importance}
 \end{figure}
-
-A nivel general, el análisis transversal de los tres modelos desarrollados (\textit{Perceptibles}, \textit{Loudness} y \textit{Key/Mode}) evidencia que las características DSP tradicionales y sus diversos estadísticos mantienen el dominio como las variables de mayor impacto predictivo, complementadas transversalmente por los \textit{embeddings} semánticos (PANNs) que operan en conjunto para refinar la generalización.
 
 %El desbalanceo de clases se mitigó mediante pesos algorítmicos (\texttt{class\_weight='balanced'}), alcanzando un F1-Score macro de 0,5735 con LightGBM.
 
@@ -223,40 +265,40 @@ A nivel general, el análisis transversal de los tres modelos desarrollados (\te
 
 \subsection{Tempo}
 
-A diferencia del caso de \textit{Key} y \textit{Mode}, la estimación del \textit{Tempo} representó una excepción en el flujo de trabajo, siendo un escenario donde los extractores directos de librerías DSP (como Essentia) superaron significativamente el rendimiento del modelado predictivo estándar.
+Contrario al caso de \textit{key} y \textit{mode}, y como excepción en la predicción de las variables objetivo en este trabajo, la estimación del \textit{tempo} a través del algoritmo de extracción de \texttt{tempo\_bpm} de Essentia, superó el rendimiento del modelado con técnicas de aprendizaje automático.
 
-Un ensayo inicial utilizando un modelo de regresión con LightGBM —manteniendo el mismo diseño de variables predictivas que los modelos anteriores— demostró ser insuficiente. La evaluación de este modelo arrojó un MAE de 14,8394, un RMSE de 26,7187 y un coeficiente de determinación ($R^2$) prácticamente nulo de 0,0543. Como se evidencia en la figura \ref{fig:tempo_lgbm_rvp}, el modelo de regresión solo presenta capacidad predictiva alrededor de la moda (aproximadamente 120 BPM). Fuera de ese rango central, el algoritmo sobrestima los valores inferiores y subestima los superiores, fallando en capturar la relación con la variable objetivo.
+En un ensayo inicial se utilizó un modelo de regresión con LightGBM, con un diseño similar al de los modelos anteriores, que demostró ser insuficiente. La evaluación de este modelo arrojó un MAE de 14,8394 BPM, un RMSE de 26,7187 y un $R^2$ prácticamente nulo de 0,0543. Como se muestra en la figura \ref{fig:tempo_lgbm_rvp}, el modelo de regresión solo presenta capacidad predictiva alrededor de la moda (aproximadamente 120 BPM). Fuera de ese centro, el algoritmo sobrestima los valores inferiores y subestima los superiores.
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.7\textwidth]{tempo_lgbm_rvp.png}
-    \caption{Dispersión de valores reales vs. estimados para \textit{Tempo} utilizando regresión con LightGBM. Se evidencia la incapacidad del modelo para generalizar fuera de la moda.}
+    \includegraphics[width=0.66\textwidth]{tempo_lgbm_rvp.png}
+    \caption{Relación de valores actuales y estimados para tempo.}
     \label{fig:tempo_lgbm_rvp}
 \end{figure}
 
-Este bajo rendimiento no obedece a un déficit en la extracción de características, sino al fenómeno de multiplicidad descrito durante el preprocesamiento de los datos. La figura \ref{fig:tempo_multiple_relations} ilustra que la relación entre las etiquetas reales y los valores extraídos algorítmicamente no conforma una única línea recta continua, sino múltiples relaciones lineales superpuestas, generadas por la ambigüedad en la percepción de los compases y la confusión de octavas rítmicas (medios tiempos, dobles tiempos, etc.).
+Este bajo rendimiento obedece al fenómeno ilustrado en la figura \ref{fig:tempo_multiple_relations}, donde se observa que la relación entre las etiquetas reales y los valores extraídos con la librería Essentia presenta múltiples relaciones lineales, generadas por el octave error.
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.7\textwidth]{tempo_multiple_relations.png}
-    \caption{Múltiples relaciones lineales y de proporción entre el tempo real (etiqueta) y el extraído por DSP.}
+    \includegraphics[width=0.66\textwidth]{tempo_multiple_relations.png}
+    \caption{Relaciones lineales y entre el tempo actual y el estimado con Essentia.}
     \label{fig:tempo_multiple_relations}
 \end{figure}
 
-Ante la imposibilidad de que una regresión lineal mapee correctamente este ruido estructural en las etiquetas, se optó por analizar las predicciones directas de la librería de estado del arte Essentia. La figura \ref{fig:tempo_distributions} superpone la distribución del tempo real con el extraído (\texttt{tempo\_bpm}), evidenciando una similitud estadística sumamente alta entre ambas curvas.
+Ante la imposibilidad de que una regresión lineal mapee correctamente este ruido estructural en las etiquetas, se optó por analizar el uso directamente de las predicciones de Essentia. La figura \ref{fig:tempo_distributions} superpone la distribución del tempo real con el extraído (\texttt{tempo\_bpm}) y muestra una similitud muy alta entre ambas curvas.
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.7\textwidth]{tempo_distributions.png}
-    \caption{Superposición de distribuciones: Tempo real vs. estimación directa de Essentia (\texttt{tempo\_bpm}).}
+    \includegraphics[width=0.66\textwidth]{tempo_distributions.png}
+    \caption{Histogramas de frecuencias del tempo actual y el estimado con Essentia.}
     \label{fig:tempo_distributions}
 \end{figure}
 
-Para validar esta elección, se analizó el comportamiento del error segmentado por las distintas proporciones métricas detectadas en el conjunto de datos. La tabla \ref{tab:tempo_relaciones_estadisticas} desglosa esta información, donde se aprecia que el 85,3\,\% de las pistas presentan una relación directa ($y \approx x$) con un error medio casi nulo de 0,0091 BPM.
+Se analizó la frecuencia de las proporciones métricas principales observadas y el error asociado. La tabla \ref{tab:tempo_relaciones_estadisticas} desglosa esta información, donde se observa que el 85,3\,\% de las canciones presentan una relación directa ($y \approx x$). En este grupo mayoritario, la diferencia media es de apenas 0,0091 BPM con desviación estándar $\sigma = 2,17$.
 
 \begin{table}[htpb]
     \centering
-    \caption{Estadísticas de la estimación directa de Essentia según la relación proporcional con el tempo real.}
+    \caption{Resultados de la estimación directa de Essentia.}
     \label{tab:tempo_relaciones_estadisticas}
     \renewcommand{\arraystretch}{1.2}
     \small
@@ -273,9 +315,11 @@ Para validar esta elección, se analizó el comportamiento del error segmentado 
     \end{tabular}
 \end{table}
 
-Las métricas finales de Essentia terminan de ratificar su fiabilidad. En una comparación directa estricta ($x = y$), se obtiene un MAE de 12,81 BPM y una exactitud del 80,3\,\% (dentro de un margen de tolerancia de $\pm5$ BPM). Sin embargo, al flexibilizar la evaluación para incorporar las relaciones armónicas rítmicas válidas (mitad, doble, etc.), el error absoluto medio se reduce a \textbf{1,45 ($\pm$4,02) BPM}, con un \textbf{92,4\,\%} de las pistas clasificadas correctamente dentro de la tolerancia. 
+Al evaluar el MAE en el conjunto completo de datos se obtiene un valor de 12,81 BPM y un accuracy del 80,3\,\%, con tolerancia de $\pm5$ BPM. Este error se puede explicar porque contiene el octave error. 
+Al recalcular las métricas dando como similares las proporciones (mitades, dobles, etc.), el MAE global desciende a 1,45 BPM, con accuracy del 92,4\,\%.
 
-Estos resultados evidencian que el atributo DSP \texttt{tempo\_bpm} de Essentia captura la estructura rítmica real de manera mucho más precisa que cualquier intento de forzar una regresión sobre datos inherentemente ambiguos. Por tanto, se estableció prescindir de modelos predictivos adicionales y emplear directamente esta variable extraída como el resultado final para \textit{Tempo}.
+Estos resultados demuestran que la variable \texttt{tempo\_bpm} de Essentia captura el tempo real de forma más efectiva que las regresiones evaluadas dadas las etiquetas ambiguas del \textit{tempo}.
+
 %Se descartaron los estimadores tradicionales por errores de duplicación de pulsos. LightGBM resolvió efectivamente las ambigüedades multilineales mostradas en la figura \ref{fig:multi_linear_tempo}.
 
 % \begin{figure}[htpb]
@@ -287,13 +331,13 @@ Estos resultados evidencian que el atributo DSP \texttt{tempo\_bpm} de Essentia 
 
 \subsection{Speechiness y Liveness}
 
-Tal como se evidenció en la evaluación del modelo multisalida preliminar, las variables \textit{Speechiness} y \textit{Liveness} presentaron un rendimiento deficiente cuando se intentaron predecir exclusivamente con representaciones DSP. El modelo inicial fue incapaz de generalizar los valores altos de estas distribuciones, obteniendo coeficientes de determinación ($R^2$) sumamente bajos (0,2796 y 0,1640, respectivamente). Este comportamiento motivó su separación analítica y la incorporación de los \textit{embeddings} y probabilidades de la red preentrenada PANNs para capturar el contexto semántico necesario.
+En el modelo multisalida inicial, las variables \textit{speechiness} y \textit{liveness} presentaron un rendimiento deficiente cuando se intentaron predecir exclusivamente con las variables DSP. El modelo fue incapaz de predecir valores altos de estas distribuciones, con $R^2$ bajos de 0,2796 y 0,1640, respectivamente. Este comportamiento motivó su preprocesamiento independiente y la incorporación de los embeddings y probabilidades de PANNs inference para capturar el contexto semántico necesario.
 
-Tras el preprocesamiento independiente y la optimización de hiperparámetros, se entrenaron modelos específicos para cada variable. La tabla \ref{tab:comparativa_speech_live} contrasta las métricas del experimento preliminar frente a los modelos definitivos, evidenciando un salto de rendimiento sustancial. En \textit{Speechiness}, el $R^2$ escaló a 0,6748, reduciendo el MAE a 0,0405. Por su parte, el modelo definitivo de \textit{Liveness} alcanzó un $R^2$ de 0,6318. 
+Tras el preprocesamiento y la optimización de hiperparámetros, se entrenaron modelos específicos para cada variable. La tabla \ref{tab:comparativa_speech_live} contrasta las métricas del experimento preliminar frente a los modelos actuales, con mejora en el rendimiento. En \textit{speechiness}, el $R^2$ subió a 0,6748. Por su parte, el modelo de \textit{liveness} alcanzó un $R^2$ de 0,6318. 
 
 \begin{table}[htpb]
     \centering
-    \caption{Comparativa de métricas entre el modelo preliminar DSP y los modelos definitivos con PANNs para \textit{Speechiness} y \textit{Liveness}.}
+    \caption{Métricas en el modelado de speechiness y liveness.}
     \label{tab:comparativa_speech_live}
     \renewcommand{\arraystretch}{1.2}
     \small
@@ -303,69 +347,69 @@ Tras el preprocesamiento independiente y la optimización de hiperparámetros, s
         \cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
         & \textbf{Inicial} & \textbf{Definitivo} & \textbf{Inicial} & \textbf{Definitivo} & \textbf{Inicial} & \textbf{Definitivo} \\
         \midrule
-        \textit{Speechiness} & 0,2796 & \textbf{0,6748} & 0,0570 & \textbf{0,0405} & 0,1024 & \textbf{0,0675} \\
-        \textit{Liveness}    & 0,1640 & \textbf{0,6318} & 0,0978 & \textbf{0,0811} & 0,1392 & \textbf{0,1301} \\
+        \textit{Speechiness} & 0,2796 & 0,6748 & 0,0570 & 0,0405 & 0,1024 & 0,0675 \\
+        \textit{Liveness}    & 0,1640 & 0,6318 & 0,0978 & 0,0811 & 0,1392 & 0,1301 \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-La mejora predictiva se observa gráficamente en la figura \ref{fig:rvp_speech_live}. A diferencia del modelo inicial que colapsaba hacia la media, las estimaciones definitivas logran identificar correctamente los valores atípicos. En \textit{Speechiness} (izquierda), el modelo demuestra capacidad para detectar audios con alto contenido de voz hablada, como pistas de rap o intermedios vocales. En \textit{Liveness} (derecha), el algoritmo penaliza con valores bajos a las grabaciones de estudio puras y logra extender sus predicciones para reconocer las pistas capturadas en vivo.
+La mejora se observa gráficamente en la figura \ref{fig:rvp_speech_live_comparativa}. A diferencia del modelo inicial, las estimaciones del modelo actual logra predicciones acorde a las definiciones. En \textit{speechiness} a la izquierda, el modelo demuestra capacidad para detectar audios con alto contenido de voz hablada, como rap o intermedios vocales. En \textit{liveness} a la derecha, logra reconocer la presencia de público en vivo.
 
 \begin{figure}[htpb]
     \centering
     % Primera fila: Speechiness (Antes vs Después)
-    \begin{subfigure}[b]{0.48\textwidth}
+    \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{speechiness_antes_rvp.png}
-        \caption{Speechiness: Preliminar (Solo DSP)}
+        \includegraphics[width=\textwidth, height=4.5cm]{speechiness_antes_rvp.png}
+        \caption*{Speechiness solo DSP}
         \label{fig:speech_before}
     \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
+    \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{speechiness_despues_rvp.png}
-        \caption{Speechiness: Definitivo (PANNs)}
+        \includegraphics[width=\textwidth, height=4.5cm]{speechiness_despues_rvp.png}
+        \caption*{con DSP y PANNs}
         \label{fig:speech_after}
     \end{subfigure}
 
-    \vspace{0.5cm} % Espacio entre filas
+    \vspace{0.2cm} % Espacio entre filas
 
     % Segunda fila: Liveness (Antes vs Después)
-    \begin{subfigure}[b]{0.48\textwidth}
+    \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{liveness_antes_rvp.png}
-        \caption{Liveness: Preliminar (Solo DSP)}
+        \includegraphics[width=\textwidth, height=4.5cm]{liveness_antes_rvp.png}
+        \caption*{Liveness solo DSP}
         \label{fig:live_before}
     \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
+    \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{liveness_despues_rvp.png}
-        \caption{Liveness: Definitivo (PANNs)}
+        \includegraphics[width=\textwidth, height=4.5cm]{liveness_despues_rvp.png}
+        \caption*{DSP y PANNs}
         \label{fig:live_after}
     \end{subfigure}
 
-    \caption{Comparativa de dispersión entre los modelos preliminares (izquierda) y definitivos (derecha) para \textit{Speechiness} y \textit{Liveness}. Se observa la transición del colapso hacia la media a una capacidad real de discriminación de valores altos.}
+    \caption{Pruebas preliminares (izquierda) y actuales (derecha) para speechiness y liveness.}
     \label{fig:rvp_speech_live_comparativa}
 \end{figure}
 
-El análisis de la importancia de características confirma el impacto absoluto del contexto semántico introducido por PANNs, operando en sinergia con el procesamiento de señales. 
+Se observa en los dos casos que todavía hay algunos valores que no están bien clasificados, y al comprobar algunas muestras es evidente la presencia de ruido en los valores, esto se deja para un trabajo futuro sobre la limpieza de datos con apoyo en PANNs inference.
+El análisis de la importancia de características confirma el impacto del contexto semántico introducido por PANNs. 
 
-Para \textit{Speechiness} (ver figura \ref{fig:f_imp_speechiness}), las variables de mayor peso son directamente las probabilidades de las clases 0000 (\textit{Speech}) y 0156 (\textit{Song}), demostrando que el modelo aprendió a discriminar eficientemente entre la voz hablada y el canto melódico. Asimismo, es notable la presencia de características dinámicas como los deltas de los coeficientes MFCC y el flujo espectral (\textit{Spectral flux}). Estas representaciones DSP son fundamentales porque capturan las transiciones rápidas, el ruido silábico y la naturaleza percusiva típica del fraseo en el rap o el habla, los cuales carecen de las vocales sostenidas del canto.
+Para \textit{speechiness}, en la figura \ref{fig:f_imp_speechiness} se observa que las variables de mayor peso son las probabilidades de las clases 0000 (\textit{speech}) y 0156 (\textit{song}), se prueba que el modelo las tiene en cuenta para diferenciar entre la voz hablada y el canto melódico.
+%todo formato linea anterior
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.85\textwidth]{speechiness_fI.png}
-    \caption{Top-15 variables predictivas para el modelo definitivo de \textit{Speechiness}.}
+    \includegraphics[width=0.65\textwidth]{speechiness_fI.png}
+    \caption{top-15 variables predictivas para speechiness.}
     \label{fig:f_imp_speechiness}
 \end{figure}
 
-Por otro lado, la predicción de \textit{Liveness} (ver figura \ref{fig:f_imp_liveness}) está monopolizada casi en su totalidad por la arquitectura PANNs. El modelo extrae su poder predictivo de los \textit{embeddings} latentes y, de manera explícita, de las desviaciones estándar y medias probabilísticas de las clases 0022 (\textit{Applause}), 0021 (\textit{Cheering}) y 0024 (\textit{Crowd}). Esto evidencia que la percepción de "música en vivo" para la máquina, al igual que para el oyente humano, no depende tanto de la acústica de la sala o de los instrumentos, sino de la detección algorítmica de la respuesta del público.
+Por otro lado, en la figura \ref{fig:f_imp_liveness}, las variables con mayor importancia para la predicción de \textit{Liveness}, están relacionadas con las probabilidades de público en vivo y se observa en las clases 0022 (\textit{applause}), 0021 (\textit{cheering}) y 0024 (\textit{crowd}).
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.85\textwidth]{fi_livenes.png}
-    \caption{Top-15 variables predictivas para el modelo definitivo de \textit{Liveness}.}
+    \includegraphics[width=0.65\textwidth]{fi_livenes.png}
+    \caption{top-15 variables predictivas para liveness.}
     \label{fig:f_imp_liveness}
 \end{figure}
 %Los experimentos sin \textit{embeddings} fracasaron al intentar capturar contexto. Para \textit{Speechiness} y \textit{Liveness}, las predicciones se acotaron al rango $[0, 1]$, logrando un RMSE de 0,0608 y 0,1352 respectivamente. En clasificación, el F1-Score macro fue de 0,2677 para \textit{Primary Mood} y 0,1595 para \textit{Secondary Mood}.
@@ -379,40 +423,48 @@ Por otro lado, la predicción de \textit{Liveness} (ver figura \ref{fig:f_imp_li
 
 \subsection{Suggested Genres}
 
-El problema de clasificar el género musical representó el desafío computacional y semántico más complejo del proyecto debido a la alta granularidad de las etiquetas. Se implementó un clasificador LightGBM (\textit{gbdt}) para distinguir entre 197 géneros y subgéneros. Al tratarse de una cantidad masiva de clases (muchas de ellas con una base rítmica o tímbrica similar), la evaluación priorizó la capacidad del modelo para generar un abanico de sugerencias coherentes de cara al usuario final.
+Para el problema de clasificar 197 géneros y su evaluación, se priorizó la capacidad del modelo para generar sugerencias coherentes.
+Las métricas globales sobre el conjunto de prueba alcanzaron un accuracy y un F1-Score cercanos a 0,47. Si bien predecir el género exacto (top-1) arroja un 46,74\,\% de aciertos, el rendimiento del algoritmo escala muy bien al analizar estimaciones más probables. El accuracy top-3 alcanza un 68,32\,\%, y el accuracy top-5, el 77,31\,\%. Esto significa que, en casi 8 de cada 10 casos, el modelo ubica el género correcto del audio entre sus primeras cinco sugerencias.
 
-Las métricas globales sobre el conjunto de prueba alcanzaron una exactitud (\textit{accuracy}) y un F1-Score (Macro y Ponderado) cercanos a 0,47. Si bien predecir el género exacto (\textit{Top-1}) arroja un 46,74\,\% de aciertos, el rendimiento del algoritmo escala drásticamente al analizar las estimaciones flexibles. La exactitud \textit{Top-3} alcanza un 68,32\,\%, mientras que la exactitud \textit{Top-5} asciende al 77,31\,\%. Esto significa que, en casi 8 de cada 10 casos, el modelo ubica el género correcto del audio entre sus primeras cinco sugerencias.
-
-La figura \ref{fig:genre_confusion_matrix} presenta la matriz de confusión normalizada. Debido a la densidad de las 197 clases, la diagonal principal resalta la concentración de aciertos, pero también expone un alto nivel de dispersión fuera de la diagonal.
+Para el aprendizaje del espacio de clasificación tan complejo, se analizó la evolución de la pérdida logarítmica (\texttt{multi\_logloss}).
+La figura \ref{fig:genre_learning_curve} ilustra las curvas, con descenso continuo en el error de entrenamiento hasta valores cercanos a cero. La curva de validación encuentra su punto de mínima pérdida alrededor de la iteración 150, con un valor cercano a 2,10, y posteriormente se estanca.
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.9\textwidth]{genre_ncm.png}
+    \includegraphics[width=0.7\textwidth]{curva_genre.png} % Asume que crearás esta gráfica con los logs
+    \caption{Curvas de aprendizaje del modelo para la clasificación de géneros.}
+    \label{fig:genre_learning_curve}
+\end{figure}
+
+Este patrón evidencia inicio de sobreajuste, esperado dada la alta densidad de clases acústicamente similares, de ahí la importancia del early stopping.
+
+La figura \ref{fig:genre_confusion_matrix} presenta la matriz de confusión normalizada. Debido a la densidad de las 197 clases, la diagonal principal resalta la concentración de aciertos, y también muestra un bajo nivel de confusión afuera de la diagonal.
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.9\textwidth, height=0.4\textheight]{genre_ncm.png}
     \caption{Matriz de confusión normalizada para la clasificación de 197 géneros musicales.}
     \label{fig:genre_confusion_matrix}
 \end{figure}
 
-Un análisis cualitativo de las predicciones erróneas del modelo (\textit{Top-1}) demuestra que el algoritmo no fracasa de forma aleatoria, sino que sus confusiones poseen una fuerte coherencia acústica y de contexto. Al observar las estimaciones del \textit{Top-5}, se evidencia lo siguiente:
-\begin{itemize}
-    \item \textbf{Agrupación por familia rítmica:} Un audio etiquetado como \textit{Minimal House} fue clasificado erróneamente como \textit{Funk House}, pero el \textit{Top-5} estuvo compuesto exclusivamente por subgéneros de la música electrónica bailable (\textit{Contemporary House}, \textit{Tech House}, \textit{Chicago House}). 
-    \item \textbf{Cruce de estéticas vocales y armónicas:} Una pista de \textit{Trap Soul} se confundió con \textit{Neo-Soul} y \textit{Contemporary R\&B}. De igual manera, un audio de \textit{Alternative Based R\&B/Soul} fue asignado a \textit{Downtempo} y \textit{Neo-Soul}. El modelo detecta correctamente los \textit{grooves} lentos, los bajos profundos y los arreglos vocales sofisticados, confundiendo etiquetas que los propios críticos y curadores humanos suelen debatir.
-    \item \textbf{Similitud de instrumentación:} Una pista de \textit{Latin Traditional} fue catalogada como \textit{Jazz Vocals}. Es altamente probable que la presencia de ensambles acústicos, metales e improvisación vocal haya inducido al modelo a priorizar la textura general del ensamble por encima del ritmo folclórico específico.
-\end{itemize}
-
-Finalmente, la importancia de las características predictivas, expuesta en la figura \ref{fig:genre_feature_importance}, revela que el modelo no se apoya en características semánticas de alto nivel (como los \textit{embeddings}), sino en el análisis físico fundamental del sonido.
+En la figura \ref{fig:genre_feature_importance}, se observa el top-15 de las características predictivas.
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.85\textwidth]{fi_genre.png}
-    \caption{Top-15 variables predictivas del modelo LightGBM para la sugerencia de género (\textit{Suggested Genre}).}
+    \includegraphics[width=0.65\textwidth]{fi_genre.png}
+    \caption{top-15 variables predictivas para género.}
     \label{fig:genre_feature_importance}
 \end{figure}
 
-Para discriminar entre 197 géneros, el algoritmo prioriza fuertemente la intensidad (LUFS y RMS) y las características macro del espectro: la presencia de transientes rítmicos (\textit{Crest factor} y \textit{Spectral flux}), el brillo (\textit{Spectral entropy}) y el contraste espectral, el cual resulta vital para diferenciar arreglos instrumentales densos (como una orquesta de salsa) de géneros minimalistas (como el \textit{Lo-Fi} o el \textit{Minimal House}).
+Para discriminar entre 197 géneros, el algoritmo prioriza fuertemente la intensidad (LUFS y RMS) y las características macro del espectro.
 
+\subsection{Primary y secondary moods}
 
-\section{Validación productiva}
-\label{sec:validacion_produccion}
+Pendiente
+
+\section{Ejemplo de inferencia}
+
+Pendiente
 
 %El cliente CLI \textit{Beethoven} integró la extracción y predicción (\textit{Zahir API}) sobre audios inéditos en OCI, persistiendo los metadatos JSON en la base de datos de forma estable y asíncrona.
 
@@ -423,7 +475,7 @@ Para discriminar entre 197 géneros, el algoritmo prioriza fuertemente la intens
 %     \label{fig:produccion_ejemplo}
 % \end{figure}
 
-%todo Dada la complejidad de objetivos como los géneros musicales, 197 clases resultantes, se priorizó el análisis de la precisión \textit{Top-K} para capturar la pluralidad semántica de la música
+%todo Dada la complejidad de objetivos como los géneros musicales, 197 clases resultantes, se priorizó el análisis de la precisión \textit{top-K} para capturar la pluralidad semántica de la música
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------

@@ -637,7 +637,7 @@ Otra dificultad radica en que al analizar solo el audio, se puede perder el cont
 Se aplicaron las siguientes estrategias:
 \begin{itemize}
     \item Se filtran géneros que no son géneros musicales, sino marcas o artistas.
-    \item Se seleccionan un tope mínumo de 100 muestras por clase para el modelo. De las 585 clases totales, se seleccionan 200 clases que cumplen el criterio y se determinó que las demás quedan pendientes de alcanzar el mínimo de 100 muestras para ser incluidas en el entrenamiento.
+    \item Se seleccionan un tope mínumo de 100 muestras por clase para el modelo. De las 585 clases totales, se seleccionan 197 clases que cumplen el criterio y se determinó que las demás quedan pendientes de alcanzar el mínimo de 100 muestras para ser incluidas en el entrenamiento.
     \item Submuestreo de clases mayoritarias para equilibrar la distribución con techo de 400 muestras por clase. 
     \item Transformación de las categorías mediante label encoding.
     \item Delegación del manejo del desbalance al hiperparámetro de ponderación (\texttt{class\_weights='balanced'}) durante el entrenamiento del clasificador.
@@ -706,7 +706,7 @@ En la tabla \ref{tab:resultados_seleccion} se resume la configuración del proce
 \end{tabular}
 \end{table}
 
-La columna \enquote{Varianza}, indica el umbral del filtro por varianza, \enquote{Validación}, indica el tipo de validación utilizada (Simple o K-Fold), y \enquote{Colinealidad}, indica el umbral de correlación para el filtro por dependencia lineal.
+La columna \textquotedbl Varianza\textquotedbl, indica el umbral del filtro por varianza, \textquotedbl Validación\textquotedbl, indica el tipo de validación utilizada (Simple o K-Fold), y \textquotedbl Colinealidad\textquotedbl, indica el umbral de correlación para el filtro por dependencia lineal.
 
 % todo una tabla de las principales predictivas por modelo
 % todo una imagen de ejemplo de la curva de importancia reducción
