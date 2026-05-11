@@ -42,6 +42,12 @@ clasificados, y al comprobar algunas muestras es evidente la presencia de ruido
 en los valores, esto se deja para un trabajo futuro sobre la limpieza de datos con
 apoyo en PANNs inference
 
+- Los resultados obtenidos en la clasificación de \textit{primary} y \textit{secondary mood} evidencian el impacto directo de la ambigüedad en el etiquetado.
+Las confusiones observadas entre clases semánticamente afines y la falta de definiciones taxonómicas estrictas limitan el desempeño de los modelos.
+En consecuencia, estos hallazgos fundamentan la necesidad de transmitir al equipo de curaduría la urgencia de estandarizar los criterios durante la ingesta manual de datos, garantizando así una mayor objetividad y consistencia para el reentrenamiento en futuras iteraciones del sistema.
+
+- Secondary mood está presente como característica pero actualmente no se usa como un filtro para ambientación en Plusyc.
+Con este modelo, se espera mejorar la calidad de las recomendaciones al considerar tanto el estado de ánimo principal como el secundario.
 %----------------------------------------------------------------------------------------
 %	SECTION 2
 %----------------------------------------------------------------------------------------

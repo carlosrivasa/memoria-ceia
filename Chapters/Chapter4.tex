@@ -237,7 +237,7 @@ Para contextualizar este desempeño, la tabla \ref{tab:comparativa_essentia} con
         \cmidrule(l){3-4}
         & & \textbf{Top-1} & \textbf{Top-3} \\
         \midrule
-        Exactitud (Accuracy)             & 0,4291 & 0,6106 & 0,8671 \\
+        Accuracy                         & 0,4291 & 0,6106 & 0,8671 \\
         F1-Score (Macro)                 & 0,3780 & 0,5971 & 0,8589 \\
         F1-Score (Ponderado)             & 0,4076 & 0,6115 & 0,8672 \\
         AUC-ROC (Ponderado)              & --     & 0,9579 & 0,9579 \\
@@ -424,7 +424,7 @@ Por otro lado, en la figura \ref{fig:f_imp_liveness}, las variables con mayor im
 \subsection{Suggested Genres}
 
 Para el problema de clasificar 197 géneros y su evaluación, se priorizó la capacidad del modelo para generar sugerencias coherentes.
-Las métricas globales sobre el conjunto de prueba alcanzaron un accuracy y un F1-Score cercanos a 0,47. Si bien predecir el género exacto (top-1) arroja un 46,74\,\% de aciertos, el rendimiento del algoritmo escala muy bien al analizar estimaciones más probables. El accuracy top-3 alcanza un 68,32\,\%, y el accuracy top-5, el 77,31\,\%. Esto significa que, en casi 8 de cada 10 casos, el modelo ubica el género correcto del audio entre sus primeras cinco sugerencias.
+Las métricas globales sobre el conjunto de prueba alcanzaron un accuracy y un F1-Score cercanos a 0,47. Si bien predecir el género exacto (top-1) arroja un 46,74\,\% de accuracy, el rendimiento del algoritmo escala muy bien al analizar estimaciones más probables. El accuracy top-3 alcanza un 68,32\,\%, y el accuracy top-5, el 77,31\,\%. Esto significa que, en casi 8 de cada 10 casos, el modelo ubica el género correcto del audio entre sus primeras cinco sugerencias.
 
 Para el aprendizaje del espacio de clasificación tan complejo, se analizó la evolución de la pérdida logarítmica (\texttt{multi\_logloss}).
 La figura \ref{fig:genre_learning_curve} ilustra las curvas, con descenso continuo en el error de entrenamiento hasta valores cercanos a cero. La curva de validación encuentra su punto de mínima pérdida alrededor de la iteración 150, con un valor cercano a 2,10, y posteriormente se estanca.
@@ -438,7 +438,7 @@ La figura \ref{fig:genre_learning_curve} ilustra las curvas, con descenso contin
 
 Este patrón evidencia inicio de sobreajuste, esperado dada la alta densidad de clases acústicamente similares, de ahí la importancia del early stopping.
 
-La figura \ref{fig:genre_confusion_matrix} presenta la matriz de confusión normalizada. Debido a la densidad de las 197 clases, la diagonal principal resalta la concentración de aciertos, y también muestra un bajo nivel de confusión afuera de la diagonal.
+La figura \ref{fig:genre_confusion_matrix} presenta la matriz de confusión normalizada. A pesar de la densidad de las 197 clases, la diagonal principal resalta la concentración de aciertos, y también muestra un bajo nivel de confusión afuera de la diagonal.
 
 \begin{figure}[htpb]
     \centering
@@ -456,11 +456,50 @@ En la figura \ref{fig:genre_feature_importance}, se observa el top-15 de las car
     \label{fig:genre_feature_importance}
 \end{figure}
 
-Para discriminar entre 197 géneros, el algoritmo prioriza fuertemente la intensidad (LUFS y RMS) y las características macro del espectro.
+Para discriminar entre 197 géneros, el algoritmo prioriza fuertemente la intensidad (LUFS y RMS) y las características espectrales.
 
 \subsection{Primary y secondary moods}
 
-Pendiente
+El diseño de los estas categorías fue similar al caso de géneros, aunque presenta un grado de subjetividad aún mayor reflejado en los valores actuales, lo que impacta las métricas obtenidas. 
+
+Para \textit{primary mood}, con 21 clases, el modelo alcanzó un accuracy global de 0,2488 y un F1-Score macro de 0,2416. 
+Al evaluar rangos más amplios: el accuracy escala al 55,81\,\% en el top-3 y al 73,64\,\% en el top-5.
+La figura \ref{fig:mood_primary_confusion} presenta la matriz de confusión normalizada.
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.67\textwidth]{primary_mood_ncm.png}
+    \caption{Matriz de confusión para primary mood.}
+    \label{fig:mood_primary_confusion}
+\end{figure}
+
+Se distingue la diagonal principal y también las clases más difíciles de predecir, como \textit{somber}, que se confinde con \textit{melancholy} y \textit{sentimental}; y \textit{rowdy}, con \textit{excited}, \textit{empowering} y \textit{stirring}; \textit{excited} con \textit{energizing} y \textit{lively} con \textit{excited}. Estos patrones reflejan la subjetividad inherente de las etiquetas, más allá del desbalance de clases.
+Si bien estas métricas (top-1) son modestas, el modelo demuestra capacidad de aprendizaje. 
+Para complementar el análisis, la figura \ref{fig:mood_primary_roc} presenta las curvas ROC bajo el esquema uno contra todos (One-vs-Rest).
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.67\textwidth]{primary_mood_roc.png} % Asegúrate de poner el nombre de archivo correcto
+    \caption{Curvas ROC y valores AUC para primary mood.}
+    \label{fig:mood_primary_roc}
+\end{figure}
+
+Los valores del área bajo la curva (AUC) demuestran capacidad de discriminación binaria individual en la mayoría de los casos. Destacan clases como \textit{peaceful} (0,94) y \textit{tender} (0,88) con alta separabilidad, frente a \textit{lively} (0,68). El algoritmo logra modelar distribuciones de probabilidad a pesar de la ambigüedad de las etiquetas.
+
+El modelo de \textit{secondary mood}, con 102 clases, evidenció un comportamiento similar. El accuracy directo fue del 18,75\,\% con un F1-Score macro de 0,1458. No obstante, al evaluar las sugerencias, el accuracy subió progresivamente al 46,57\,\% en el top-5 y a 79,00\,\% recién en el top-20.
+la figura \ref{fig:mood_secondary_confusion} ilustra la matriz de confusión normalizada de \textit{secondary mood}, donde también se muestra una diagonal principal que indica aprendizaje.
+También algunas líneas verticales muestran cierta tendencia a preferir las clases predominantes.
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.75\textwidth]{secondary_mood_ncm.png} % Ajusta al nombre de tu archivo
+    \caption{Matriz de confusión normalizada de secondary mood.}
+    \label{fig:mood_secondary_confusion}
+\end{figure}
+
+Aunque las métricas estrictas son bajas en comparación con otras variables analizadas, la evolución positiva en las precisiones top-K confirma que ambos modelos lograron extraer señal de las variables de entrada y que las predicciones se agrupan consistentemente dentro de espectros de estados de ánimo similares. Este comportamiento resulta útil en el contexto de Plusyc.
+
+\textit{Secondary mood} está presente como característica pero actualmente no se usa como un filtro para ambientación en Plusyc. Esto también explica el desbalance, los curadores tienden a favorecer algunos estados de ánimo secundarios más que otros.
 
 \section{Ejemplo de inferencia}
 
