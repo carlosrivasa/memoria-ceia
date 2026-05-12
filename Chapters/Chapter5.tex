@@ -2,9 +2,15 @@
 
 \chapter{Conclusiones} % Main chapter title
 
-\label{Chapter5} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
-Todos los capítulos deben comenzar con un breve párrafo introductorio que indique cuál es el contenido que se encontrará al leerlo.  La redacción sobre el contenido de la memoria debe hacerse en presente y todo lo referido al proyecto en pasado, siempre de modo impersonal.
+Este capítulo presenta un resumen de los logros y las dificultades para llegar al estado actual del tabajo y sugiere una serie de siguientes pasos para la evolución del sistema.
 
+\label{Chapter5} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+
+\section{Conclusiones generales}
+
+En este trabajo se propuso diseñar e implementar un sistema capaz de predecir características musicales a partir de audio de canciones. El objetivo principal fue automatizar
+un proceso tradicionalmente manual y laborioso de clasificación musical y reducir la dependencia de servicios de tercecros para evitar costos recurrentes.
+el trabajo está en producción, y clasifica las canciones que ingresan al sistema. En relación a los objetivos se puede concluir que:
 
 %----------------------------------------------------------------------------------------
 
@@ -12,45 +18,70 @@ Todos los capítulos deben comenzar con un breve párrafo introductorio que indi
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
-\section{Conclusiones generales }
-
-La idea de esta sección es resaltar cuáles son los principales aportes del trabajo realizado y cómo se podría continuar. Debe ser especialmente breve y concisa. Es buena idea usar un listado para enumerar los logros obtenidos.
-
-En esta sección no se deben incluir ni tablas ni gráficos.
-
-Algunas preguntas que pueden servir para completar este capítulo:
-
 \begin{itemize}
-\item ¿Cuál es el grado de cumplimiento de los requerimientos?
-\item ¿Cuán fielmente se puedo seguir la planificación original (cronograma incluido)?
-\item ¿Se manifestó algunos de los riesgos identificados en la planificación? ¿Fue efectivo el plan de mitigación? ¿Se debió aplicar alguna otra acción no contemplada previamente?
-\item Si se debieron hacer modificaciones a lo planificado ¿Cuáles fueron las causas y los efectos?
-\item ¿Qué técnicas resultaron útiles para el desarrollo del proyecto y cuáles no tanto?
+\item Se cumplió la totalidad de los requerimientos técnicos al lograr la caracterización de las variables solicitadas a partir de los datos de plusyc.
+\item La extracción de variables acústicas tradicionales sirvió como base, pero la inclusión de embeddings y probabilidades de PANNs fue lo que permitió resolver las variables semánticas complejas. Sin esto último, no se habría completado el trabajo.
+\item Se aplicaron acciones para mitigar problemas en los datos. Fue necesario aplicar técnicas de preprocesamiento; se cortó el histórico en una fecha específica para aislar un cambio en la distribución de los datos.
+\item Se entrenaron modelos de aprendizaje automático para predecir las características musicales y la evaluación de las métricas de rendimiento dan resultados productivos, acorde al análisis y diseño realizados.
+\item La decisión de usar PyTorch y PANNs permitió no depender de licencias ni pagar costos por consultas a modelos de terceros, también facilitó el trabajo al no requerir de arquitecturas complejas.
+\item En específico, la clasificación de estados de ánimo y géneros sugiere que la ambigüedad humana al etiquetar afecta el aprendizaje. Estos resultados indican que el equipo de curaduría necesita estandarizar los criterios para la ingesta manual de datos.
+\item Para la detección de público en vivo y habla en canciones, se requirió de limpieza de ruido por falsas etiquetas apoyada en modelos preentrenados.
+\item La ejecución tomó más tiempo del planificado en el cronograma original. Hubo una subestimación del esfuerzo, ya que la cantidad de modelos obligó a iterar más de lo previsto para encontrar resultados aceptables.
+
 \end{itemize}
 
-
-WIP Algunas notas tomadas del capítulo 4
-
-- Acordarse de instrumentalness y la clasificación
-
-- A nivel general, el análisis transversal de los tres modelos desarrollados (perceptibles, loudness y key/mode) evidencia que las características DSP tradicionales y sus
-diversos estadísticos mantienen el dominio como las variables de mayor impacto predictivo, complementadas transversalmente por los embeddings semánticos
-(PANNs) que operan en conjunto para refinar la generalización.
-
-- Se observa en los dos casos que todavía hay algunos valores que no están bien
-clasificados, y al comprobar algunas muestras es evidente la presencia de ruido
-en los valores, esto se deja para un trabajo futuro sobre la limpieza de datos con
-apoyo en PANNs inference
-
-- Los resultados obtenidos en la clasificación de \textit{primary} y \textit{secondary mood} evidencian el impacto directo de la ambigüedad en el etiquetado.
-Las confusiones observadas entre clases semánticamente afines y la falta de definiciones taxonómicas estrictas limitan el desempeño de los modelos.
-En consecuencia, estos hallazgos fundamentan la necesidad de transmitir al equipo de curaduría la urgencia de estandarizar los criterios durante la ingesta manual de datos, garantizando así una mayor objetividad y consistencia para el reentrenamiento en futuras iteraciones del sistema.
-
-- Secondary mood está presente como característica pero actualmente no se usa como un filtro para ambientación en Plusyc.
-Con este modelo, se espera mejorar la calidad de las recomendaciones al considerar tanto el estado de ánimo principal como el secundario.
-%----------------------------------------------------------------------------------------
-%	SECTION 2
-%----------------------------------------------------------------------------------------
 \section{Próximos pasos}
 
-Acá se indica cómo se podría continuar el trabajo más adelante.
+Algunos aspectos que se podrían mejorar o explorar en el futuro son:
+
+\begin{itemize}
+\item Los modelos actuales quedan como base para iteraciones futuras.
+\item Se deja como pendiente usar las inferencias de PANNs para mejorar la limpieza de algunos datos y corregir audios mal etiquetados.
+\item La predicción de instrumentalness es un caso que se sugiere revisar puntualmente, ya que presenta ruido en los valores intermedios por falta de definiciones claras.
+El modelo actual logra diferenciar una canción instrumental de una que no lo es, pero los valores en el medio no son claros.
+\item También se sugiere iterar sobre el tempo para buscar una solución más robusta que el algoritmo de DSP.
+\item El equipo de curadores sigue clasificando música. Se contempla automatizar un reentrenamiento periódico para que el sistema aprenda nuevos géneros cada vez que una clase alcance un mínimo de 100 muestras.
+\item Se propone empezar a usar el estado de ánimo secundario como filtro en Plusyc para mejorar la precisión de las recomendaciones musicales.
+\item El sistema se puede ajustar para el despliegue bajo el modelo de software como servicio para ofrecer el servicio al público interesado.
+\item Se podría evaluar a futuro el uso de arquitecturas basadas en transformadores para audios, si se cuenta con mayor capacidad de cómputo, para buscar mejoras en la clasificación de clases densas.
+\end{itemize}
+
+% TODO REVISAR LO DE TRANSFORMERS Y OTRAS TÉCNICAS MÁS RECIENTES Y PESADAS.
+%----------------------------------------------------------------------------------------
+
+%   SECTION 2
+
+%----------------------------------------------------------------------------------------
+
+% \section{Próximos pasos}
+
+
+
+% Acá se indica cómo se podría continuar el trabajo más adelante.
+
+
+
+% \section{Conclusiones generales}
+
+% % Este capítulo resume los hallazgos del proyecto y establece la hoja de ruta para su evolución en Plusyc.
+
+% \begin{itemize}
+% \item Se cumplió la totalidad de los requerimientos técnicos al lograr la caracterización de las variables acústicas solicitadas.
+% \item La ejecución tomó más tiempo del planificado en el cronograma original. Hubo una subestimación del esfuerzo, ya que la cantidad de modelos obligó a iterar más de lo previsto para encontrar resultados aceptables.
+% \item Se aplicaron acciones para mitigar problemas en los datos. Se cortó el histórico en enero de 2026 para aislar un cambio en la distribución de los registros. Además, se usó submuestreo y limpieza con modelos preentrenados para compensar el desbalance en clases como liveness y speechiness.
+% \item La extracción de variables acústicas tradicionales sirvió como base, pero la inclusión de embeddings y probabilidades de PANNs fue lo que permitió resolver las variables semánticas complejas. Sin esto último, no se habría completado el trabajo.
+% \item La clasificación de estados de ánimo y géneros demostró que la ambigüedad humana al etiquetar afecta el aprendizaje. Estos resultados indican que el equipo de curaduría necesita estandarizar los criterios para la ingesta manual de datos.
+% \item Se optó por usar PyTorch y PANNs para no depender de licencias ni pagar costos por consultas a modelos de terceros. El sistema se desplegó bajo el modelo de software como servicio para facilitar un procesamiento escalable y asíncrono.
+% \end{itemize}
+
+% \section{Próximos pasos}
+
+% % Acá se indica cómo se podría continuar el trabajo más adelante.
+
+% \begin{itemize}
+% \item Los modelos actuales quedan como base para iteraciones futuras. Se debe revisar puntualmente instrumentalness, ya que presenta mucho ruido por falta de definiciones claras en los valores intermedios.
+% \item Se deja como trabajo pendiente usar las inferencias de PANNs para automatizar la limpieza de datos en el histórico y corregir audios mal etiquetados.
+% \item El equipo de curadores sigue clasificando música. Se contempla automatizar un reentrenamiento periódico para que el sistema aprenda nuevos géneros cada vez que una clase alcance un mínimo de 100 muestras.
+% \item Se propone empezar a usar el estado de ánimo secundario como filtro en Plusyc para mejorar la precisión de las recomendaciones musicales.
+% \item Se sugiere evaluar a futuro el uso de arquitecturas basadas en transformadores para audios, si se cuenta con mayor capacidad de cómputo, para buscar mejoras en la clasificación de clases densas como los géneros.
+% \end{itemize}

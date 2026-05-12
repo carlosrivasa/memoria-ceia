@@ -298,7 +298,7 @@ Se analizó la frecuencia de las proporciones métricas principales observadas y
 
 \begin{table}[htpb]
     \centering
-    \caption{Resultados de la estimación directa de Essentia.}
+    \caption{Resultados de la estimación de tempo de Essentia.}
     \label{tab:tempo_relaciones_estadisticas}
     \renewcommand{\arraystretch}{1.2}
     \small
@@ -400,7 +400,7 @@ Para \textit{speechiness}, en la figura \ref{fig:f_imp_speechiness} se observa q
 \begin{figure}[htpb]
     \centering
     \includegraphics[width=0.65\textwidth]{speechiness_fI.png}
-    \caption{top-15 variables predictivas para speechiness.}
+    \caption{Top-15 variables predictivas para speechiness.}
     \label{fig:f_imp_speechiness}
 \end{figure}
 
@@ -408,8 +408,8 @@ Por otro lado, en la figura \ref{fig:f_imp_liveness}, las variables con mayor im
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.65\textwidth]{fi_livenes.png}
-    \caption{top-15 variables predictivas para liveness.}
+    \includegraphics[width=0.58\textwidth]{fi_livenes.png}
+    \caption{Top-15 variables predictivas para liveness.}
     \label{fig:f_imp_liveness}
 \end{figure}
 %Los experimentos sin \textit{embeddings} fracasaron al intentar capturar contexto. Para \textit{Speechiness} y \textit{Liveness}, las predicciones se acotaron al rango $[0, 1]$, logrando un RMSE de 0,0608 y 0,1352 respectivamente. En clasificación, el F1-Score macro fue de 0,2677 para \textit{Primary Mood} y 0,1595 para \textit{Secondary Mood}.
@@ -431,7 +431,7 @@ La figura \ref{fig:genre_learning_curve} ilustra las curvas, con descenso contin
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.7\textwidth]{curva_genre.png} % Asume que crearás esta gráfica con los logs
+    \includegraphics[width=0.75\textwidth]{curva_genre.png} % Asume que crearás esta gráfica con los logs
     \caption{Curvas de aprendizaje del modelo para la clasificación de géneros.}
     \label{fig:genre_learning_curve}
 \end{figure}
@@ -452,7 +452,7 @@ En la figura \ref{fig:genre_feature_importance}, se observa el top-15 de las car
 \begin{figure}[htpb]
     \centering
     \includegraphics[width=0.65\textwidth]{fi_genre.png}
-    \caption{top-15 variables predictivas para género.}
+    \caption{Top-15 variables predictivas para género.}
     \label{fig:genre_feature_importance}
 \end{figure}
 
@@ -462,13 +462,13 @@ Para discriminar entre 197 géneros, el algoritmo prioriza fuertemente la intens
 
 El diseño de los estas categorías fue similar al caso de géneros, aunque presenta un grado de subjetividad aún mayor reflejado en los valores actuales, lo que impacta las métricas obtenidas. 
 
-Para \textit{primary mood}, con 21 clases, el modelo alcanzó un accuracy global de 0,2488 y un F1-Score macro de 0,2416. 
+Para \textit{primary mood}, el modelo alcanzó un accuracy global de 0,2488 y un F1-Score macro de 0,2416. 
 Al evaluar rangos más amplios: el accuracy escala al 55,81\,\% en el top-3 y al 73,64\,\% en el top-5.
-La figura \ref{fig:mood_primary_confusion} presenta la matriz de confusión normalizada.
+La figura \ref{fig:mood_primary_confusion} presenta la matriz de confusión.
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.67\textwidth]{primary_mood_ncm.png}
+    \includegraphics[width=0.63\textwidth]{primary_mood_ncm.png}
     \caption{Matriz de confusión para primary mood.}
     \label{fig:mood_primary_confusion}
 \end{figure}
@@ -479,12 +479,12 @@ Para complementar el análisis, la figura \ref{fig:mood_primary_roc} presenta la
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.67\textwidth]{primary_mood_roc.png} % Asegúrate de poner el nombre de archivo correcto
+    \includegraphics[width=0.7\textwidth]{primary_mood_roc.png} % Asegúrate de poner el nombre de archivo correcto
     \caption{Curvas ROC y valores AUC para primary mood.}
     \label{fig:mood_primary_roc}
 \end{figure}
 
-Los valores del área bajo la curva (AUC) demuestran capacidad de discriminación binaria individual en la mayoría de los casos. Destacan clases como \textit{peaceful} (0,94) y \textit{tender} (0,88) con alta separabilidad, frente a \textit{lively} (0,68). El algoritmo logra modelar distribuciones de probabilidad a pesar de la ambigüedad de las etiquetas.
+Los valores del área bajo la curva (AUC) demuestran capacidad de discriminación en la mayoría de los casos. Destacan clases como \textit{peaceful} (0,94) y \textit{tender} (0,88) con alta separabilidad, frente a \textit{lively} (0,68). El algoritmo logra modelar distribuciones de probabilidad a pesar de la ambigüedad de las etiquetas.
 
 El modelo de \textit{secondary mood}, con 102 clases, evidenció un comportamiento similar. El accuracy directo fue del 18,75\,\% con un F1-Score macro de 0,1458. No obstante, al evaluar las sugerencias, el accuracy subió progresivamente al 46,57\,\% en el top-5 y a 79,00\,\% recién en el top-20.
 la figura \ref{fig:mood_secondary_confusion} ilustra la matriz de confusión normalizada de \textit{secondary mood}, donde también se muestra una diagonal principal que indica aprendizaje.
@@ -503,7 +503,110 @@ Aunque las métricas estrictas son bajas en comparación con otras variables ana
 
 \section{Ejemplo de inferencia}
 
-Pendiente
+Para demostrar el funcionamiento integral del sistema, se ejecutó una inferencia cuya entrada es la canción de Radiohead presentada en los primeros capítulos. El archivo de audio se procesó a través de de la API.
+A continuación, se presenta la respuesta en formato JSON:
+
+\begin{lstlisting}[language=json, basicstyle=\ttfamily\footnotesize, caption={Respuesta JSON de inferencia}, label={lst:json_inferencia}]
+{
+  "success": true,
+  "data": {
+    "Key": {
+      "value": [
+        { "key": 11, "mode": 0, "key_mode": "B Minor", "prob": "70.18%" },
+        { "key": 2, "mode": 1, "key_mode": "D Major", "prob": "17.52%" },
+        { "key": 4, "mode": 0, "key_mode": "E Minor", "prob": "10.32%" }
+      ]
+    },
+    "Tempo": { 
+        "value": 105 
+    },
+    "Loudness": { 
+        "value": -7.966 
+    },
+    "Fivep": { 
+        "value": { 
+            "acousticness": 0.622, "danceability": 0.502, "energy": 0.638, "instrumentalness": 0.555, "valence": 0.368
+        }
+    },
+    "Liveness": { 
+        "value": 0.116 
+    },
+    "Speechiness": { 
+        "value": 0.035 
+    },
+    "MoodPrimary": {
+        "top_5": 
+        "Yearning 18.20%, Stirring 13.95%, Melancholy 9.87%, Brooding: 8.87%, Rowdy:7.67%" 
+    },
+    "MoodSecondary": {
+        "top_5": 
+        "Cool Melancholy 6.30%, Lyrical Sentimental 4.89%, Awakening / Stately 4.64%, Light Melancholy 4.55%, Gentle Bittersweet 4.17%" 
+    },
+    "GenreTarget": {
+        "top_5": 
+        "Mainstream 90s and 00s Rock, Alternative Rock, General Latin Rock, General Downtempo, General Indie Rock"
+    }
+  }
+}
+\end{lstlisting}
+
+Las figuras \ref{fig:ui_inference_tabs_part1} y \ref{fig:ui_inference_tabs_part2} exponen una representación visual de estos resultados en una interfaz de usuario.
+
+\begin{figure}[htpb]
+    \centering
+% Tab 1: Overview
+    \begin{subfigure}[b]{0.8\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{ui_load.png}
+        \caption*{Selección de la canción}
+    \end{subfigure}
+
+    % Tab 1: Overview
+    \begin{subfigure}[b]{0.8\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{ui_overview.png}
+        \caption*{Resumen general, key, mode, tempo, loudness}
+    \end{subfigure}
+    
+    % Tab 2: Features
+    \begin{subfigure}[b]{0.8\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{ui_features.png}
+        \caption*{Características perceptibles}
+    \end{subfigure}
+
+    \caption{Visualización de los resultados de inferencia en una interfaz web (parte 1).}
+    \label{fig:ui_inference_tabs_part1}
+\end{figure}
+
+Si se comparan los resultados de la inferencia con los resultados de la imagen de Tunebat, para la misma canción, se puede observar alta similitud en los datos.
+
+El único valor que está desfasado en este caso es el \textit{tempo}, para el que no se usó un modelo de inferencia sino el algoritmo de extracción de \textit{tempo} de Essentia.
+Además, el desfase ocurre en proporción 0.75x en relación al valor real, posibilidad que se sugirió en la sección de resultados.
+
+Los estados de ánimo y géneros también muestran resultados coherentes con los esperados.
+
+\begin{figure}[htpb]
+    \centering
+
+        % Tab 3: Moods
+    \begin{subfigure}[b]{0.8\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{ui_mood.png}
+        \caption*{Primary y secondary moods}
+    \end{subfigure}
+
+    % Tab 4: Genres
+    \begin{subfigure}[b]{0.8\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{ui_genres.png}
+        \caption*{Suggested genres}
+    \end{subfigure}
+
+    \caption{Visualización de los resultados de inferencia en una interfaz web (parte 2).}
+    \label{fig:ui_inference_tabs_part2}
+\end{figure}
+
 
 %El cliente CLI \textit{Beethoven} integró la extracción y predicción (\textit{Zahir API}) sobre audios inéditos en OCI, persistiendo los metadatos JSON en la base de datos de forma estable y asíncrona.
 

@@ -52,6 +52,24 @@
   \def\textunderscore{\_} % Manejo del subrayado en marcadores
 }
 
+\colorlet{punct}{red!60!black}
+\definecolor{delim}{RGB}{20,105,176}
+\colorlet{numb}{magenta!60!black}
+
+\lstdefinelanguage{json}{
+    basicstyle=\normalfont\ttfamily\small,
+    numbers=left,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    stringstyle=\color{blue},
+    literate=
+     {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+     {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+     {ñ}{{\~n}}1 {Ñ}{{\~N}}1
+}
 
 % Definir comandos requeridos por la clase
 \newcommand{\degreename}{Carrera de Especialización en Inteligencia Artificial} % Cambia según tu título
