@@ -206,7 +206,7 @@ Este enfoque matemático permite comprimir el volumen masivo de información de 
 
 Algunos experimentos preliminares sirvieron para validar que esta representación permitía capturar la información esencial de la canción de manera eficiente y compacta.
 El algoritmo de extracción, es el resultado de pruebas con distintas configuraciones de variables, estadísticos y métodos de segmentación.
-% todo referencia cruzada cap 4
+En el capítulo \ref{Chapter4} se presentan los resultados del conjunto de variables predictivas más importantes por variable objetivo.
 
 \subsection{Definición del espacio de variables}
 
@@ -364,8 +364,7 @@ Se encuentra que \textit{tempo} es un caso especial ya que presenta errores de o
     \item La presencia de errores de octava complica el uso de algoritmos de regresión lineal ya que se observan múltiples relaciones lineales entre variables rítmicas predictivas y el tempo global (ej. predecir 60 BPM para una pista etiquetada en 120 BPM).% Un ejemplo de esta relación se muestra en la figura \ref{fig:multi_linear_tempo}, donde el \textit{tempo} real etiquetado muestra múltiples relaciones lineales con la variable predictiva \textit{tempo} estimada desde Essentia. 
 \end{itemize}
 
-Se contempla la evaluación de los algoritmos DSP de estimación de \textit{tempo} integrados en las bibliotecas de DSP, esta comparación se muestra en la sección de validación. 
-%todo enlace a secciónes modelado y validación 
+Se contempla la evaluación de los algoritmos DSP de estimación de \textit{tempo} integrados en las bibliotecas de DSP, esta comparación se muestra en la sección \ref{sec:tempo} del capítulo siguiente. 
 
 \subsubsection{Acousticness, danceability, energy, instrumentalness y valence}
 Este grupo comprende variables perceptibles continuas evaluadas en el rango $[0, 1]$: \textit{acousticness}: confianza acústica, \textit{danceability}: bailaibilidad métrica, \textit{energy}: intensidad enérgica, \textit{instrumentalness}: ausencia vocal y \textit{valence}: positividad musical \citep{spotify2024audiofeatures}.
@@ -421,57 +420,6 @@ La figura \ref{fig:dist_fivep} muestra las distribuciones de frecuencia de los v
 \end{figure}
 
 Aunque todas comparten un rango de $[0, 1]$, presentan comportamientos distintos: \textit{danceability} muestra una distribución aproximadamente normal; \textit{energy} presenta sesgo negativo; \textit{valence} tiende a la uniformidad; mientras que \textit{acousticness} y de forma extrema, \textit{instrumentalness}, exhiben un sesgo positivo con una concentración masiva de valores cercanos a cero.
-
- % todo
- % MLP estos valores residuales fueron imputados con cero, solo en el caso de MLP no en arboles.
- % Escalado y estandarización también aplica en el caso de MLP no en arboles.
-
-
-
-% \begin{figure}[htpb]
-%     \centering
-%     % Primera fila: 3 imágenes
-%     \begin{subfigure}[b]{0.32\textwidth}
-%         \centering
-%         \includegraphics[width=\textwidth]{distribucion_de_acousticness.pdf}
-%         \caption{Acousticness}
-%         \label{fig:dist_acousticness}
-%     \end{subfigure}
-%     \hfill
-%     \begin{subfigure}[b]{0.32\textwidth}
-%         \centering
-%         \includegraphics[width=\textwidth]{distribucion_de_danceability.pdf}
-%         \caption{Danceability}
-%         \label{fig:dist_danceability}
-%     \end{subfigure}
-%     \hfill
-%     \begin{subfigure}[b]{0.32\textwidth}
-%         \centering
-%         \includegraphics[width=\textwidth]{distribucion_de_energy.pdf}
-%         \caption{Energy}
-%         \label{fig:dist_energy}
-%     \end{subfigure}
-    
-%     \vspace{0.4cm}
-    
-%     % Segunda fila: 2 imágenes centradas
-%     \begin{subfigure}[b]{0.32\textwidth}
-%         \centering
-%         \includegraphics[width=\textwidth]{distribucion_de_instrumentalness.pdf}
-%         \caption{Instrumentalness}
-%         \label{fig:dist_instrumentalness}
-%     \end{subfigure}
-%     \hspace{0.05\textwidth} % Espaciado manual para centrar las dos inferiores
-%     \begin{subfigure}[b]{0.32\textwidth}
-%         \centering
-%         \includegraphics[width=\textwidth]{distribucion_de_valence.pdf}
-%         \caption{Valence}
-%         \label{fig:dist_valence}
-%     \end{subfigure}
-    
-%     \caption[Distribuciones de características perceptibles]{Distribuciones de características perceptibles en el catálogo de Plusyc.}
-%     \label{fig:dist_fivep}
-% \end{figure}
 
 El modelado conjunto de múltiples características se aborda convencionalmente mediante redes neuronales, como el Perceptrón Multicapa (MLP), dada su capacidad para aprender de forma simultánea las relaciones complejas y dependencias no lineales entre ellas \citep{goodfellow2016deep}. Bajo esta premisa, el preprocesamiento requiere prestar atención específica en:
 
@@ -708,10 +656,6 @@ En la tabla \ref{tab:resultados_seleccion} se resume la configuración del proce
 
 La columna \textquotedbl Varianza\textquotedbl, indica el umbral del filtro por varianza, \textquotedbl Validación\textquotedbl, indica el tipo de validación utilizada (Simple o K-Fold), y \textquotedbl Colinealidad\textquotedbl, indica el umbral de correlación para el filtro por dependencia lineal.
 
-% todo una tabla de las principales predictivas por modelo
-% todo una imagen de ejemplo de la curva de importancia reducción
-% todo otra imagen quizas en sección 4 de resultados con el feature importance del modelo final  
-
 \section{Modelado y optimización}
 \label{sec:modelado_optimizacion}
 % Aquí se abordará el proceso de modelado y la búsqueda de hiperparámetros.
@@ -743,10 +687,9 @@ Para la predicción del resto de las variables, se implementaron modelos basados
 El diseño de los modelos se adaptó a la naturaleza de cada variable objetivo, con base en el preprocesamiento detallado en etapas anteriores:
 
 \begin{itemize}
-    \item \textit{Key / mode, primary, secondary moods} y \textit{suggested genres}: mayor peso a las clases minoritarias mediante el parámetro \texttt{class\_weight='balanced'} y se evaluó el desempeño con la métrica F1-Score macro. 
+    \item \textit{Key / mode, primary, secondary moods} y \textit{suggested genres}: e configuró la función de pérdida logarítmica multiclase (\texttt{multi\_logloss}) para la optimización del entrenamiento. Se otorgó mayor peso a las clases minoritarias mediante el parámetro \texttt{class\_weight='balanced'} y se evaluó el desempeño con la métrica F1-Score macro. 
     \item \textit{Liveness, speechiness}: la separación de los conjuntos de entrenamiento y validación se ejecutó de forma estratificada tras discretizar las variables en rangos probabilísticos.
-    % todo quizas esto es de la sección de validación
-    \item \textit{Loudness}: la optimización evaluó el MAE, y el modelado definitivo se configuró mediante regresión estándar (L2) para minimizar el error cuadrático medio (RMSE). Esto demostró una mejora en la predicción en volúmenes extremos.
+    \item \textit{Loudness}: la optimización evaluó el MAE, y el modelado definitivo se configuró mediante regresión estándar (L2) para minimizar el error cuadrático medio (RMSE). Esto demostró una mejora en la predicción en volúmenes extremos como se puede ver en la sección \ref{sec:loudness_3}.
 \end{itemize}
 
 \subsubsection{Optimización de hiperparámetros y regularización}
@@ -823,11 +766,7 @@ El ciclo de vida de la integración, ilustrado en la figura \ref{fig:diagrama_ar
     \label{fig:diagrama_arquitectura}
 \end{figure}
 
-% todo referencias cruzadas si las hay
-% todo ver todos
-% todo revisar si hay algo para mover a validación
-% todo checklist clase
-% todo siento que falta describir un poco más la arquitectura de panns inference
+% todo siento que falta describir un poco más la arquitectura de panns inference, o en relidad no es necesario porque está referenciado y simplemente debo entender la arquitectura de la red, tienes un enlace para ver un diagrama?
 
 % \begin{verbatim}
 % \begin{lstlisting}[caption= "un epígrafe descriptivo"]

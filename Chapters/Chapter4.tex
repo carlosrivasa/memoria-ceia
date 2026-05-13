@@ -1,6 +1,4 @@
 % Chapter Template
-
-% todo en la parte de datasets se me sugirió mover aquí esto...
 % Algunos de los experimentos que no resultaron exitosos comprenden:
 % pruebas con solo variables predictivas sin embeddings, demuestran que no es posible capturar eventos como el público en vivo o el habla en los primeros intentos de inferencia de \textit{liveness} y \textit{speechiness}. Las pruebas con embeddings pero sin variables predictivas en general no proporcionan la información de \textit{key}, \textit{tempo}, \textit{loudness}, \textit{mood} o \textit{genres}.
 % Pruebas con distintas ventanas resultaron ser ineficientes en el proceso de extracción de más de 60~000 canciones. Pruebas aplicando todos los estadísticos resultaron en un espacio de variables que consume mucho espacio de almacenamiento y con alta correlación.
@@ -160,6 +158,7 @@ También es interesante la ausencia de embeddings y probabilidades de PANNs en e
 
 
 \subsection{Loudness}
+\label{sec:loudness_3}
 
 La inferencia de \textit{loudness} consistió en un modelo de regresión LightGBM. En la configuración inicial se probó con penalización L1 (\texttt{regression\_l1}). La figura \ref{fig:loudness_learning_curves} expone las curvas de aprendizaje para este experimento, donde se observa el descenso de los errores de entrenamiento y validación a medida que se suman árboles al modelo. La trayectoria y estabilización conjunta de ambas curvas evidencian un aprendizaje estable.
 
@@ -245,7 +244,7 @@ Para contextualizar este desempeño, la tabla \ref{tab:comparativa_essentia} con
     \end{tabular}
 \end{table}
 
-Finalmente, el análisis de importancia de variables predictivas confirma la relevancia de las variables armónicas DSP \ref{tab:espacio_variables}. La figura \ref{fig:key_feature_importance} detalla que las decisiones del algoritmo dependen primariamente del pitch, tonnetz, representaciones chroma y los perfiles de estimación tonal (Temperley y Krumhansl).  % todo revisar si es cierto
+Finalmente, el análisis de importancia de variables predictivas confirma la relevancia de las variables armónicas DSP \ref{tab:espacio_variables}. La figura \ref{fig:key_feature_importance} detalla que las decisiones del algoritmo dependen primariamente del pitch, tonnetz, representaciones chroma, espectrales y los perfiles de estimación tonal de Temperley.
 
 \begin{figure}[htpb]
     \centering
@@ -264,7 +263,7 @@ Finalmente, el análisis de importancia de variables predictivas confirma la rel
 % \end{figure}
 
 \subsection{Tempo}
-
+\label{sec:tempo}
 Contrario al caso de \textit{key} y \textit{mode}, y como excepción en la predicción de las variables objetivo en este trabajo, la estimación del \textit{tempo} a través del algoritmo de extracción de \texttt{tempo\_bpm} de Essentia, superó el rendimiento del modelado con técnicas de aprendizaje automático.
 
 En un ensayo inicial se utilizó un modelo de regresión con LightGBM, con un diseño similar al de los modelos anteriores, que demostró ser insuficiente. La evaluación de este modelo arrojó un MAE de 14,8394 BPM, un RMSE de 26,7187 y un $R^2$ prácticamente nulo de 0,0543. Como se muestra en la figura \ref{fig:tempo_lgbm_rvp}, el modelo de regresión solo presenta capacidad predictiva alrededor de la moda (aproximadamente 120 BPM). Fuera de ese centro, el algoritmo sobrestima los valores inferiores y subestima los superiores.
@@ -395,7 +394,6 @@ Se observa en los dos casos que todavía hay algunos valores que no están bien 
 El análisis de la importancia de características confirma el impacto del contexto semántico introducido por PANNs. 
 
 Para \textit{speechiness}, en la figura \ref{fig:f_imp_speechiness} se observa que las variables de mayor peso son las probabilidades de las clases 0000 (\textit{speech}) y 0156 (\textit{song}), se prueba que el modelo las tiene en cuenta para diferenciar entre la voz hablada y el canto melódico.
-%todo formato linea anterior
 
 \begin{figure}[htpb]
     \centering
@@ -488,7 +486,7 @@ Los valores del área bajo la curva (AUC) demuestran capacidad de discriminació
 
 El modelo de \textit{secondary mood}, con 102 clases, evidenció un comportamiento similar. El accuracy directo fue del 18,75\,\% con un F1-Score macro de 0,1458. No obstante, al evaluar las sugerencias, el accuracy subió progresivamente al 46,57\,\% en el top-5 y a 79,00\,\% recién en el top-20.
 la figura \ref{fig:mood_secondary_confusion} ilustra la matriz de confusión normalizada de \textit{secondary mood}, donde también se muestra una diagonal principal que indica aprendizaje.
-También algunas líneas verticales muestran cierta tendencia a preferir las clases predominantes.
+Y algunos indicios de lineas verticales muestran tendencia a preferir las clases predominantes.
 
 \begin{figure}[htpb]
     \centering
@@ -503,7 +501,7 @@ Aunque las métricas estrictas son bajas en comparación con otras variables ana
 
 \section{Ejemplo de inferencia}
 
-Para demostrar el funcionamiento integral del sistema, se ejecutó una inferencia cuya entrada es la canción de Radiohead presentada en los primeros capítulos. El archivo de audio se procesó a través de de la API.
+Para demostrar el funcionamiento integral del sistema, se ejecutó una inferencia cuya entrada es la canción de Radiohead presentada en los primeros capítulos y no que está en el catálogo de Plusyc. El archivo de audio se procesó a través de de la API.
 A continuación, se presenta la respuesta en formato JSON:
 
 \begin{lstlisting}[language=json, basicstyle=\ttfamily\footnotesize, caption={Respuesta JSON de inferencia}, label={lst:json_inferencia}]
@@ -579,7 +577,7 @@ Las figuras \ref{fig:ui_inference_tabs_part1} y \ref{fig:ui_inference_tabs_part2
     \label{fig:ui_inference_tabs_part1}
 \end{figure}
 
-Si se comparan los resultados de la inferencia con los resultados de la imagen de Tunebat, para la misma canción, se puede observar alta similitud en los datos.
+Si se comparan los resultados de la inferencia con los resultados de Tunebat de la figura \ref{fig:tunebat_screenshot}, se puede observar alta similitud en los datos.
 
 El único valor que está desfasado en este caso es el \textit{tempo}, para el que no se usó un modelo de inferencia sino el algoritmo de extracción de \textit{tempo} de Essentia.
 Además, el desfase ocurre en proporción 0.75x en relación al valor real, posibilidad que se sugirió en la sección de resultados.
@@ -606,32 +604,3 @@ Los estados de ánimo y géneros también muestran resultados coherentes con los
     \caption{Visualización de los resultados de inferencia en una interfaz web (parte 2).}
     \label{fig:ui_inference_tabs_part2}
 \end{figure}
-
-
-%El cliente CLI \textit{Beethoven} integró la extracción y predicción (\textit{Zahir API}) sobre audios inéditos en OCI, persistiendo los metadatos JSON en la base de datos de forma estable y asíncrona.
-
-% \begin{figure}[htpb]
-%     \centering
-%     % \includegraphics[width=0.95\textwidth]{ui_production_log.png}
-%     \caption{Proceso de inferencia productivo.}
-%     \label{fig:produccion_ejemplo}
-% \end{figure}
-
-%todo Dada la complejidad de objetivos como los géneros musicales, 197 clases resultantes, se priorizó el análisis de la precisión \textit{top-K} para capturar la pluralidad semántica de la música
-%----------------------------------------------------------------------------------------
-%	SECTION 1
-%----------------------------------------------------------------------------------------
-
-% todo this ...
-% Un ejemplo de esta relación se muestra en la figura \ref{fig:multi_linear_tempo}, donde el \textit{tempo} real etiquetado muestra múltiples relaciones lineales con la variable predictiva \textit{tempo} estimada desde Essentia.  
-% \begin{figure}[htpb]
-%     \centering
-%     \includegraphics[width=0.8\textwidth]{multi_linear_tempo.png} 
-%     \caption[Múltiples relaciones lineales de tempo real y estimado]{Relación multilineal del \textit{tempo} real y el tempo global estimado de Essentia.}
-%     \label{fig:multi_linear_tempo}
-% \end{figure}
-
-% \section{Pruebas funcionales del hardware}
-% \label{sec:pruebasHW}
-
-% La idea de esta sección es explicar cómo se hicieron los ensayos, qué resultados se obtuvieron y analizarlos.
