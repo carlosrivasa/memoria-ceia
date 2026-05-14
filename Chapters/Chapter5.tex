@@ -10,7 +10,7 @@ Este capítulo presenta un resumen de los logros y las dificultades para llegar 
 
 En este trabajo se propuso diseñar e implementar un sistema capaz de predecir características musicales a partir de audio de canciones. El objetivo principal fue automatizar
 un proceso tradicionalmente manual y laborioso de clasificación musical y reducir la dependencia de servicios de tercecros para evitar costos recurrentes.
-El trabajo está en producción, clasifica las canciones que ingresan al sistema y sirve como base en el contexto de una empresa en crecimiento. 
+El trabajo está en producción, clasifica las canciones que ingresan al sistema, es funcional en el contexto de una empresa en crecimiento. 
 
 En relación a los objetivos específicos, se puede concluir que:
 
@@ -25,9 +25,9 @@ En relación a los objetivos específicos, se puede concluir que:
 \item La extracción de variables acústicas DSP sirvió para las predicciones, y la inclusión de embeddings y probabilidades de PANNs fue lo que permitió resolver las variables semánticas complejas. Sin esto último, no se habría completado el trabajo.
 \item Se aplicaron acciones para mitigar problemas en los datos. Fue necesario aplicar técnicas de preprocesamiento; se cortó el histórico en una fecha específica para aislar un cambio en la distribución de los datos.
 \item Se entrenaron modelos de aprendizaje automático para predecir las características musicales y la evaluación de las métricas de rendimiento dan resultados productivos, acorde al análisis y diseño realizados.
-\item La decisión de usar librerías como Librosa y PANNs inference y modelos como redes MLP y árboles, permitió no depender de licencias ni pagar costos por consultas a modelos de terceros, también facilitó el trabajo al no requerir de arquitecturas complejas.
+\item La decisión de usar bibliotecas como Librosa y PANNs inference y modelos como redes MLP y ensambles de árboles, permitió no depender de licencias ni pagar costos por consultas a modelos de terceros, también facilitó el trabajo al no requerir de arquitecturas complejas.
 \item En específico, la clasificación de estados de ánimo y géneros sugiere que la ambigüedad humana al etiquetar afecta el aprendizaje. Estos resultados indican que el equipo de curaduría necesita estandarizar los criterios para la ingesta manual de datos.
-\item Para la detección de público en vivo y habla en canciones, se requirió de limpieza de ruido por falsas etiquetas apoyada en un modelo preentrenado con el conjunto de datos AudioSet, aun usado por YouTube cuando aparece por ejemplo en los subtítulos un [Aplausos] o [Rapping].
+\item Para la detección de público en vivo y habla en canciones, se requirió de limpieza de ruido por falsas etiquetas apoyada en un modelo preentrenado con el conjunto de datos AudioSet, creado para la generación automática de subtítulos como [Aplausos] o [Rapping].
 \item Completar el trabajo tomó más tiempo del planificado en el cronograma original. Hubo una subestimación del esfuerzo, dado que la cantidad de modelos y el proceso de aprendizaje requirieron más iteraciones de las previstas.
 
 \end{itemize}
@@ -38,7 +38,7 @@ Los diseños actuales quedan disponibles y se pueden usar para iteraciones futur
 
 \begin{itemize}
 \item El uso de las inferencias de PANNs y la exploración de otros modelos preentrenados, para mejorar la limpieza de algunos datos y corregir audios mal etiquetados.
-Como ejemplos, el \textit{speechiness}, \textit{speechiness} y la predicción de \textit{liveness}: el modelo actual logra diferenciar una canción instrumental de una que no lo es, pero los valores en el medio no son claros. 
+Como ejemplos, el \textit{speechiness}, \textit{liveness} y la predicción de \textit{instrumentalness}: el modelo actual logra diferenciar una canción instrumental de una que no lo es, pero los valores en el medio no son claros. 
 Se sugiere revisar puntualmente, ya que presenta ruido en los valores intermedios por falta de definiciones claras.
 \item También se sugiere iterar sobre el \textit{tempo} para buscar una solución más robusta que el algoritmo de DSP.
 \item Se propone empezar a usar el estado de ánimo secundario como filtro en Plusyc para mejorar la precisión de las recomendaciones musicales.

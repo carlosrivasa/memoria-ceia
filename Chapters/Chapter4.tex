@@ -8,16 +8,18 @@
 \label{Chapter4} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 % los capítulos deben comenzar con un breve párrafo introductorio que indique cuál es el contenido que se encontrará al leerlo.  La redacción sobre el contenido de la memoria debe hacerse en presente y todo lo referido al proyecto en pasado, siempre de modo impersonal.
 
-Este capítulo presenta los resultados de los modelos seleccionados para cada variable objetivo, su comparacion con un experimento previo en casos pertinentes, los resultados de la evaluación con métricas de inteligencia artificial y un ejemplo de inferencia.
+Este capítulo presenta los resultados de los modelos seleccionados para cada variable objetivo, su comparación con un experimento previo en casos pertinentes, los resultados de la evaluación con métricas de inteligencia artificial y un ejemplo de inferencia.
 
 \section{Resultados por modelo}
 \label{sec:resultados_modelos}
 
+A continuación se exponen los experimentos y las métricas de evaluación.
+
 \subsection{Acousticness, danceability, energy, instrumentalness y valence}
 %Un Perceptrón Multicapa (MLP) superó a las regresiones estadísticas iniciales, modelando eficientemente características continuas como \textit{Acousticness} y \textit{Danceability}.
 
-En los primeros ensayos de inferencia de este grupo de variables objetivo, se entrenó un modelo multisalida únicamente con variables DSP para predecir siete variables en total: \textit{acousticness}, \textit{danceability}, \textit{energy}, \textit{instrumentalness}, \textit{valence}, \textit{Liveness} y \textit{Speechiness}, todas en el rango de 0 a 1.
-Se obtuvo un rendimiento insuficiente, incapaz de predecir \textit{Liveness} y \textit{Speechiness}, pero con señal de aprendizaje para las demás variables objetivo. Así se identificó la necesidad de separar las dos variables, en su preprocesamiento e inferencia.    
+En los primeros ensayos de inferencia de este grupo de variables objetivo, se entrenó un modelo multisalida únicamente con variables DSP para predecir siete variables en total: \textit{acousticness}, \textit{danceability}, \textit{energy}, \textit{instrumentalness}, \textit{valence}, \textit{liveness} y \textit{speechiness}, todas en el rango de 0 a 1.
+Se obtuvo un rendimiento insuficiente, incapaz de predecir \textit{liveness} y \textit{speechiness}, pero con señal de aprendizaje para las demás variables objetivo. Así se identificó la necesidad de separar las dos variables, en su preprocesamiento e inferencia.    
 
 El diseño actual de la MLP incorpora las variables DSP, embeddings y probabilidades de PANNs inference.
 Durante el entrenamiento, el mecanismo de early stopping detuvo el proceso en la iteración 74, después de 15 épocas sin reducir el error de validación mínimo de 0,0058, alcanzado en la iteración 59.
@@ -26,7 +28,7 @@ La figura \ref{fig:fivep_learning_curves} ilustra las curvas de aprendizaje del 
 \begin{figure}[htpb]
     \centering
     \includegraphics[width=0.9\textwidth]{curva_fivep.png}
-    \caption{Curvas de aprendizaje del modelo MLP}
+    \caption{Curvas de aprendizaje del modelo MLP.}
     \label{fig:fivep_learning_curves}
 \end{figure}
 
@@ -146,8 +148,8 @@ La figura \ref{fig:real_vs_pred_variables} muestra los resultados de los valores
 %     \label{fig:real_vs_pred_variables}
 % \end{figure}
 
-Una lista de importancia de variables predictivas muestra predominio de las variables globales y ritmo \ref{tab:espacio_variables}. La figura \ref{fig:feature_importance_mlp} presenta las 15 variables más relevantes del modelo MLP. En la figura, el grado de importancia equivale a la caída en el coeficiente de determinación ($R^2$) que sufre el modelo al eliminar la información de dicha variable. Se destaca el impacto principal del factor de cresta, representaciones chroma y estadísticos de onset.
-También es interesante la ausencia de embeddings y probabilidades de PANNs en el top-15, pero muchas están presentes entre las variables seleccionadas (2 140 en total), lo que muestra que operan en conjunto
+Una lista de importancia de variables predictivas muestra predominio de las variables globales y ritmo presentadas en la tabla \ref{tab:espacio_variables}. La figura \ref{fig:feature_importance_mlp} presenta las 15 variables más relevantes del modelo MLP. En la figura, el grado de importancia equivale a la caída en el coeficiente de determinación ($R^2$) que sufre el modelo al eliminar la información de dicha variable. Se destaca el impacto principal del factor de cresta, representaciones chroma y estadísticos de onset.
+También es interesante la ausencia de embeddings y probabilidades de PANNs en el top-15, pero muchas están presentes entre las variables seleccionadas (2 145 en total), lo que muestra que operan en conjunto.
 
 \begin{figure}[htpb]
     \centering
@@ -222,7 +224,7 @@ La figura \ref{fig:key_confusion_matrix} presenta la matriz de confusión absolu
 
 El análisis de los errores revela una fuerte coherencia armónica: cuando el modelo se equivoca en la predicción principal con datos no vistos, las confusiones más frecuentes ocurren con la tonalidad relativa (mayor o menor correspondientes) o con las tonalidades dominante y subdominante de la escala mayor o menor correspondiente.
 
-Para contextualizar este desempeño, la tabla \ref{tab:comparativa_essentia} contrasta los resultados del extractor de tonalidad de la librería Essentia evaluado en el dataset de Plusyc, con las predicciones top-1 y top-3 del modelo LightGBM. El modelo supera a la herramienta de referencia en todas las métricas.
+Para contextualizar este desempeño, la tabla \ref{tab:comparativa_essentia} contrasta los resultados del extractor de tonalidad de la biblioteca Essentia evaluado en el dataset de Plusyc, con las predicciones top-1 y top-3 del modelo LightGBM. El modelo supera a la herramienta de referencia en todas las métricas.
 
 \begin{table}[htpb]
     \centering
@@ -244,7 +246,7 @@ Para contextualizar este desempeño, la tabla \ref{tab:comparativa_essentia} con
     \end{tabular}
 \end{table}
 
-Finalmente, el análisis de importancia de variables predictivas confirma la relevancia de las variables armónicas DSP \ref{tab:espacio_variables}. La figura \ref{fig:key_feature_importance} detalla que las decisiones del algoritmo dependen primariamente del pitch, tonnetz, representaciones chroma, espectrales y los perfiles de estimación tonal de Temperley.
+Finalmente, el análisis de importancia de variables predictivas confirma la relevancia de las variables armónicas DSP. La figura \ref{fig:key_feature_importance} detalla que las decisiones del algoritmo dependen primariamente del pitch, tonnetz, representaciones chroma, espectrales y los perfiles de estimación tonal de Temperley.
 
 \begin{figure}[htpb]
     \centering
@@ -275,7 +277,7 @@ En un ensayo inicial se utilizó un modelo de regresión con LightGBM, con un di
     \label{fig:tempo_lgbm_rvp}
 \end{figure}
 
-Este bajo rendimiento obedece al fenómeno ilustrado en la figura \ref{fig:tempo_multiple_relations}, donde se observa que la relación entre las etiquetas reales y los valores extraídos con la librería Essentia presenta múltiples relaciones lineales, generadas por el octave error.
+Este bajo rendimiento obedece al fenómeno ilustrado en la figura \ref{fig:tempo_multiple_relations}, donde se observa que la relación entre las etiquetas reales y los valores extraídos con la biblioteca Essentia presenta múltiples relaciones lineales, generadas por el octave error.
 
 \begin{figure}[htpb]
     \centering
@@ -328,7 +330,7 @@ Estos resultados demuestran que la variable \texttt{tempo\_bpm} de Essentia capt
 %     \label{fig:multi_linear_tempo}
 % \end{figure}
 
-\subsection{Speechiness y Liveness}
+\subsection{Speechiness y liveness}
 
 En el modelo multisalida inicial, las variables \textit{speechiness} y \textit{liveness} presentaron un rendimiento deficiente cuando se intentaron predecir exclusivamente con las variables DSP. El modelo fue incapaz de predecir valores altos de estas distribuciones, con $R^2$ bajos de 0,2796 y 0,1640, respectivamente. Este comportamiento motivó su preprocesamiento independiente y la incorporación de los embeddings y probabilidades de PANNs inference para capturar el contexto semántico necesario.
 
@@ -402,7 +404,7 @@ Para \textit{speechiness}, en la figura \ref{fig:f_imp_speechiness} se observa q
     \label{fig:f_imp_speechiness}
 \end{figure}
 
-Por otro lado, en la figura \ref{fig:f_imp_liveness}, las variables con mayor importancia para la predicción de \textit{Liveness}, están relacionadas con las probabilidades de público en vivo y se observa en las clases 0022 (\textit{applause}), 0021 (\textit{cheering}) y 0024 (\textit{crowd}).
+Por otro lado, en la figura \ref{fig:f_imp_liveness}, las variables con mayor importancia para la predicción de \textit{liveness}, están relacionadas con las probabilidades de público en vivo y se observa en las clases 0022 (\textit{applause}), 0021 (\textit{cheering}) y 0024 (\textit{crowd}).
 
 \begin{figure}[htpb]
     \centering
@@ -419,7 +421,7 @@ Por otro lado, en la figura \ref{fig:f_imp_liveness}, las variables con mayor im
 %     \label{fig:moods_confusion}
 % \end{figure}
 
-\subsection{Suggested Genres}
+\subsection{Suggested genres}
 
 Para el problema de clasificar 197 géneros y su evaluación, se priorizó la capacidad del modelo para generar sugerencias coherentes.
 Las métricas globales sobre el conjunto de prueba alcanzaron un accuracy y un F1-Score cercanos a 0,47. Si bien predecir el género exacto (top-1) arroja un 46,74\,\% de accuracy, el rendimiento del algoritmo escala muy bien al analizar estimaciones más probables. El accuracy top-3 alcanza un 68,32\,\%, y el accuracy top-5, el 77,31\,\%. Esto significa que, en casi 8 de cada 10 casos, el modelo ubica el género correcto del audio entre sus primeras cinco sugerencias.
@@ -458,7 +460,7 @@ Para discriminar entre 197 géneros, el algoritmo prioriza fuertemente la intens
 
 \subsection{Primary y secondary moods}
 
-El diseño de los estas categorías fue similar al caso de géneros, aunque presenta un grado de subjetividad aún mayor reflejado en los valores actuales, lo que impacta las métricas obtenidas. 
+El diseño de estas categorías fue similar al caso de géneros, aunque presenta un grado de subjetividad aún mayor reflejado en los valores actuales, lo que impacta las métricas obtenidas. 
 
 Para \textit{primary mood}, el modelo alcanzó un accuracy global de 0,2488 y un F1-Score macro de 0,2416. 
 Al evaluar rangos más amplios: el accuracy escala al 55,81\,\% en el top-3 y al 73,64\,\% en el top-5.
@@ -471,7 +473,7 @@ La figura \ref{fig:mood_primary_confusion} presenta la matriz de confusión.
     \label{fig:mood_primary_confusion}
 \end{figure}
 
-Se distingue la diagonal principal y también las clases más difíciles de predecir, como \textit{somber}, que se confinde con \textit{melancholy} y \textit{sentimental}; y \textit{rowdy}, con \textit{excited}, \textit{empowering} y \textit{stirring}; \textit{excited} con \textit{energizing} y \textit{lively} con \textit{excited}. Estos patrones reflejan la subjetividad inherente de las etiquetas, más allá del desbalance de clases.
+Se distingue la diagonal principal y también las clases más difíciles de predecir, como \textit{somber}, que se confinde con \textit{melancholy} y \textit{sentimental}; y \textit{rowdy}, con \textit{excited}, \textit{empowering} y \textit{stirring}; \textit{excited} con \textit{energizing} y \textit{lively} con \textit{excited}. Estos patrones reflejan la subjetividad inherente en las etiquetas, más allá del desbalance de clases.
 Si bien estas métricas (top-1) son modestas, el modelo demuestra capacidad de aprendizaje. 
 Para complementar el análisis, la figura \ref{fig:mood_primary_roc} presenta las curvas ROC bajo el esquema uno contra todos (One-vs-Rest).
 
@@ -501,7 +503,7 @@ Aunque las métricas estrictas son bajas en comparación con otras variables ana
 
 \section{Ejemplo de inferencia}
 
-Para demostrar el funcionamiento integral del sistema, se ejecutó una inferencia cuya entrada es la canción de Radiohead presentada en los primeros capítulos y no que está en el catálogo de Plusyc. El archivo de audio se procesó a través de de la API.
+Para demostrar el funcionamiento integral del sistema, se ejecutó una inferencia cuya entrada es la canción de Radiohead ilustrada en los primeros capítulos y que no está en el catálogo de Plusyc. El archivo de audio se procesó a través de de la API.
 A continuación, se presenta la respuesta en formato JSON:
 
 \begin{lstlisting}[language=json, basicstyle=\ttfamily\footnotesize, caption={Respuesta JSON de inferencia}, label={lst:json_inferencia}]
@@ -579,7 +581,7 @@ Las figuras \ref{fig:ui_inference_tabs_part1} y \ref{fig:ui_inference_tabs_part2
 
 Si se comparan los resultados de la inferencia con los resultados de Tunebat de la figura \ref{fig:tunebat_screenshot}, se puede observar alta similitud en los datos.
 
-El único valor que está desfasado en este caso es el \textit{tempo}, para el que no se usó un modelo de inferencia sino el algoritmo de extracción de \textit{tempo} de Essentia.
+El único valor que está desfasado en este caso es el \textit{tempo}, para el que no se usó un modelo de inferencia desarrollado como parte de este trabajo, sino que curiosamente se usó el algoritmo de extracción de Essentia.
 Además, el desfase ocurre en proporción $y \approx 0,67x$ en relación al valor real, posibilidad que se sugirió en la sección \ref{sec:tempo}.
 
 Los estados de ánimo y géneros también muestran resultados coherentes con los esperados.

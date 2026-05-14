@@ -293,7 +293,7 @@ Durante la extracción de variables descrita en el algoritmo de la sección \ref
 A continuación, se presentan las distribuciones de las variables objetivo después del filtrado y el preprocesamiento adicional aplicado.
 
 \subsubsection{Loudness}
-El \textit{loudness} define el volumen global promedio de la pista acústica en decibeles (dB) (ej. -5,2 dB o -12,4 dB). Los valores más negativos indican menor intensidad  \citep{spotify2024audiofeatures}.
+El \textit{loudness} define el volumen global promedio de la pista acústica en decibeles (dB) (ej. -5,2 dB o -12,4 dB). Los valores más negativos indican menor intensidad  \citep{spotify}.
 La figura \ref{fig:dist_loudness} muestra la distribución de frecuencia de los valores del \textit{loudness}. Se observa que presenta un sesgo negativo, con una concentración principal cerca de los -7 dB. Esto se explica dada la guerra del \textit{loudness} \cite{vickers2010loudness}, donde muchos artistas y productores buscan que sus canciones suenen con volumen alto, y plataformas como Spotify normalizan el \textit{loudness} para evitar cambios abruptos en el volumen entre las canciones.
 
 \newpage
@@ -319,7 +319,7 @@ Se aplicaron las siguientes transformaciones como parte del preprocesamiento:
 \end{itemize}
 
 \subsubsection{Key y mode}
-Las variables \textit{key} y \textit{mode} representan la tonalidad predominante de la pista mapeada a clases de tono enteras (ej. 0 para Do, 1 para Do\#) y su modalidad armónica (1 para Mayor, 0 para Menor) \citep{spotify2024audiofeatures}.
+Las variables \textit{key} y \textit{mode} representan la tonalidad predominante de la pista mapeada a clases de tono enteras (ej. 0 para Do, 1 para Do\#) y su modalidad armónica (1 para Mayor, 0 para Menor) \citep{spotify}.
 La figura \ref{fig:dist_key_mode} muestra la distribución conjunta de las frecuencias de los valores discretos de las 24 tonalidades de la música occidental. Se observa preferencia por tonalidades como Do mayor, Re mayor y Sol mayor; y menor frecuencia de canciones en Re sostenido mayor y menor.  
 
 \begin{figure}[htpb]
@@ -346,7 +346,7 @@ El motivo de la decisión se basa en que el caso de equivocación, o falso \text
 La predicción de un top-k de \textit{key} y \textit{mode} conjuntos, generalmente muestran relaciones armónicas de la canción, esto tiene sentido en el contexto de la ambientación. 
 
 \subsubsection{Tempo}
-El \textit{tempo} indica la velocidad global estimada de la pista en pulsaciones por minuto (ej. 120 BPM u 85 BPM) \citep{spotify2024audiofeatures}.
+El \textit{tempo} indica la velocidad global estimada de la pista en pulsaciones por minuto (ej. 120 BPM u 85 BPM) \citep{spotify}.
 La figura \ref{fig:dist_tempo} muestra la distribución de frecuencia de los valores del \textit{tempo}. Se observa una concentración principal en el rango de los 90 a 130 BPM, con un pico destacado alrededor de los 120 BPM, predominante en la música popular contemporanea \citep{muller2015fundamentals}.
 
 \begin{figure}[htpb]
@@ -367,7 +367,7 @@ Se encuentra que \textit{tempo} es un caso especial ya que presenta errores de o
 Se contempla la evaluación de los algoritmos DSP de estimación de \textit{tempo} integrados en las bibliotecas de DSP, esta comparación se muestra en la sección \ref{sec:tempo} del capítulo siguiente. 
 
 \subsubsection{Acousticness, danceability, energy, instrumentalness y valence}
-Este grupo comprende variables perceptibles continuas evaluadas en el rango $[0, 1]$: \textit{acousticness}: confianza acústica, \textit{danceability}: bailaibilidad métrica, \textit{energy}: intensidad enérgica, \textit{instrumentalness}: ausencia vocal y \textit{valence}: positividad musical \citep{spotify2024audiofeatures}.
+Este grupo comprende variables perceptibles continuas evaluadas en el rango $[0, 1]$: \textit{acousticness}: confianza acústica, \textit{danceability}: bailaibilidad métrica, \textit{energy}: intensidad enérgica, \textit{instrumentalness}: ausencia vocal y \textit{valence}: positividad musical \citep{spotify}.
 La figura \ref{fig:dist_fivep} muestra las distribuciones de frecuencia de los valores de estas características.
 
 \begin{figure}[htpb]
@@ -436,7 +436,7 @@ Se implementaron las siguientes medidas:
 \end{itemize}
 
 \subsubsection{Speechiness}
-El \textit{speechiness} detecta la presencia de palabras habladas en la pista y se define en $[0, 1]$, donde valores altos indican contenido exclusivamente hablado y valores bajos indican música (ej. 0,85 para conversación, 0,05 para música y 0,5 es rap) \citep{spotify2024audiofeatures}.
+El \textit{speechiness} detecta la presencia de palabras habladas en la pista y se define en $[0, 1]$, donde valores altos indican contenido exclusivamente hablado y valores bajos indican música (ej. 0,85 para conversación, 0,05 para música y 0,5 es rap) \citep{spotify}.
 La figura \ref{fig:dist_speechiness} muestra la distribución de frecuencia del \textit{speechiness}. 
 
 \begin{figure}[htpb]
@@ -464,7 +464,7 @@ $[0,00, 0,05]$ & Menor presencia de canto & 56,0\% & 42,1\% \\
 $(0,05, 0,33]$ & Canto & 41,9\% & 42,1\% \\
 $(0,33, 1,00]$ & Rap & 2,1\% & 15,7\% \\
 \midrule
-\textbf{Total} & & \textbf{100\%} & \textbf{100\%} \\
+Total & & 100\% & 100\% \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -473,7 +473,7 @@ Cabe mencionar que se aplicó muestreo estratificado a nivel de los rangos duran
 Finalmente, se mitigó el ruido en las etiquetas al eliminar un porcentaje menor de registros contradictorios: se compararon los valores de la variable objetivo con la evidencia acústica vocal en las probabilidades de clases como \textit{speech} y \textit{rapping} extraídas de PANNs para descartar las pistas que presentaban discrepancias entre su etiqueta manual y su contenido semántico real.
 
 \subsubsection{Liveness}
-El \textit{liveness} representa la confianza de que la pista fue grabada con público en vivo $[0, 1]$, (ej. 0,85 para un concierto, 0,10 para un estudio) \citep{spotify2024audiofeatures}.
+El \textit{liveness} representa la confianza de que la pista fue grabada con público en vivo $[0, 1]$, (ej. 0,85 para un concierto, 0,10 para un estudio) \citep{spotify}.
 La figura \ref{fig:dist_liveness} muestra la distribución de frecuencia del \textit{liveness}.
 
 \begin{figure}[htpb]
@@ -487,11 +487,11 @@ Esta distribución, como en el caso anterior, también muestra la presencia de u
 
 Se aplicó una técnica similar a la anterior para balancear el objetivo continuo, se dividió el dominio con base en la definición teórica de la característica y se aplicó un submuestreo con tope por rangos. 
 Se aplicó reducción en la clase mayoritaria y en la zona intermedia para evitar sesgos y se conservan todos los registros minoritarios de la clase de interés: canción en vivo. 
-El resultado de esta reestructuración se detalla en la Tabla \ref{tab:submuestreo_liveness}.
+El resultado de esta reestructuración se detalla en la tabla \ref{tab:submuestreo_liveness}.
 
 \begin{table}[htpb]
 \centering
-\caption{Distribución porcentual de liveness antes y después del preprocesamiento}
+\caption{Distribución porcentual de liveness antes y después del preprocesamiento.}
 \label{tab:submuestreo_liveness}
 \begin{tabular}{llrr}
 \toprule
@@ -501,7 +501,7 @@ $[0,0, 0,2)$ & Muy baja probabilidad de vivo & 74,4\% & 67,4\% \\
 $[0,2, 0,8)$ & Baja probabilidad de vivo & 24,8\% & 22,5\% \\
 $[0,8, 1,0]$ & Alta probabilidad de vivo & 0,8\% & 10,1\% \\
 \midrule
-\textbf{Total} & & \textbf{100\%} & \textbf{100\%} \\
+Total & & 100\% & 100\% \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -643,7 +643,7 @@ En la tabla \ref{tab:resultados_seleccion} se resume la configuración del proce
 \midrule
 \textit{Key} y \textit{mode} & 0,00 & Simple &  -- & 173 \\
 \textit{Loudness} & 0,00 & Simple & -- & 856 \\
-\textit{Perceptibles} (5) & 0,00 & K-Fold ($K=5$) & $> 0,95$ & 2 140 \\
+\textit{Perceptibles} (5) & 0,00 & K-Fold ($K=5$) & $> 0,95$ & 2 145 \\
 \textit{Speechiness} & 0,00 & Simple  & $> 0,95$ & 92 \\
 \textit{Liveness} & 0,00 & K-Fold ($K=5$) & $> 0,95$ & 67 \\
 \textit{Primary mood} & 0,01 & Simple & $> 0,95$ & 1 423 \\
@@ -678,7 +678,7 @@ Su ventaja radica en combinar el comportamiento del error absoluto medio (MAE) p
 
 Para el ajuste de los hiperparámetros de aprendizaje, la tasa inicial se fijó en $10^{-4}$ y fue gestionada dinámicamente mediante \texttt{ReduceLROnPlateau}. Este mecanismo redujo la tasa de aprendizaje a la mitad automáticamente al detectar estancamientos.
 
-Dado el amplio espacio de variables (2~140 variables de entrada) y la alta capacidad del modelo, se implementó la siguiente estrategia de regularización para mitigar el sobreajuste \citep{goodfellow2016deep}:
+Dado el amplio espacio de variables (2~145 variables de entrada) y la alta capacidad del modelo, se implementó la siguiente estrategia de regularización para mitigar el sobreajuste \citep{goodfellow2016deep}:
 \begin{itemize}
     \item Capas de normalización por lotes (batch normalization) después de cada transformación lineal ($Wx + b$) en \texttt{nn.Linear}, para evitar que los valores numéricos se disparen entre las capas y facilitar la convergencia \citep{ioffe2015batch}.
     \item Inactivación aleatoria de neuronas (dropout) con tasas de 0,30 en la primera capa oculta y 0,20 en las subsiguientes, como filtro más agresivo de ruido en las variables iniciales y proteger las representaciones más abstractas en las capas profundas \citep{srivastava2014dropout}.
@@ -711,7 +711,7 @@ La figura \ref{fig:estrategias_lgbm} resume lo anterior.
 
 \subsubsection{Optimización de hiperparámetros y regularización}
 
-Se implementó una búsqueda automatizada de hiperparámetros para cada objetivo mediante la librería Optuna \citep{akiba2019optuna}.
+Se implementó una búsqueda automatizada de hiperparámetros para cada objetivo mediante la biblioteca Optuna \citep{akiba2019optuna}.
 A continuación un resumen de los parámetros y algunas decisiones relacionadas:
 \begin{itemize}
     \item Profundidad máxima de los árboles (\texttt{max\_depth}) y restricción en el número máximo de hojas (\texttt{num\_leaves}) para evitar el crecimiento asimétrico descontrolado. Además, se exigió un volumen mínimo de muestras por hoja (\texttt{min\_child\_samples} o \texttt{min\_data\_in\_leaf}) para evitar que los modelos crearan reglas exclusivas para registros aislados \citep{ke2017lightgbm}.
@@ -725,7 +725,7 @@ Una simplificación del flujo de optimización de parámetros se puede ver en la
 \begin{figure}[htpb]
     \centering
     \includegraphics[width=0.85\textwidth]{optuna_block.png}
-    \caption{Resumen del flujo de optimización de parámetros para lightgbm.}
+    \caption{Flujo de optimización de parámetros para los modelos LightGBM.}
     \label{fig:optuna_lgbm}
 \end{figure}
 
@@ -764,8 +764,16 @@ El sistema de inferencia fue diseñado para operar como un servicio integrable c
 
 \subsection{Diseño del servicio predictivo}
 El núcleo de procesamiento se expuso a través de una API RESTful desarrollada con FastAPI. Esta interfaz expone el ciclo de inferencia: carga del audio, extracción de variables predictivas de entrada a los modelos MLP y LightGBM, que retornanan los valores de las predicciones de las características musicales.
+Para garantizar la reproducibilidad y estabilidad del entorno, la aplicación fue contenedorizada utilizando Docker, como se observa en la figura \ref{fig:diagrama_api}.
 
-Para garantizar la reproducibilidad y estabilidad del entorno, la aplicación fue contenedorizada utilizando Docker. Dada la alta exigencia computacional y de memoria del modelo preentrenado PANNs inference, se aplicaron configuraciones a nivel de contenedor para asegurar la viabilidad en producción:
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.8\textwidth]{infra0.png}
+    \caption{Diagrama de bloques de la aplicación predictiva.}
+    \label{fig:diagrama_api}
+\end{figure}
+
+Dada la alta exigencia computacional y de memoria del modelo preentrenado PANNs inference, se aplicaron configuraciones a nivel de contenedor para asegurar la viabilidad en producción:
 \begin{itemize}
     \item Se limitó a una instancia. Esto previene la duplicación masiva de los modelos y pesos preentrenados en la memoria RAM, para optimizar el consumo de los recursos de la máquina virtual y evitar nuevos costos \citep{treveil2020introducing}.
     \item Restricción de hilos: las operaciones matemáticas requeridas para la extracción de variables se restringieron a un solo hilo (\texttt{OMP\_NUM\_THREADS=1}). Esto evita cuellos de botella por saturación de la CPU y bloqueos cruzados (deadlocks) durante la extracción paralela de variables \citep{gorelick2020high}.
@@ -787,7 +795,7 @@ El ciclo de vida de la integración, ilustrado en la figura \ref{fig:diagrama_ar
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.9\textwidth]{infra2.png}
+    \includegraphics[width=0.8\textwidth]{infra3.png}
     \caption{Diagrama de despliegue e integración.}
     \label{fig:diagrama_arquitectura}
 \end{figure}
