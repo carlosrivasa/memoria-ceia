@@ -664,8 +664,16 @@ La columna \textquotedbl Varianza\textquotedbl, indica el umbral del filtro por 
 \label{sec:mlp}
 
 Para la predicción de las cinco variables perceptibles (\textit{acousticness, danceability, energy, instrumentalness, valence}), se implementó una red neuronal de tipo perceptrón multicapa. La arquitectura diseñada consta de tres capas ocultas con una reducción progresiva de neuronas (512, 256 y 128 neuronas, respectivamente). La capa de salida cuenta con cinco neuronas y emplea una función de activación sigmoid, para garantizar que las predicciones se acoten dentro del rango físico $[0, 1]$.
+La figura \ref{fig:mlp_block} ilustra la arquitectura general del perceptrón multicapa implementado.
 
-Para la optimización de pesos se empleó el algoritmo AdamW \citep{loshchilov2017decoupled}. Este método incorpora un desacoplamiento de la penalización de peso (weight decay) para favorecer la generalización. Como función de pérdida se seleccionó Huber Loss debido a su robustez frente a valores atípicos en las etiquetas subjetivas \citep{huber1964robust, hastie2009elements}. 
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.9\textwidth]{mlp_block.png}
+    \caption{Bloques del perceptrón multicapa para las variables perceptibles.}
+    \label{fig:mlp_block}
+\end{figure}
+
+Para la optimización de pesos en el entrenamiento se empleó el algoritmo AdamW \citep{loshchilov2017decoupled}. Este método incorpora un desacoplamiento de la penalización de peso (weight decay) para favorecer la generalización. Como función de pérdida se seleccionó Huber Loss debido a su robustez frente a valores atípicos en las etiquetas subjetivas \citep{huber1964robust, hastie2009elements}. 
 Su ventaja radica en combinar el comportamiento del error absoluto medio (MAE) para penalizar los errores grandes y el del error cuadrático medio (MSE) para los errores pequeños y así asegurar una convergencia suave al acercarse a la solución óptima. Por último, el entrenamiento se ejecutó en lotes de 512 muestras.
 
 Para el ajuste de los hiperparámetros de aprendizaje, la tasa inicial se fijó en $10^{-4}$ y fue gestionada dinámicamente mediante \texttt{ReduceLROnPlateau}. Este mecanismo redujo la tasa de aprendizaje a la mitad automáticamente al detectar estancamientos.
@@ -692,6 +700,15 @@ El diseño de los modelos se adaptó a la naturaleza de cada variable objetivo, 
     \item \textit{Loudness}: la optimización evaluó el MAE, y el modelado definitivo se configuró mediante regresión estándar (L2) para minimizar el error cuadrático medio (RMSE). Esto demostró una mejora en la predicción en volúmenes extremos como se puede ver en la sección \ref{sec:loudness_3}.
 \end{itemize}
 
+La figura \ref{fig:estrategias_lgbm} resume lo anterior.
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.85\textwidth]{lgbm_block.png}
+    \caption{Resumen del modelado LightGBM.}
+    \label{fig:estrategias_lgbm}
+\end{figure}
+
 \subsubsection{Optimización de hiperparámetros y regularización}
 
 Se implementó una búsqueda automatizada de hiperparámetros para cada objetivo mediante la librería Optuna \citep{akiba2019optuna}.
@@ -702,6 +719,15 @@ A continuación un resumen de los parámetros y algunas decisiones relacionadas:
     \item Penalizaciones (L1 y L2) para frenar el peso excesivo de las ramas \citep{hastie2009elements}. Adicionalmente, en la mayoría de los objetivos, se exigió una mejora mínima (\texttt{min\_split\_gain}) antes de permitir que el árbol se dividiera.
     \item Early stopping, configurado entre 30 y 50 iteraciones, para interrumpir el entrenamiento cuando el modelo dejara de mejorar.
 \end{itemize}
+
+Una simplificación del flujo de optimización de parámetros se puede ver en la figura \ref{fig:optuna_lgbm}.
+
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.85\textwidth]{optuna_block.png}
+    \caption{Resumen del flujo de optimización de parámetros para lightgbm.}
+    \label{fig:optuna_lgbm}
+\end{figure}
 
 El resumen de los hiperparámetros resultantes se detalla en la tabla \ref{tab:hiperparametros_lgbm}. Para el entrenamiento de los modelos finales, se configuró una alta cantidad de árboles (hasta 10 000 en algunos casos) y se delegó el control total al mecanismo de early stopping. Esto, combinado con tasas de aprendizaje muy bajas, mejora el desempeño \citep{hastie2009elements}.
 
