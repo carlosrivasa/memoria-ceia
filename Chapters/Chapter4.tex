@@ -503,106 +503,80 @@ Aunque las métricas estrictas son bajas en comparación con otras variables ana
 
 \section{Ejemplo de inferencia}
 
-Para demostrar el funcionamiento integral del sistema, se ejecutó una inferencia cuya entrada es la canción de Radiohead ilustrada en los primeros capítulos y que no está en el catálogo de Plusyc. El archivo de audio se procesó a través de de la API.
-A continuación, se presenta la respuesta en formato JSON:
+Para demostrar el funcionamiento integral del sistema, se ejecutó una inferencia cuya entrada es la canción de Radiohead ilustrada en los primeros capítulos y que no está en el catálogo de Plusyc. El archivo de audio se procesó a través de la API. En el anexo \ref{AppendixA} se presenta la respuesta.
 
-\begin{lstlisting}[language=json, basicstyle=\ttfamily\footnotesize, caption={Respuesta JSON de inferencia}, label={lst:json_inferencia}]
-{
-  "success": true,
-  "data": {
-    "Key": {
-      "value": [
-        { "key": 11, "mode": 0, "key_mode": "B Minor", "prob": "70.18%" },
-        { "key": 2, "mode": 1, "key_mode": "D Major", "prob": "17.52%" },
-        { "key": 4, "mode": 0, "key_mode": "E Minor", "prob": "10.32%" }
-      ]
-    },
-    "Tempo": { 
-        "value": 105 
-    },
-    "Loudness": { 
-        "value": -7.966 
-    },
-    "Fivep": { 
-        "value": { 
-            "acousticness": 0.622, "danceability": 0.502, "energy": 0.638, "instrumentalness": 0.555, "valence": 0.368
-        }
-    },
-    "Liveness": { 
-        "value": 0.116 
-    },
-    "Speechiness": { 
-        "value": 0.035 
-    },
-    "MoodPrimary": {
-        "top_5": 
-        "Yearning 18.20%, Stirring 13.95%, Melancholy 9.87%, Brooding: 8.87%, Rowdy:7.67%" 
-    },
-    "MoodSecondary": {
-        "top_5": 
-        "Cool Melancholy 6.30%, Lyrical Sentimental 4.89%, Awakening / Stately 4.64%, Light Melancholy 4.55%, Gentle Bittersweet 4.17%" 
-    },
-    "GenreTarget": {
-        "top_5": 
-        "Mainstream 90s and 00s Rock, Alternative Rock, General Latin Rock, General Downtempo, General Indie Rock"
-    }
-  }
-}
-\end{lstlisting}
-
-Las figuras \ref{fig:ui_inference_tabs_part1} y \ref{fig:ui_inference_tabs_part2} exponen una representación visual de estos resultados en una interfaz de usuario.
+Las figuras \ref{fig:ui_inference_tabs_part1}, \ref{fig:ui_inference_tabs_part2} y \ref{fig:ui_inference_tabs_part3} exponen una representación visual de estos resultados en una interfaz de usuario. En la primera parte, la figura \ref{fig:ui_load} ilustra la pantalla de selección de la canción procesada, seguida por el resumen general en la figura \ref{fig:ui_overview}, donde aparecen las estimaciones de \textit{key}, \textit{mode}, \textit{tempo} y \textit{loudness}, e incuye el top-3 de \textit{key} y \textit{mode} en la parte inferior.
 
 \begin{figure}[htpb]
     \centering
-% Tab 1: Overview
-    \begin{subfigure}[b]{0.8\textwidth}
+    % Tab 1: Carga
+    \begin{subfigure}[b]{0.85\textwidth}
         \centering
         \includegraphics[width=\textwidth]{ui_load.png}
-        \caption*{Selección de la canción}
-    \end{subfigure}
-
-    % Tab 1: Overview
-    \begin{subfigure}[b]{0.8\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{ui_overview.png}
-        \caption*{Resumen general, key, mode, tempo, loudness}
+        \caption{Pantalla de selección de la canción.}
+        \label{fig:ui_load}
     \end{subfigure}
     
-    % Tab 2: Features
-    \begin{subfigure}[b]{0.8\textwidth}
+    \vspace{0.5cm} % Espacio moderado
+    
+    % Tab 2: Overview
+    \begin{subfigure}[b]{0.85\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{ui_features.png}
-        \caption*{Características perceptibles}
+        \includegraphics[width=\textwidth]{ui_overview.png}
+        \caption{Resumen general de resultados, características básicas.}
+        \label{fig:ui_overview}
     \end{subfigure}
-
+    
     \caption{Visualización de los resultados de inferencia en una interfaz web (parte 1).}
     \label{fig:ui_inference_tabs_part1}
 \end{figure}
 
-Si se comparan los resultados de la inferencia con los resultados de Tunebat de la figura \ref{fig:tunebat_screenshot}, se puede observar alta similitud en los datos.
+% Si se comparan los resultados de la inferencia con los resultados de Tunebat de la figura \ref{fig:tunebat_screenshot}, se puede observar alta similitud en los datos.
 
-El único valor que está desfasado en este caso es el \textit{tempo}, para el que no se usó un modelo de inferencia desarrollado como parte de este trabajo, sino que curiosamente se usó el algoritmo de extracción de Essentia.
-Además, el desfase ocurre en proporción $y \approx 0,67x$ en relación al valor real, posibilidad que se sugirió en la sección \ref{sec:tempo}.
+% El único valor que está desfasado en este caso es el \textit{tempo}, para el que no se usó un modelo de inferencia desarrollado como parte de este trabajo, sino que curiosamente se usó el algoritmo de extracción de Essentia.
+% Además, el desfase ocurre en proporción $y \approx 0,67x$ en relación al valor real, posibilidad que se sugirió en la sección \ref{sec:tempo}.
 
-Los estados de ánimo y géneros también muestran resultados coherentes con los esperados.
+Si se comparan estos resultados con los valores de Tunebat de la figura \ref{fig:tunebat_screenshot}, se puede observar una alta similitud en los datos. El único valor que está desfasado en este caso es el \textit{tempo}, para el que no se usó un modelo de inferencia desarrollado como parte de este trabajo, sino que curiosamente, se usó el algoritmo de extracción de Essentia. Además, el desfase ocurre en una proporción $y \approx 0,67x$ en relación al valor real, posibilidad que se sugirió en la sección \ref{sec:tempo}.
+
+A continuación, la segunda parte muestra los resultados de la estimación de las características perceptibles en la figura \ref{fig:ui_features}, también coherentes con los valores de Tunebat y en la figura \ref{fig:ui_mood}, los resultados de las predicciones para el top-5 de \textit{primary mood} a la izquierda y \textit{secondary mood} a la derecha.
 
 \begin{figure}[htpb]
     \centering
-
-        % Tab 3: Moods
-    \begin{subfigure}[b]{0.8\textwidth}
+    % Tab 3: Features 
+    \begin{subfigure}[b]{0.9\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{ui_features.png}
+        \caption{Características perceptibles.}
+        \label{fig:ui_features}
+    \end{subfigure}
+    
+    \vspace{0.4cm}
+    
+    % Tab 4: Moods
+    \begin{subfigure}[b]{0.9\textwidth}
         \centering
         \includegraphics[width=\textwidth]{ui_mood.png}
-        \caption*{Primary y secondary moods}
-    \end{subfigure}
-
-    % Tab 4: Genres
-    \begin{subfigure}[b]{0.8\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{ui_genres.png}
-        \caption*{Suggested genres}
+        \caption{Predicción de top-5 primary y secondary moods.}
+        \label{fig:ui_mood}
     \end{subfigure}
 
     \caption{Visualización de los resultados de inferencia en una interfaz web (parte 2).}
     \label{fig:ui_inference_tabs_part2}
+\end{figure}
+
+Finalmente, la figura \ref{fig:ui_inference_tabs_part3} presenta los resultados de las predicciones para el top-5 de \textit{suggested genres}, que también muestran coherencia con lo esperado para la obra analizada.
+%Los estados de ánimo y géneros también muestran resultados coherentes con los esperados.
+
+\begin{figure}[htpb]
+    \centering
+    % Tab 5: Genres
+    \begin{subfigure}[b]{0.9\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{ui_genres.png}
+        \caption*{Predicción de top-5 suggested genres.}
+        \label{fig:ui_genres}
+    \end{subfigure}
+
+    \caption{Visualización de los resultados de inferencia en una interfaz web (parte 3).}
+    \label{fig:ui_inference_tabs_part3}
 \end{figure}

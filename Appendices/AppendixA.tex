@@ -1,7 +1,48 @@
 % Appendix A
+% \chapter{Respuesta JSON de inferencia}
+% \label{AppendixA}
 
-\chapter{Appendix Title Here} % Main appendix title
+% \chapter{Appendix Title Here} % Main appendix title
 
-\label{AppendixA} % For referencing this appendix elsewhere, use \ref{AppendixA}
+% \label{AppendixA} % For referencing this appendix elsewhere, use \ref{AppendixA}
 
-Write your Appendix content here.
+\chapter{Apéndice A: Respuesta JSON de inferencia}
+\label{AppendixA}
+
+JSON de respuesta de la API tras el ciclo de inferencia:
+
+\begin{lstlisting}[language=json, basicstyle=\ttfamily\footnotesize, caption={Respuesta JSON de inferencia.}, label={lst:json_inferencia}]
+{
+  "success": true,
+  "data": {
+    "Key": {
+      "value": [
+        { "key": 11, "mode": 0, "key_mode": "B Minor", "prob": "70.18%" },
+        { "key": 2, "mode": 1, "key_mode": "D Major", "prob": "17.52%" },
+        { "key": 4, "mode": 0, "key_mode": "E Minor", "prob": "10.32%" }
+      ]
+    },
+    "Tempo": {  "value": 105 },
+    "Loudness": { "value": -7.966 },
+    "Fivep": { 
+        "value": { 
+            "acousticness": 0.622, "danceability": 0.502, "energy": 0.638, "instrumentalness": 0.555, "valence": 0.368
+        }
+    },
+    "Liveness": { "value": 0.116 },
+    "Speechiness": { "value": 0.035 },
+    "MoodPrimary": {
+        "top_5": 
+        "Yearning 18.20%, Stirring 13.95%, Melancholy 9.87%, Brooding: 8.87%, Rowdy:7.67%" 
+    },
+    "MoodSecondary": {
+        "top_5": 
+        "Cool Melancholy 6.30%, Lyrical Sentimental 4.89%, Awakening / Stately 4.64%, Light Melancholy 4.55%, Gentle Bittersweet 4.17%" 
+    },
+    "GenreTarget": {
+        "top_5": 
+        "Mainstream 90s and 00s Rock, Alternative Rock, General Latin Rock, General Downtempo, General Indie Rock"
+    }
+  }
+}
+\end{lstlisting}
