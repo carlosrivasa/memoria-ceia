@@ -66,19 +66,17 @@ Un ejemplo de las probabilidades de detección obtenidas para distintas clases d
 
 El uso de esta arquitectura permite transformar la onda sonora para extraer embeddings y obtener probabilidades asociadas a etiquetas predefinidas, como la presencia de aplausos, instrumentos musicales específicos o habla. Estos datos semánticos enriquecen el conjunto de variables de entrada para la inferencia de algunas de las características musicales que se definieron en el alcance del trabajo.
 
-\newpage
-\begin{figure}[!htpb]
+%\newpage
+\begin{figure}[htpb]
     \centering
-    \includegraphics[width=1\textwidth]{mapa_top_clases.pdf}
+    \includegraphics[width=1\textwidth,height=0.45\textheight]{mapa_top_clases.pdf}
     \caption[Probabilidades de detección semántica]{Mapa de calor de las características semánticas extraídas mediante la red CNN14.}
     \label{fig:mapa_semantico}
 \end{figure}
 
 \section{Modelos de inteligencia artificial utilizados}
 \label{sec:modelos}
-
 Una vez obtenidos los descriptores numéricos y semánticos, es necesario aplicar algoritmos de predicción. Para este fin, se utilizaron dos enfoques principales:
-
 \begin{itemize}
     \item Algoritmos LightGBM: se integró la arquitectura LightGBM, basada en el ensamble de árboles de decisión. Esta herramienta destaca por su alta velocidad computacional y eficiencia en tareas generales de predicción \citep{ke2017lightgbm}.
     En este caso también se usó Optuna para la búsqueda de parámetros optimos \citep{akiba2019optuna}.
@@ -87,7 +85,6 @@ Una vez obtenidos los descriptores numéricos y semánticos, es necesario aplica
 
 \section{Despliegue e integración}
 \label{sec:despliegue}
-
 La integración del sistema predictivo requirió del despliegue de una interfaz de programación de aplicaciones. Para su construcción se utilizó FastAPI \citep{ramirez2018fastapi} como marco de trabajo. Esta herramienta facilita el desarrollo de servicios web de alto rendimiento basados en Python \citep{python3}.
 El servicio fue contenedorizado con Docker \citep{merkel2014docker} y es llamado de manera asíncrona, desde una herramienta interna de Plusyc denominada Beethoven.
 El alojamiento remoto del producto se apoyó en los servicios de infraestructura de OCI (por su sigla en inglés, \textit{Oracle Cloud Infrastructure}) \citep{oracle_oci}. Se provisionó una instancia de cómputo virtual en la nube para desplegar la aplicación y ejecutar los modelos predictivos. El uso de esta tecnología garantiza la disponibilidad continua del sistema.

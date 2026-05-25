@@ -49,6 +49,7 @@ Este capítulo detalla el diseño y la implementación del sistema predictivo. S
 \section{Conjuntos de datos y extracción de atributos}
 \label{sec:conjuntos_datos}
 % Aquí se describirá la extracción de datos del audio.
+Esta sección describe las fuentes de datos analizadas y la metodología para extraer los atributos del audio.
 
 \subsection{Análisis comparativo de conjuntos de datos públicos}
 
@@ -107,7 +108,7 @@ Cabe mencionar que, a pesar de que en algunas de las fuentes de datos públicas 
 En el ámbito del procesamiento de señales, la información de un archivo de audio se representa como una serie de tiempo multivariada: una secuencia de puntos de datos \cite{muller2015fundamentals}, en este caso, descriptores numéricos y semánticos, indexados y ordenados cronológicamente.
 
 La estrategia adoptada se inspiró en los conjuntos de datos de referencia, donde la señal se divide en ventanas temporales y la información de cada ventana se colapsa en valores estáticos. Esto permite reducir estas secuencias a un vector por cada canción, para optimizar el uso de la memoria y los tiempos de procesamiento.
-El diagrama de flujo de este algoritmo se muestra en la figura \ref{fig:pipeline_extraccion_real}, donde se observa como la extracción ocurre en ramas paralelas para la transformación de la señal a un vector de estadísticos.
+El diagrama de flujo de este algoritmo se muestra en la figura \ref{fig:pipeline_extraccion_real}, donde se observa cómo la extracción ocurre en ramas paralelas para la transformación de la señal a un vector de estadísticos.
 
 \begin{figure}[htpb]
     \centering
@@ -314,7 +315,7 @@ Se observan dos desafíos principales inherentes a la distribución:
 Esto potencialmente podría generar un error matemático que desvíe la atención del algoritmo durante el entrenamiento \citep{goodfellow2016deep}. 
 Se aplicaron las siguientes transformaciones como parte del preprocesamiento:
 \begin{itemize}
-    \item Se aplicó una transformación logarítmica desplazada (Shifted Log-Transformation). Primero, se realizó una traslación de la escala ($y + 60,1$) para garantizar que todos los registros fueran estrictamente mayores a cero.
+    \item Se aplicó una transformación logarítmica desplazada (Shifted Log Transformation). Primero, se realizó una traslación de la escala ($y + 60,1$) para garantizar que todos los registros fueran estrictamente mayores a cero.
     \item Posteriormente, se aplicó la función matemática $\log(1+x)$. Este preprocesamiento comprime la cola izquierda de la distribución, mitiga el sesgo original y estabiliza la varianza para mejorar el rendimiento del modelo de regresión \citep{goodfellow2016deep}.
 \end{itemize}
 
@@ -430,7 +431,7 @@ El modelado conjunto de múltiples características se aborda convencionalmente 
 
 Se implementaron las siguientes medidas:
 \begin{itemize}
-    \item A diferencia del \textit{loudness}, las variables objetivo ya se encuentran acotadas matemáticamente en el intervalo $[0, 1]$. Por tanto, no requirieron transformaciones, ya que este rango es compatible con las funciones de activación continuas, como la sigmoid, en la capa de salida de la red neuronal.
+    \item A diferencia del \textit{loudness}, las variables objetivo ya se encuentran acotadas matemáticamente en el intervalo $[0, 1]$. Por tanto, no requirieron transformaciones, ya que este rango es compatible con las funciones de activación continuas, como la sigmoide, en la capa de salida de la red neuronal.
     \item Se garantizó la integridad de la matriz de características al imputar los nulos residuales con el valor cero y así reflejar la falta de información acústica.
     \item Finalmente, se aplica estandarización estadística (StandardScaler) a todo el conjunto de entrada para garantizar una media de cero y varianza unitaria ($\mu=0, \sigma^2=1$). Este paso es necesario para homogeneizar el espacio de variables predictivas para el entrenamiento de la red neuronal \citep{goodfellow2016deep}.
 \end{itemize}
@@ -617,7 +618,7 @@ Se aplicaron las siguientes estrategias:
 
 La aplicación del algoritmo de extracción generó un espacio predictivo masivo compuesto por 9590 variables. Modelar directamente sobre esta dimensionalidad introduce riesgo de sobreajuste y alto costo computacional \citep{hastie2009elements, bishop2006pattern}. Por ello, la estrategia de diseño trasladó el esfuerzo hacia el proceso de selección de variables predictivas.
 
-Para todas las variables objetivo, el proceso de selección se ejecutó estrictamente sobre los datos de entrenamiento ($X_{train}$) para evitar srobreajuste, mediante un flujo secuencial de tres etapas:
+Para todas las variables objetivo, el proceso de selección se ejecutó estrictamente sobre los datos de entrenamiento ($X_{train}$) para evitar sobreajuste, mediante un flujo secuencial de tres etapas:
 
 \begin{enumerate}
     \item Filtro por varianza: se implementó \texttt{VarianceThreshold} \citep{scikit-learn} para evaluar cada característica de forma aislada y descartar aquellas constantes o sin varianza (umbral 0,00). Se aplicó un umbral de 0,01 en objetivos de alta cardinalidad para purgar características dispersas que carecen de valor predictivo \citep{kuhn2013applied}.
@@ -633,7 +634,7 @@ Para todas las variables objetivo, el proceso de selección se ejecutó estricta
 En la tabla \ref{tab:resultados_seleccion} se resume la configuración del proceso y el total de variables predictivas resultantes para cada variable objetivo.
 \begin{table}[htpb]
 \centering
-\caption{Resumen de parámetros usados en la selección de variables.}
+\caption{Resumen de parámetros usados para selección.}
 \label{tab:resultados_seleccion}
 \renewcommand{\arraystretch}{1.2}
 \small
@@ -663,7 +664,7 @@ La columna \textquotedbl Varianza\textquotedbl, indica el umbral del filtro por 
 \subsubsection{Modelado mediante perceptrón multicapa (MLP)}
 \label{sec:mlp}
 
-Para la predicción de las cinco variables perceptibles (\textit{acousticness, danceability, energy, instrumentalness, valence}), se implementó una red neuronal de tipo perceptrón multicapa. La arquitectura diseñada consta de tres capas ocultas con una reducción progresiva de neuronas (512, 256 y 128 neuronas, respectivamente). La capa de salida cuenta con cinco neuronas y emplea una función de activación sigmoid, para garantizar que las predicciones se acoten dentro del rango físico $[0, 1]$.
+Para la predicción de las cinco variables perceptibles (\textit{acousticness, danceability, energy, instrumentalness, valence}), se implementó una red neuronal de tipo perceptrón multicapa. La arquitectura diseñada consta de tres capas ocultas con una reducción progresiva de neuronas (512, 256 y 128 neuronas, respectivamente). La capa de salida cuenta con cinco neuronas y emplea una función de activación sigmoide, para garantizar que las predicciones se acoten dentro del rango físico $[0, 1]$.
 La figura \ref{fig:mlp_block} ilustra la arquitectura general del perceptrón multicapa implementado.
 
 \begin{figure}[htpb]
@@ -777,7 +778,7 @@ Dada la alta exigencia computacional y de memoria del modelo preentrenado PANNs 
 \begin{itemize}
     \item Se limitó a una instancia. Esto previene la duplicación masiva de los modelos y pesos preentrenados en la memoria RAM, para optimizar el consumo de los recursos de la máquina virtual y evitar nuevos costos \citep{treveil2020introducing}.
     \item Restricción de hilos: las operaciones matemáticas requeridas para la extracción de variables se restringieron a un solo hilo (\texttt{OMP\_NUM\_THREADS=1}). Esto evita cuellos de botella por saturación de la CPU y bloqueos cruzados (deadlocks) durante la extracción paralela de variables \citep{gorelick2020high}.
-    \item Gestión de memoria y tiempo de respuesta: se asignó un bloque de memoria compartida (\texttt{shm\_size: '5gb'}) y se establecieron timeouts holgados (120 segundos) para prevenir interrupciones provocadas por el análisis de pistas de audio de larga duración, restringidas a 15 máximo máximo por canción.
+    \item Gestión de memoria y tiempo de respuesta: se asignó un bloque de memoria compartida (\texttt{shm\_size: '5gb'}) y se establecieron timeouts holgados (120 segundos) para prevenir interrupciones provocadas por el análisis de pistas de audio de larga duración, restringidas a 15 máximo por canción.
 \end{itemize}
 
 \subsection{Flujo de integración}
@@ -788,7 +789,7 @@ El ciclo de vida de la integración, ilustrado en la figura \ref{fig:diagrama_ar
     \item Una tarea programada en el sistema ejecuta el CLI Beethoven a intervalos regulares de tiempo.
     \item El proceso detecta nuevos archivos de audio que aún no han sido caracterizados.
     \item Por cada nueva pista detectada, Beethoven envía el archivo al servicio de inferencia (API) mediante una petición HTTP POST.
-    \item Inferencia: la API ejecuta el pipeline predictivo, que recibe la señal cruda y rertorna un diccionario estructurado (JSON) que contiene todas las etiquetas estimadas (\textit{key, moods, liveness, etc.}).
+    \item Inferencia: la API ejecuta el pipeline predictivo, que recibe la señal cruda y rertorna un diccionario estructurado (\texttt{JSON}) que contiene todas las etiquetas estimadas (\textit{key, moods, liveness, etc.}).
     \item El script captura la respuesta de la API, extrae las características musicales y las persiste en la base de datos de información musical de Plusyc.
     \item Una vez en la base de datos, los metadatos quedan disponibles para revisión de curadores en un portal web.
 \end{enumerate}
