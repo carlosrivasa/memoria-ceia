@@ -1,48 +1,29 @@
-% Appendix A
-% \chapter{Respuesta JSON de inferencia}
-% \label{AppendixA}
-
-% \chapter{Appendix Title Here} % Main appendix title
-
-% \label{AppendixA} % For referencing this appendix elsewhere, use \ref{AppendixA}
-
-\chapter{Apéndice A: Respuesta JSON de inferencia}
+\chapter{Apéndice A: variables predictivas por tipo y modelo}
 \label{AppendixA}
 
-JSON de respuesta de la API tras el ciclo de inferencia:
+Se detalla la cantidad y proporción de los tipos de variable predictiva.
 
-\begin{lstlisting}[language=json, basicstyle=\ttfamily\footnotesize, caption={Respuesta JSON de inferencia.}, label={lst:json_inferencia}]
-{
-  "success": true,
-  "data": {
-    "Key": {
-      "value": [
-        { "key": 11, "mode": 0, "key_mode": "B Minor", "prob": "70.18%" },
-        { "key": 2, "mode": 1, "key_mode": "D Major", "prob": "17.52%" },
-        { "key": 4, "mode": 0, "key_mode": "E Minor", "prob": "10.32%" }
-      ]
-    },
-    "Tempo": {  "value": 105 },
-    "Loudness": { "value": -7.966 },
-    "Fivep": { 
-        "value": { 
-            "acousticness": 0.622, "danceability": 0.502, "energy": 0.638, "instrumentalness": 0.555, "valence": 0.368
-        }
-    },
-    "Liveness": { "value": 0.116 },
-    "Speechiness": { "value": 0.035 },
-    "MoodPrimary": {
-        "top_5": 
-        "Yearning 18.20%, Stirring 13.95%, Melancholy 9.87%, Brooding: 8.87%, Rowdy:7.67%" 
-    },
-    "MoodSecondary": {
-        "top_5": 
-        "Cool Melancholy 6.30%, Lyrical Sentimental 4.89%, Awakening / Stately 4.64%, Light Melancholy 4.55%, Gentle Bittersweet 4.17%" 
-    },
-    "GenreTarget": {
-        "top_5": 
-        "Mainstream 90s and 00s Rock, Alternative Rock, General Latin Rock, General Downtempo, General Indie Rock"
-    }
-  }
-}
-\end{lstlisting}
+\begin{table}[htpb]
+    \centering
+    \caption{Distribución del tipo de variables predictivas en los modelos.}
+    \label{tab:proporcion_variables}
+    \renewcommand{\arraystretch}{1.2}
+    % Aquí inicia el ajuste al ancho de la página
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{@{}lccccc@{}}
+        \toprule
+        \multirow{2}{*}{\textbf{Variable objetivo}} & \multirow{2}{*}{\textbf{Total}} & \multirow{2}{*}{\textbf{DSP}} & \multicolumn{3}{c}{\textbf{PANNs}} \\
+        \cmidrule(l){4-6}
+        & & & \textbf{Emb.} & \textbf{Prob.} & \textbf{Total (\%)} \\
+        \midrule
+        \textit{Key} y \textit{mode}        & 173  & 173 (100\,\%) & 0           & 0          & 0 (0,0\,\%) \\
+        \textit{Perceptibles (MLP)}         & 2 140 & 480 (22,4\,\%) & 1 315       & 345        & 1 660 (77,6\,\%) \\
+        \textit{Speechiness}                & 92   & 22 (23,9\,\%)  & 62          & 8          & 70 (76,1\,\%) \\
+        \textit{Liveness}                   & 76   & 24 (31,6\,\%)  & 36          & 16         & 52 (68,4\,\%) \\
+        \textit{Primary mood}               & 1 423 & 382 (26,8\,\%) & 1 010       & 31         & 1 041 (73,2\,\%) \\
+        \textit{Secondary mood}             & 1 397 & 385 (27,6\,\%) & 980         & 32         & 1 012 (72,4\,\%) \\
+        \textit{Suggested genres}           & 1 309 & 370 (28,3\,\%) & 912         & 27         & 939 (71,7\,\%) \\
+        \bottomrule
+    \end{tabular}%
+    } % Aquí cierra el resizebox
+\end{table}

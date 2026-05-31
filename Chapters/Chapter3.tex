@@ -553,7 +553,7 @@ Las clases más populares del catálogo son \textit{cheerful / playful} con 4 32
 \begin{figure}[htpb]
     \centering
     \includegraphics[width=0.8\textwidth]{distribucion_de_secondary_mood.png} 
-    \caption[Distribución de freciencias secondary mood]{Distribución de freciencias de \textit{secondary mood} en el catálogo de Plusyc.}
+    \caption[Distribución de frecuencias secondary mood]{Distribución de frecuencias de \textit{secondary mood} en el catálogo de Plusyc.}
     \label{fig:dist_secondary}
 \end{figure}
 
@@ -644,9 +644,9 @@ En la tabla \ref{tab:resultados_seleccion} se resume la configuración del proce
 \midrule
 \textit{Key} y \textit{mode} & 0,00 & Simple &  -- & 173 \\
 \textit{Loudness} & 0,00 & Simple & -- & 856 \\
-\textit{Perceptibles} (5) & 0,00 & K-Fold ($K=5$) & $> 0,95$ & 2 145 \\
+\textit{Perceptibles} (5) & 0,00 & K-Fold ($K=5$) & $> 0,95$ & 2 140 \\
 \textit{Speechiness} & 0,00 & Simple  & $> 0,95$ & 92 \\
-\textit{Liveness} & 0,00 & K-Fold ($K=5$) & $> 0,95$ & 67 \\
+\textit{Liveness} & 0,00 & K-Fold ($K=5$) & $> 0,95$ & 76 \\
 \textit{Primary mood} & 0,01 & Simple & $> 0,95$ & 1 423 \\
 \textit{Secondary mood} & 0,01 & Simple & $> 0,95$ & 1 397 \\
 \textit{Suggested genres} & 0,01 & Simple & $> 0,95$ & 1 309 \\
@@ -679,7 +679,7 @@ Su ventaja radica en combinar el comportamiento del error absoluto medio (MAE) p
 
 Para el ajuste de los hiperparámetros de aprendizaje, la tasa inicial se fijó en $10^{-4}$ y fue gestionada dinámicamente mediante \texttt{ReduceLROnPlateau}. Este mecanismo redujo la tasa de aprendizaje a la mitad automáticamente al detectar estancamientos.
 
-Dado el amplio espacio de variables (2~145 variables de entrada) y la alta capacidad del modelo, se implementó la siguiente estrategia de regularización para mitigar el sobreajuste \citep{goodfellow2016deep}:
+Dado el amplio espacio de variables (2~140 variables de entrada) y la alta capacidad del modelo, se implementó la siguiente estrategia de regularización para mitigar el sobreajuste \citep{goodfellow2016deep}:
 \begin{itemize}
     \item Capas de normalización por lotes (batch normalization) después de cada transformación lineal ($Wx + b$) en \texttt{nn.Linear}, para evitar que los valores numéricos se disparen entre las capas y facilitar la convergencia \citep{ioffe2015batch}.
     \item Inactivación aleatoria de neuronas (dropout) con tasas de 0,30 en la primera capa oculta y 0,20 en las subsiguientes, como filtro más agresivo de ruido en las variables iniciales y proteger las representaciones más abstractas en las capas profundas \citep{srivastava2014dropout}.

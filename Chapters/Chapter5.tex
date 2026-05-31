@@ -43,9 +43,12 @@ Se sugiere revisar puntualmente, ya que presenta ruido en los valores intermedio
 \item También se sugiere iterar sobre el \textit{tempo} para buscar una solución más robusta que el algoritmo de DSP.
 \item Se propone empezar a usar el estado de ánimo secundario como filtro en Plusyc para mejorar la precisión de las recomendaciones musicales.
 \item El sistema se puede ajustar para el despliegue bajo el modelo de software como servicio y así permitir ofrecer el servicio al público interesado.
-\item El equipo de curadores sigue clasificando música. Se contempla automatizar un reentrenamiento periódico para que el sistema aprenda nuevos géneros cada vez que una clase alcance un mínimo de 100 muestras, con el uso de tecnologías como Airflow y MLflow para optimizar estos procesos, hoy manuales.
-\item Se podría evaluar a futuro el uso de arquitecturas basadas en transformadores, si se cuenta con mayor capacidad de cómputo, para mejorar la clasificación de clases densas. 
+%\item El equipo de curadores sigue clasificando música. Se contempla automatizar un reentrenamiento periódico para que el sistema aprenda nuevos géneros cada vez que una clase alcance un mínimo de 100 muestras, con el uso de tecnologías como Airflow y MLflow para optimizar estos procesos, hoy manuales.
+\item El equipo de curadores sigue clasificando música. Se contempla automatizar un reentrenamiento periódico con Airflow para que el sistema aprenda nuevos géneros e integrar MLflow para gestionar el ciclo de vida operativo. Esto permitirá establecer un registro centralizado de modelos, gestionar su versionado, controlar la promoción y devolución entre entornos.
+\item Si bien empíricamente las inferencias muestran alta coherencia entre el \textit{primary} y \textit{secondary mood}, actualmente son generadas por modelos independientes. Se sugiere relacionar las dos variables e implementar una arquitectura de clasificación jerárquica.
+\item Se podría evaluar a futuro el uso de arquitecturas basadas en transformadores, si se cuenta con más muestras y mayor capacidad de cómputo, para mejorar la clasificación de clases densas. 
 También, complementar el sistema con modelos de aprendizaje profundo enfocados exclusivamente en música.
+Sin embargo, los resultados de este trabajo reafirman que la aplicación de técnicas tradicionales de aprendizaje automático sigue ofreciendo soluciones válidas.
 \end{itemize}
 %----------------------------------------------------------------------------------------
 

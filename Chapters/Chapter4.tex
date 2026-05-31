@@ -148,7 +148,7 @@ La figura \ref{fig:real_vs_pred_variables} muestra los resultados de los valores
 % \end{figure}
 
 Una lista de importancia de variables predictivas muestra predominio de las variables globales y ritmo presentadas en la tabla \ref{tab:espacio_variables}. La figura \ref{fig:feature_importance_mlp} presenta las 15 variables más relevantes del modelo MLP. En la figura, el grado de importancia equivale a la caída en el coeficiente de determinación ($R^2$) que sufre el modelo al eliminar la información de dicha variable. Se destaca el impacto principal del factor de cresta, representaciones chroma y estadísticos de onset.
-También es interesante la ausencia de embeddings y probabilidades de PANNs en el top-15, pero muchas están presentes entre las variables seleccionadas (2 145 en total), lo que muestra que operan en conjunto.
+También es interesante la ausencia de embeddings y probabilidades de PANNs en el top-15, pero muchas están presentes entre las variables seleccionadas (2 140 en total), lo que muestra que operan en conjunto. El anexo \ref{AppendixA} lista la cantidad de variables seleccionadas por tipo de variable y por modelo.
 
 \begin{figure}[htpb]
     \centering
@@ -222,7 +222,7 @@ La figura \ref{fig:key_confusion_matrix} presenta la matriz de confusión absolu
 \end{figure}
 
 El análisis de los errores revela una fuerte coherencia armónica: cuando el modelo se equivoca en la predicción principal con datos no vistos, las confusiones más frecuentes ocurren con la tonalidad relativa (mayor o menor correspondientes) o con las tonalidades dominante y subdominante de la escala mayor o menor correspondiente.
-
+El anexo \ref{AppendixB} desglosa los resultados de las relaciones armónicas más importantes.
 Para contextualizar este desempeño, la tabla \ref{tab:comparativa_essentia} contrasta los resultados del extractor de tonalidad de la biblioteca Essentia evaluado en el dataset de Plusyc, con las predicciones top-1 y top-3 del modelo LightGBM. El modelo supera a la herramienta de referencia en todas las métricas.
 
 \begin{table}[htpb]
@@ -502,7 +502,7 @@ Aunque las métricas estrictas son bajas en comparación con otras variables ana
 
 \section{Ejemplo de inferencia}
 
-Para demostrar el funcionamiento integral del sistema, se ejecutó una inferencia cuya entrada es la canción de Radiohead ilustrada en los primeros capítulos y que no está en el catálogo de Plusyc. El archivo de audio se procesó a través de la API. En el anexo \ref{AppendixA} se presenta la respuesta.
+Para demostrar el funcionamiento integral del sistema, se ejecutó una inferencia cuya entrada es la canción de Radiohead ilustrada en los primeros capítulos y que no está en el catálogo de Plusyc. El archivo de audio se procesó a través de la API. En el anexo \ref{AppendixC} se presenta la respuesta.
 
 Las figuras \ref{fig:ui_inference_tabs_part1}, \ref{fig:ui_inference_tabs_part2} y \ref{fig:ui_inference_tabs_part3} exponen una representación visual de estos resultados en una interfaz de usuario. En la primera parte, la figura \ref{fig:ui_load} ilustra la pantalla de selección de la canción procesada, seguida por el resumen general en la figura \ref{fig:ui_overview}, donde aparecen las estimaciones de \textit{key}, \textit{mode}, \textit{tempo} y \textit{loudness}, e incuye el top-3 de \textit{key} y \textit{mode} en la parte inferior.
 
