@@ -1,0 +1,273 @@
+/* Component classes for slide patterns.
+   Imported by week-template.html (and per-week slides/index.html via the template).
+   All classes assume variables from _config/theme/variables.css are available. */
+
+/* ============ Pipeline diagram (pipeline-box / pipeline-arrow) ============ */
+.pipeline-box {
+  background: var(--bg-secondary);
+  border: 1px solid var(--text-muted);
+  border-radius: 8px;
+  padding: 6px 12px;
+  position: relative;
+  cursor: default;
+  transition: border-color 0.2s, color 0.2s;
+}
+.pipeline-box:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.pipeline-box .tooltip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-code);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.85em;
+  color: var(--text-primary);
+  white-space: nowrap;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+.pipeline-box .tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--accent);
+}
+.pipeline-box:hover .tooltip { display: block; }
+.pipeline-arrow {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 4px;
+}
+.pipeline-arrow svg {
+  width: 24px;
+  height: 14px;
+}
+
+/* ============ Tool use flow (flow-step / flow-arrow) ============ */
+.flow-step {
+  background: var(--bg-secondary);
+  border: 1px solid var(--text-muted);
+  border-radius: 8px;
+  padding: 10px 16px;
+  text-align: center;
+  font-size: 0.8em;
+}
+.flow-step.active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.flow-arrow {
+  color: var(--text-muted);
+  font-size: 1.2em;
+}
+
+/* ============ RL attempts (rl-attempt with correct/wrong) ============ */
+.rl-attempt {
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.7em;
+  font-family: var(--font-mono);
+  border: 2px solid transparent;
+  transition: border-color 0.3s, opacity 0.3s;
+}
+.rl-attempt.correct { border-color: #27ae60; }
+.rl-attempt.wrong { border-color: #e74c3c; opacity: 0.5; }
+
+/* ============ Three-stage diagram (stage-box) ============ */
+.stage-box {
+  flex: 1;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  border: 1px solid var(--text-muted);
+}
+.stage-box.highlight { border-color: var(--accent); }
+
+/* ============ Chat mockup ============ */
+.chat-mockup {
+  background: #2a2a3e;
+  border-radius: 12px;
+  max-width: 520px;
+  margin: 0 auto;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+.chat-mockup-header {
+  background: #1e1e30;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.7em;
+  color: var(--text-muted);
+}
+.chat-mockup-body {
+  padding: 20px 18px;
+  min-height: 80px;
+}
+.chat-mockup-input {
+  margin: 0 18px 16px;
+  background: #1e1e30;
+  border: 1px solid #444;
+  border-radius: 24px;
+  padding: 10px 18px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.7em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.chat-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background: var(--accent);
+  animation: blink 1s step-end infinite;
+  vertical-align: text-bottom;
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+.chat-bubble {
+  background: #3a3a52;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 0.75em;
+  line-height: 1.5;
+  color: var(--text-primary);
+  max-width: 85%;
+}
+.chat-bubble.user {
+  background: var(--accent);
+  color: var(--bg-primary);
+  margin-left: auto;
+  text-align: right;
+}
+
+/* ============ Pipeline roadmap (pipe-grid / pipe-node) ============ */
+.pipe-grid {
+  display: grid;
+  grid-template-columns: auto 24px auto 24px auto 24px auto;
+  grid-template-rows: auto 28px auto;
+  align-items: center;
+  justify-items: center;
+  gap: 0;
+  font-size: 0.55em;
+  margin-top: 12px;
+}
+.pipe-node {
+  background: var(--bg-secondary);
+  border: 2px solid #333;
+  border-radius: 10px;
+  padding: 10px 14px;
+  text-align: center;
+  min-width: 110px;
+  transition: border-color 0.5s, box-shadow 0.5s, opacity 0.5s;
+}
+.pipe-node .pipe-icon {
+  font-size: 1.6em;
+  line-height: 1;
+  margin-bottom: 4px;
+  color: var(--accent);
+}
+.pipe-node .pipe-label {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.pipe-node .pipe-sub {
+  color: var(--text-muted);
+  font-size: 0.85em;
+  margin-top: 2px;
+}
+/* Override reveal.js fragment defaults for pipeline */
+.pipe-grid .fragment {
+  visibility: inherit;
+}
+.pipe-grid .pipe-node.fragment {
+  opacity: 0.2;
+}
+.pipe-grid .pipe-node.fragment.visible {
+  opacity: 1;
+  border-color: var(--accent);
+  box-shadow: 0 0 16px rgba(100, 255, 218, 0.15);
+}
+.pipe-grid .pipe-arrow.fragment {
+  opacity: 0;
+}
+.pipe-grid .pipe-arrow.fragment.visible {
+  opacity: 1;
+}
+/* Group highlights for pipeline roadmap */
+.pipe-grid.highlight-pre .pipe-node[data-group="pre"].visible {
+  border-color: var(--accent);
+  box-shadow: 0 0 24px rgba(100, 255, 218, 0.3), inset 0 0 12px rgba(100, 255, 218, 0.05);
+}
+.pipe-grid.highlight-pre .pipe-node[data-group="post"].visible {
+  opacity: 0.35;
+  box-shadow: none;
+}
+.pipe-grid.highlight-pre .pipe-arrow.visible {
+  opacity: 0.3;
+}
+.pipe-grid.highlight-pre [data-fragment-index="1"].pipe-arrow.visible,
+.pipe-grid.highlight-pre [data-fragment-index="2"].pipe-arrow.visible,
+.pipe-grid.highlight-pre [data-fragment-index="3"].pipe-arrow.visible,
+.pipe-grid.highlight-pre [data-fragment-index="4"].pipe-arrow.visible {
+  opacity: 1;
+}
+.pipe-grid.highlight-post .pipe-node[data-group="post"].visible {
+  border-color: var(--accent-secondary);
+  box-shadow: 0 0 24px rgba(130, 170, 255, 0.3), inset 0 0 12px rgba(130, 170, 255, 0.05);
+}
+.pipe-grid.highlight-post .pipe-node[data-group="pre"].visible {
+  opacity: 0.35;
+  box-shadow: none;
+}
+.pipe-grid.highlight-post .pipe-arrow.visible {
+  opacity: 0.3;
+}
+.pipe-grid.highlight-post [data-fragment-index="4"].pipe-arrow.visible,
+.pipe-grid.highlight-post [data-fragment-index="5"].pipe-arrow.visible,
+.pipe-grid.highlight-post [data-fragment-index="6"].pipe-arrow.visible,
+.pipe-grid.highlight-post [data-fragment-index="7"].pipe-arrow.visible {
+  opacity: 1;
+}
+
+/* ============ New utility classes (extracted from recurring inline styles) ============ */
+
+/* Side-by-side comparison row. Two children, equal widths, gap. */
+.comparison-2col {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+.comparison-2col > * {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Generic card-style container with secondary background. */
+.bg-secondary-card {
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+/* Code/data block container (a <div>, distinct from .reveal pre which styles <pre>). */
+.bg-code-card {
+  background: var(--bg-code);
+  border-radius: 8px;
+  padding: 16px;
+}

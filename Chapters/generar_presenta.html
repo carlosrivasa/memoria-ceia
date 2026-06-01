@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Generador PPTX - Defensa Tesis</title>
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+</head>
+<body style="font-family: Arial, sans-serif; padding: 40px; background-color: #f4f4f9;">
+    <h2>⚙️ Generando presentación...</h2>
+    <p>Revisa tu carpeta de descargas. El archivo <b>Defensa_Plusyc_Ingenieria.pptx</b> se está creando con texto de nivel de ingeniería.</p>
+
+    <script>
+        // Inicializar la presentación
+        let pptx = new PptxGenJS();
+        pptx.layout = 'LAYOUT_16x9';
+
+        // Definir estilos base
+        let titleStyle = { x: 0.5, y: 0.5, w: 9, h: 1, fontSize: 28, bold: true, color: '003366' };
+        let bodyStyle = { x: 0.5, y: 1.8, w: 9, h: 3.5, fontSize: 18, color: '333333', bullet: true, lineSpacing: 24 };
+
+        // ---------------------------------------------------------
+        // DIAPOSITIVA 1: Portada
+        // ---------------------------------------------------------
+        let slide1 = pptx.addSlide();
+        slide1.addText("Sistema de Inferencia Multivariable para\nCaracterísticas Musicales mediante Inteligencia Artificial", 
+            { x: 1, y: 2, w: 8, h: 2, fontSize: 32, bold: true, color: '003366', align: 'center' });
+        slide1.addText("Autor: Ing. Carlos Alberto Rivas Araque\nContexto: Plusyc Live SAS", 
+            { x: 1, y: 4.5, w: 8, h: 1, fontSize: 20, color: '666666', align: 'center' });
+
+        // ---------------------------------------------------------
+        // DIAPOSITIVA 2: Problema y Justificación
+        // ---------------------------------------------------------
+        let slide2 = pptx.addSlide();
+        slide2.addText("El Problema de Negocio (MIR en Producción)", titleStyle);
+        slide2.addText([
+            { text: "Dependencia operativa y económica de APIs de terceros (SaaS comerciales)." },
+            { text: "Curaduría manual inescalable frente a catálogos masivos (>60.000 pistas)." },
+            { text: "Necesidad tecnológica: Desarrollar un sistema de Machine Learning in-house para predecir 13 variables acústicas y semánticas a partir del audio crudo." }
+        ], bodyStyle);
+
+        // ---------------------------------------------------------
+        // DIAPOSITIVA 3: Datos y Procesamiento de Señales
+        // ---------------------------------------------------------
+        let slide3 = pptx.addSlide();
+        slide3.addText("Ventaja del Dataset y Extracción DSP", titleStyle);
+        slide3.addText([
+            { text: "Uso de pistas completas (catálogo privado) para evitar pérdida de contexto armónico temporal, superando las limitaciones de FMA o GTZAN (recortes de 30s)." },
+            { text: "Extracción digital de señales (DSP) mediante Librosa y Essentia (ventanas de 64 ms)." },
+            { text: "Descriptores base: MFCC, centroide espectral, representaciones Chroma y perfiles de correlación Krumhansl/Temperley." }
+        ], bodyStyle);
+
+        // ---------------------------------------------------------
+        // DIAPOSITIVA 4: El Pipeline de Extracción (Aporte Core)
+        // ---------------------------------------------------------
+        let slide4 = pptx.addSlide();
+        slide4.addText("Arquitectura de Extracción Semántica y Reducción", titleStyle);
+        slide4.addText([
+            { text: "Fusión de representaciones DSP con embeddings de Deep Learning (arquitectura CNN14 / PANNs)." },
+            { text: "El pipeline procesa ventanas temporales y aplica colapso estadístico (media, varianza, percentil 90) para mitigar secuencias de longitud variable." },
+            { text: "Salida del pipeline: Un vector unidimensional masivo de 9.590 variables predictivas por canción." },
+            { text: "[Dejar espacio aquí para insertar la Figura 3.1: Diagrama de bifurcación]" }
+        ], bodyStyle);
+
+        // ---------------------------------------------------------
+        // DIAPOSITIVA 5: Selección de Variables
+        // ---------------------------------------------------------
+        let slide5 = pptx.addSlide();
+        slide5.addText("Mitigación de la Maldición de la Dimensionalidad", titleStyle);
+        slide5.addText([
+            { text: "Preprocesamiento robusto: Recorte de umbrales de silencio (-60 dB) y Shifted Log Transformation para corregir sesgos extremos (ej. Loudness)." },
+            { text: "Pipeline de selección estricto sobre datos de entrenamiento (X_train): Filtro de varianza, cálculo de ganancia (Gain en GBDT) y descarte por colinealidad de Pearson (>0.95)." },
+            { text: "Resultado: Reducción drástica del espacio predictivo (ej. de 9590 a 2140 variables para variables perceptibles)." }
+        ], bodyStyle);
+
+        // ---------------------------------------------------------
+        // DIAPOSITIVA 6: Arquitectura MLP
+        // ---------------------------------------------------------
+        let slide6 = pptx.addSlide();
+        slide6.addText("Modelado Continuo: Perceptrón Multicapa (MLP)", titleStyle);
+        slide6.addText([
+            { text: "Diseño superficial (3 capas ocultas) dado que la abstracción jerárquica ya fue resuelta por la red CNN14." },
+            { text: "Predicción simultánea en rango [0,1] usando activación sigmoide en la capa de salida." },
+            { text: "Estrategia de defensa en profundidad: Optimización AdamW, BatchNorm, Dropout agresivo y L2 para evitar memorización de ruido en etiquetas subjetivas humanas." },
+            { text: "Se utilizó Huber Loss dada su robustez frente a valores atípicos en la curaduría." }
+        ], bodyStyle);
+
+        // ---------------------------------------------------------
+        // DIAPOSITIVA 7: Arquitectura GBDT
+        // ---------------------------------------------------------
+        let slide7 = pptx.addSlide();
+        slide7.addText("Clasificación Compleja: LightGBM", titleStyle);
+        slide7.addText([
+            { text: "Implementación de Gradient Boosting optimizado vía Optuna para manejar la alta densidad del espacio latente." },
+            { text: "Manejo nativo del desbalance extremo de clases mediante ponderación de pesos (class_weight='balanced')." },
+            { text: "Configuración de Early Stopping estricto para frenar el crecimiento asimétrico en la clasificación de 197 géneros musicales." }
+        ], bodyStyle);
+
+        // ---------------------------------------------------------
+        // DIAPOSITIVA 8: Resultados - El Impacto de PANNs
+        // ---------------------------------------------------------
+        let slide8 = pptx.addSlide();
+        slide8.addText("Desempeño en Características Perceptibles", titleStyle);
+        slide8.addText([
+            { text: "El modelo MLP alcanzó un R² global de 0.8152." },
+            { text: "Hallazgo crítico: La inferencia de Speechiness y Liveness es matemáticamente inviable usando solo DSP. La inclusión de los embeddings de PANNs fue mandatoria para capturar el contexto semántico." },
+            { text: "Las representaciones semánticas (PANNs) dominan la proporción de información, conformando más del 70% de las variables seleccionadas por los modelos finales." }
+        ], bodyStyle);
+
+        // ---------------------------------------------------------
+        // DIAPOSITIVA 9: Resultados - El Problema del Tempo
+        // ---------------------------------------------------------
+        let slide9 = pptx.addSlide();
+        slide9.addText("El Fracaso del ML frente al 'Octave Error'", titleStyle);
+        slide9.addText([
+            { text: "Los algoritmos de regresión fallaron al estimar el Tempo debido a ambigüedades en las etiquetas (relaciones uno-a-muchos)." },
+            { text: "El error de octava (etiquetar 60 BPM en audios acústicamente idénticos a 120 BPM) colapsa la minimización del error cuadrático, forzando predicciones intermedias (90 BPM)." },
+            { text: "Solución de ingeniería: Implementación del extractor directo de Essentia, logrando un 92.4% de accuracy al integrar proporciones métricas toleradas." },
+            { text: "[Insertar gráfico de multiplicidad lineal del tempo aquí]" }
+        ], bodyStyle);
+
+        // ---------------------------------------------------------
+        // DIAPOSITIVA 10: Resultados - Coherencia Armónica
+        // ---------------------------------------------------------
+        let slide10 = pptx.addSlide();
+        slide10.addText("Predicción de Key & Mode y Modelado Diatónico", titleStyle);
+        slide10.addText([
+            { text: "Clasificación conjunta (24 clases) logrando un accuracy top-3 del 86.7%." },
+            { text: "Cuantificación del error: El algoritmo modela perfectamente la teoría musical subyacente. Sus equivocaciones no son aleatorias." },
+            { text: "El 89.4% de todas las predicciones recaen estrictamente dentro del campo armónico diatónico de la tonalidad real (Exacta + Relativa + Dominante + 2da/3ra)." },
+            { text: "Para ambientación comercial en Plusyc, un error de 'tonalidad relativa' genera transiciones acústicas fluidas e imperceptibles." }
+        ], bodyStyle);
+
+        // ---------------------------------------------------------
+        // DIAPOSITIVA 11: Despliegue en Producción
+        // ---------------------------------------------------------
+        let slide11 = pptx.addSlide();
+        slide11.addText("Arquitectura de Integración (MLOps Básico)", titleStyle);
+        slide11.addText([
+            { text: "El modelo fue contenedorizado (Docker) y expuesto mediante una API RESTful asíncrona (FastAPI)." },
+            { text: "Despliegue ejecutado en Oracle Cloud Infrastructure (OCI), orquestado por la herramienta interna Beethoven." },
+            { text: "Decisión técnica vital: Restricción estricta de hilos a nivel C++ (OMP_NUM_THREADS=1) para evitar deadlocks por saturación de CPU durante la extracción paralela de matrices de audio." }
+        ], bodyStyle);
+
+        // ---------------------------------------------------------
+        // DIAPOSITIVA 12: Próximos Pasos (Evolución)
+        // ---------------------------------------------------------
+        let slide12 = pptx.addSlide();
+        slide12.addText("Trabajo Futuro y Evolución del Sistema", titleStyle);
+        slide12.addText([
+            { text: "Orquestación: Automatizar el reentrenamiento mediante Airflow e integrar MLflow para registro de modelos, versionado semántico y rollback." },
+            { text: "Arquitecturas Jerárquicas: Implementar Multi-Task Learning para garantizar matemáticamente la coherencia entre Primary Mood y Secondary Mood." },
+            { text: "Conclusión: El proyecto demuestra que la ingeniería de variables (DSP + Deep Embeddings) combinada con algoritmos tradicionales eficientes mantiene absoluta vigencia industrial." }
+        ], bodyStyle);
+
+        // Generar y descargar el archivo PPTX
+        pptx.writeFile({ fileName: "Defensa_Plusyc_Ingenieria.pptx" });
+    </script>
+</body>
+</html>

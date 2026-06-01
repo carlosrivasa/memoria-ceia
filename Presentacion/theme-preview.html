@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparación de temas — Presentación MIR</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    background: #1a1a1a;
+    color: #ccc;
+    padding: 32px 24px;
+    font-size: 14px;
+  }
+  h1 {
+    text-align: center;
+    color: #fff;
+    font-size: 1.4em;
+    margin-bottom: 8px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .subtitle {
+    text-align: center;
+    color: #888;
+    font-size: 0.9em;
+    margin-bottom: 36px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 28px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .theme-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .theme-label {
+    text-align: center;
+    font-size: 0.85em;
+    font-weight: 600;
+    padding: 6px 0;
+    border-radius: 6px;
+    letter-spacing: 0.03em;
+  }
+
+  /* ============================================================
+     THEME A — Dark Navy + Teal
+  ============================================================ */
+  .a-bg { background: #1a1a2e; }
+  .a-bg-sec { background: #16213e; }
+  .a-text { color: #e0e0e0; }
+  .a-heading { color: #ffffff; }
+  .a-accent { color: #64ffda; }
+  .a-accent2 { color: #82aaff; }
+  .a-muted { color: #8892b0; }
+  .a-border { border-color: #64ffda; }
+  .a-label { background: #0f3460; color: #64ffda; }
+  .a-tag { background: rgba(100,255,218,0.12); color: #64ffda; }
+
+  /* ============================================================
+     THEME B — Light Slate + Navy
+  ============================================================ */
+  .b-bg { background: #f8f9fa; }
+  .b-bg-sec { background: #eef0f3; }
+  .b-text { color: #334155; }
+  .b-heading { color: #1a1a2e; }
+  .b-accent { color: #009b8d; }
+  .b-accent2 { color: #5c6bc0; }
+  .b-muted { color: #94a3b8; }
+  .b-border { border-color: #009b8d; }
+  .b-label { background: #e0f7f5; color: #009b8d; }
+  .b-tag { background: rgba(0,155,141,0.1); color: #007a6e; }
+
+  /* ============================================================
+     THEME C — Dark Charcoal + Amber
+  ============================================================ */
+  .c-bg { background: #111827; }
+  .c-bg-sec { background: #1f2937; }
+  .c-text { color: #f9fafb; }
+  .c-heading { color: #ffffff; }
+  .c-accent { color: #f59e0b; }
+  .c-accent2 { color: #60a5fa; }
+  .c-muted { color: #9ca3af; }
+  .c-border { border-color: #f59e0b; }
+  .c-label { background: #292113; color: #f59e0b; }
+  .c-tag { background: rgba(245,158,11,0.12); color: #f59e0b; }
+
+  /* ============================================================
+     Slide structure shared
+  ============================================================ */
+  .slide {
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 28px 26px;
+    min-height: 340px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    position: relative;
+  }
+  .slide-tag {
+    font-size: 0.65em;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 4px;
+    width: fit-content;
+    margin-bottom: -4px;
+  }
+  .slide-title {
+    font-size: 1.45em;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .slide-subtitle {
+    font-size: 0.85em;
+    font-weight: 400;
+    margin-top: -10px;
+  }
+  .slide-divider {
+    height: 2px;
+    width: 40px;
+    border-radius: 2px;
+    margin: 0;
+  }
+  .slide-body {
+    display: flex;
+    gap: 20px;
+    flex: 1;
+    align-items: flex-start;
+  }
+  .slide-points {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .slide-point {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 0.82em;
+    line-height: 1.45;
+  }
+  .slide-point-dot {
+    font-size: 1.1em;
+    margin-top: 1px;
+    flex-shrink: 0;
+  }
+  .slide-img-placeholder {
+    width: 140px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 10px;
+    font-size: 0.7em;
+    text-align: center;
+    border-width: 1px;
+    border-style: solid;
+  }
+  .img-icon {
+    font-size: 2.5em;
+    line-height: 1;
+  }
+  .slide-footer {
+    font-size: 0.62em;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-top: 1px solid;
+    padding-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto;
+  }
+
+  /* Title slide variant */
+  .title-slide {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 280px;
+  }
+  .title-slide .big-title {
+    font-size: 1.7em;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+  .title-slide .desc {
+    font-size: 0.8em;
+    line-height: 1.6;
+    max-width: 300px;
+  }
+  .title-slide .author {
+    font-size: 0.75em;
+    margin-top: 16px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.7em;
+    font-weight: 600;
+  }
+
+  .slide-label-bar { font-size: 0.72em; font-weight: 700; margin-bottom: 2px; }
+  .mini-bar-wrap { margin-top: 2px; }
+  .mini-bar-bg { height: 7px; border-radius: 4px; overflow: hidden; }
+  .mini-bar-fill { height: 100%; border-radius: 4px; }
+  .metric-row { display: flex; flex-direction: column; gap: 7px; flex: 1; }
+  .metric-item { display: flex; flex-direction: column; gap: 2px; }
+  .metric-label { font-size: 0.68em; }
+  .metric-value { font-size: 0.68em; text-align: right; }
+  .metric-header { display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+
+<h1>Comparación de temas — Presentación Defensa</h1>
+<p class="subtitle">Dos slides de muestra por tema: portada y slide de resultados</p>
+
+<div class="grid">
+
+  <!-- ===================== THEME A ===================== -->
+  <div class="theme-col">
+    <div class="theme-label a-label">A — Dark Navy + Teal</div>
+
+    <!-- Title slide -->
+    <div class="slide a-bg title-slide">
+      <div class="slide-tag a-tag">Especialización en IA · CEIA FIUBA · 2025</div>
+      <div class="big-title a-heading">
+        Sistema MIR para<br>Plusyc Live
+      </div>
+      <div class="desc a-muted">
+        Predicción automática de 13 características musicales a partir de audio
+      </div>
+      <div class="author a-muted">
+        Carlos Rivas
+        <div style="margin-top:4px">
+          <span class="badge a-tag">IA</span>
+          <span class="badge a-tag" style="margin-left:4px">Música</span>
+          <span class="badge a-tag" style="margin-left:4px">En producción</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content slide — resultados MLP -->
+    <div class="slide a-bg">
+      <div class="slide-tag a-tag">Capítulo 4 — Resultados</div>
+      <div class="slide-title a-heading">Red MLP · R² > 0.8</div>
+      <div class="slide-divider" style="background:#64ffda"></div>
+      <div class="slide-body">
+        <div class="metric-row">
+          <div class="metric-item">
+            <div class="metric-header">
+              <span class="metric-label a-accent">Acousticness</span>
+              <span class="metric-value a-accent2">0.89</span>
+            </div>
+            <div class="mini-bar-wrap">
+              <div class="mini-bar-bg a-bg-sec">
+                <div class="mini-bar-fill" style="width:89%; background:#64ffda"></div>
+              </div>
+            </div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-header">
+              <span class="metric-label a-accent">Energy</span>
+              <span class="metric-value a-accent2">0.86</span>
+            </div>
+            <div class="mini-bar-bg a-bg-sec">
+              <div class="mini-bar-fill" style="width:86%; background:#64ffda"></div>
+            </div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-header">
+              <span class="metric-label a-accent">Instrumentalness</span>
+              <span class="metric-value a-accent2">0.83</span>
+            </div>
+            <div class="mini-bar-bg a-bg-sec">
+              <div class="mini-bar-fill" style="width:83%; background:#64ffda"></div>
+            </div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-header">
+              <span class="metric-label a-accent">Danceability</span>
+              <span class="metric-value a-accent2">0.74</span>
+            </div>
+            <div class="mini-bar-bg a-bg-sec">
+              <div class="mini-bar-fill" style="width:74%; background:#82aaff"></div>
+            </div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-header">
+              <span class="metric-label a-accent">Valence</span>
+              <span class="metric-value a-accent2">0.75</span>
+            </div>
+            <div class="mini-bar-bg a-bg-sec">
+              <div class="mini-bar-fill" style="width:75%; background:#82aaff"></div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-img-placeholder a-bg-sec" style="border-color: #16213e">
+          <div class="img-icon a-accent">◎</div>
+          <span class="a-muted">curva de aprendizaje</span>
+        </div>
+      </div>
+      <div class="slide-footer a-muted" style="border-color: #16213e;">
+        <span>Carlos Rivas</span><span>Plusyc Live · CEIA</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== THEME B ===================== -->
+  <div class="theme-col">
+    <div class="theme-label b-label">B — Light Slate + Navy</div>
+
+    <!-- Title slide -->
+    <div class="slide b-bg title-slide">
+      <div class="slide-tag b-tag">Especialización en IA · CEIA FIUBA · 2025</div>
+      <div class="big-title b-heading">
+        Sistema MIR para<br>Plusyc Live
+      </div>
+      <div class="desc b-muted">
+        Predicción automática de 13 características musicales a partir de audio
+      </div>
+      <div class="author b-muted">
+        Carlos Rivas
+        <div style="margin-top:4px">
+          <span class="badge b-tag">IA</span>
+          <span class="badge b-tag" style="margin-left:4px">Música</span>
+          <span class="badge b-tag" style="margin-left:4px">En producción</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content slide -->
+    <div class="slide b-bg">
+      <div class="slide-tag b-tag">Capítulo 4 — Resultados</div>
+      <div class="slide-title b-heading">Red MLP · R² > 0.8</div>
+      <div class="slide-divider" style="background:#009b8d"></div>
+      <div class="slide-body">
+        <div class="metric-row">
+          <div class="metric-item">
+            <div class="metric-header">
+              <span class="metric-label b-accent">Acousticness</span>
+              <span class="metric-value b-accent2">0.89</span>
+            </div>
+            <div class="mini-bar-bg b-bg-sec">
+              <div class="mini-bar-fill" style="width:89%; background:#009b8d"></div>
+            </div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-header">
+              <span class="metric-label b-accent">Energy</span>
+              <span class="metric-value b-accent2">0.86</span>
+            </div>
+            <div class="mini-bar-bg b-bg-sec">
+              <div class="mini-bar-fill" style="width:86%; background:#009b8d"></div>
+            </div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-header">
+              <span class="metric-label b-accent">Instrumentalness</span>
+              <span class="metric-value b-accent2">0.83</span>
+            </div>
+            <div class="mini-bar-bg b-bg-sec">
+              <div class="mini-bar-fill" style="width:83%; background:#009b8d"></div>
+            </div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-header">
+              <span class="metric-label b-accent">Danceability</span>
+              <span class="metric-value b-accent2">0.74</span>
+            </div>
+            <div class="mini-bar-bg b-bg-sec">
+              <div class="mini-bar-fill" style="width:74%; background:#5c6bc0"></div>
+            </div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-header">
+              <span class="metric-label b-accent">Valence</span>
+              <span class="metric-value b-accent2">0.75</span>
+            </div>
+            <div class="mini-bar-bg b-bg-sec">
+              <div class="mini-bar-fill" style="width:75%; background:#5c6bc0"></div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-img-placeholder b-bg-sec" style="border-color: #dde1e7">
+          <div class="img-icon b-accent">◎</div>
+          <span class="b-muted">curva de aprendizaje</span>
+        </div>
+      </div>
+      <div class="slide-footer b-muted" style="border-color: #dde1e7">
+        <span>Carlos Rivas</span><span>Plusyc Live · CEIA</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== THEME C ===================== -->
+  <div class="theme-col">
+    <div class="theme-label c-label">C — Dark Charcoal + Amber</div>
+
+    <!-- Title slide -->
+    <div class="slide c-bg title-slide">
+      <div class="slide-tag c-tag">Especialización en IA · CEIA FIUBA · 2025</div>
+      <div class="big-title c-heading">
+        Sistema MIR para<br>Plusyc Live
+      </div>
+      <div class="desc c-muted">
+        Predicción automática de 13 características musicales a partir de audio
+      </div>
+      <div class="author c-muted">
+        Carlos Rivas
+        <div style="margin-top:4px">
+          <span class="badge c-tag">IA</span>
+          <span class="badge c-tag" style="margin-left:4px">Música</span>
+          <span class="badge c-tag" style="margin-left:4px">En producción</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content slide -->
+    <div class="slide c-bg">
+      <div class="slide-tag c-tag">Capítulo 4 — Resultados</div>
+      <div class="slide-title c-heading">Red MLP · R² > 0.8</div>
+      <div class="slide-divider" style="background:#f59e0b"></div>
+      <div class="slide-body">
+        <div class="metric-row">
+          <div class="metric-item">
+            <div class="metric-header">
+              <span class="metric-label c-accent">Acousticness</span>
+              <span class="metric-value c-accent2">0.89</span>
+            </div>
+            <div class="mini-bar-bg c-bg-sec">
+              <div class="mini-bar-fill" style="width:89%; background:#f59e0b"></div>
+            </div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-header">
+              <span class="metric-label c-accent">Energy</span>
+              <span class="metric-value c-accent2">0.86</span>
+            </div>
+            <div class="mini-bar-bg c-bg-sec">
+              <div class="mini-bar-fill" style="width:86%; background:#f59e0b"></div>
+            </div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-header">
+              <span class="metric-label c-accent">Instrumentalness</span>
+              <span class="metric-value c-accent2">0.83</span>
+            </div>
+            <div class="mini-bar-bg c-bg-sec">
+              <div class="mini-bar-fill" style="width:83%; background:#f59e0b"></div>
+            </div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-header">
+              <span class="metric-label c-accent">Danceability</span>
+              <span class="metric-value c-accent2">0.74</span>
+            </div>
+            <div class="mini-bar-bg c-bg-sec">
+              <div class="mini-bar-fill" style="width:74%; background:#60a5fa"></div>
+            </div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-header">
+              <span class="metric-label c-accent">Valence</span>
+              <span class="metric-value c-accent2">0.75</span>
+            </div>
+            <div class="mini-bar-bg c-bg-sec">
+              <div class="mini-bar-fill" style="width:75%; background:#60a5fa"></div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-img-placeholder c-bg-sec" style="border-color: #374151">
+          <div class="img-icon c-accent">◎</div>
+          <span class="c-muted">curva de aprendizaje</span>
+        </div>
+      </div>
+      <div class="slide-footer c-muted" style="border-color: #374151">
+        <span>Carlos Rivas</span><span>Plusyc Live · CEIA</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /grid -->
+
+<div style="text-align:center; margin-top:36px; color:#666; font-size:0.8em">
+  Abrí este archivo en el navegador · <code>Presentacion/theme-preview.html</code>
+</div>
+
+</body>
+</html>

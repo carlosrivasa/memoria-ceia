@@ -10,3 +10,9 @@
 *.lof
 *blx.bib
 *.DS_Store
+
+#Presenta
+node_modules/
+Presentacion/Img
+
+package-lock.json

@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asignación de características musicales para ambientación comercial</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js/dist/reveal.css">
+  <!-- PDF print layout — Reveal.js lo inyecta automáticamente con ?print-pdf, este script lo fuerza -->
+  <script>
+    if (window.location.search.includes('print-pdf')) {
+      var l = document.createElement('link');
+      l.rel = 'stylesheet'; l.type = 'text/css';
+      l.href = 'https://unpkg.com/reveal.js/dist/print/pdf.css';
+      document.head.appendChild(l);
+    }
+  </script>
+  <link rel="stylesheet" href="../theme/variables.css">
+  <link rel="stylesheet" href="../theme/custom.css">
+  <link rel="stylesheet" href="../theme/components.css">
+  <style>
+    html, body, .reveal, .reveal-viewport { background-color: #1a1a2e !important; }
+    .reveal .slides section { padding: 10px 40px !important; }
+    .reveal img { max-width: 100%; }
+    /* Permitir que hijos de flex se achiquen en lugar de desbordarse */
+    .reveal .slides section .comparison-2col > *,
+    .reveal .slides section > div > div { min-width: 0; }
+
+    /* Section label (e.g. "Marco teórico", "Resultados") */
+    .section-label {
+      font-size: 0.50em;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    /* Metric table */
+    .metric-table { width: 100%; border-collapse: collapse; font-size: 0.68em; }
+    .metric-table th {
+      color: var(--accent);
+      text-align: left;
+      padding: 6px 12px;
+      border-bottom: 1px solid var(--text-muted);
+      font-weight: 600;
+    }
+    .metric-table td {
+      padding: 5px 12px;
+      color: var(--text-primary);
+      border-bottom: 1px solid rgba(136,146,176,0.15);
+    }
+    .metric-table tr:last-child td { border-bottom: none; }
+    .metric-table .val { color: var(--accent-secondary); font-weight: 600; }
+    .metric-table .val-hi { color: var(--accent); font-weight: 700; }
+
+    /* State of the art comparison table */
+    .sota-table { width: 100%; border-collapse: collapse; font-size: 0.62em; margin-top: 14px; }
+    .sota-table th {
+      color: var(--accent);
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--accent);
+      text-align: left;
+      font-weight: 600;
+    }
+    .sota-table td {
+      padding: 8px 14px;
+      border-bottom: 1px solid rgba(136,146,176,0.15);
+      vertical-align: top;
+      color: var(--text-primary);
+    }
+    .sota-table td:first-child { color: var(--accent-secondary); font-weight: 600; }
+    .sota-table td.bad { color: #e87070; }
+
+    /* Tag chips */
+    .tag-chip {
+      display: inline-block;
+      background: var(--bg-secondary);
+      border: 1px solid var(--text-muted);
+      border-radius: 20px;
+      padding: 3px 11px;
+      font-size: 0.62em;
+      color: var(--text-primary);
+      margin: 3px;
+    }
+    .tag-chip.accent { border-color: var(--accent); color: var(--accent); }
+    .tag-chip.secondary { border-color: var(--accent-secondary); color: var(--accent-secondary); }
+
+    /* Check/arrow list */
+    .check-list { list-style: none; margin-left: 0 !important; }
+    .check-list li { padding: 7px 0; font-size: 0.82em; }
+    .check-list li::before { content: '✓  '; color: var(--accent); font-weight: bold; }
+    .check-list li.arrow::before { content: '→  '; color: var(--accent-secondary); }
+
+    /* Image caption */
+    .img-caption {
+      font-size: 0.5em;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 1 — Portada
+    ═══════════════════════════════════════════════════ -->
+    <section style="text-align:center;">
+      <h1 style="font-size:1.5em; line-height:1.3; margin-bottom:10px; color:var(--text-heading);">
+        Asignación de características musicales<br>para ambientación comercial
+      </h1>
+      <div style="font-size:0.72em; color:var(--text-muted); margin-bottom:2px;">
+        Carrera de Especialización en Inteligencia Artificial
+      </div>
+      <div style="font-size:0.65em; color:var(--text-muted); margin-bottom:16px;">
+        Trabajo Final
+      </div>
+
+      <p style="font-size:0.8em; margin-bottom:18px;">
+        <strong>Ing. Carlos Rivas</strong>
+      </p>
+
+      <div style="display:flex; justify-content:center; gap:52px; font-size:0.65em; text-align:left; line-height:1.8; margin-bottom:14px;">
+        <div>
+          <div style="color:var(--text-muted);">Director:</div>
+          <div>Esp. Ing. Martín Moreyra</div>
+        </div>
+        <div>
+          <div style="color:var(--text-muted);">Jurados:</div>
+          <div>Esp. Ing. Natanael Emir Ferrán</div>
+          <div>Mg. Lic. Pablo Carlos Zizzutti</div>
+          <div>Esp. Ing. Ana Laura Diedrichs</div>
+        </div>
+      </div>
+
+      <div style="font-size:0.6em; color:var(--text-muted); margin-bottom:16px;">
+        Ciudad de Buenos Aires, junio de 2026
+      </div>
+      <div style="display:flex; justify-content:center; align-items:center; gap:52px;">
+        <img src="../Img/PLU_AZUL.png" alt="Plusyc"
+             style="height:48px; width:auto; object-fit:contain; border-radius:0; box-shadow:none;">
+        <img src="../Img/Uba_fiuba_ingenieria_logo.png" alt="FIUBA"
+             style="height:48px; width:auto; object-fit:contain; border-radius:0; box-shadow:none; filter:invert(1);">
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 2 — Plusyc Live
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <div class="section-label">Contexto</div>
+      <h2>Ambientación musical</h2>
+      <div class="comparison-2col" style="margin-top:14px; align-items:flex-start; gap:24px;">
+        <div style="flex:1;">
+          <p style="font-size:0.78em; margin-bottom:14px;">
+            Plataforma SaaS de <strong>Plusyc</strong> para espacios comerciales:<br>
+            hoteles, restaurantes, retail.
+          </p>
+          <ul style="font-size:0.72em;">
+            <li>Catálogo privado de <span style="color:var(--accent); font-weight:700;">60.000+</span> canciones completas</li>
+            <li>Listas curadas por <strong>características musicales</strong></li>
+            <li>Elecciones basadas en <strong>valores</strong></li>
+          </ul>
+        </div>
+        <div style="flex:1.2; text-align:center;">
+          <img src="../Img/plusyc_app.webp" alt="Plusyc Live UI"
+               style="max-height:44vh; max-width:100%; height:auto; width:auto; object-fit:contain;">
+        </div>
+      </div>
+      <!-- Anillos de progreso circular — 9 características -->
+      <svg viewBox="0 0 900 112" style="max-height:18vh; width:95%; display:block; margin:8px auto 0;">
+
+        <!-- energy 50% -->
+        <circle cx="50"  cy="50" r="38" fill="none" stroke="rgba(136,146,176,0.25)" stroke-width="5"/>
+        <circle cx="50"  cy="50" r="38" fill="none" stroke="#64ffda" stroke-width="5" stroke-linecap="round"
+                stroke-dasharray="238.76" stroke-dashoffset="119.38" transform="rotate(-90 50 50)"/>
+        <text x="50"  y="55" text-anchor="middle" fill="#e0e0e0" font-size="16" font-weight="600" font-family="Inter,sans-serif">50</text>
+        <text x="50"  y="104" text-anchor="middle" fill="#8892b0" font-size="12" font-family="Inter,sans-serif">energy</text>
+
+        <!-- danceability 20% -->
+        <circle cx="150" cy="50" r="38" fill="none" stroke="rgba(136,146,176,0.25)" stroke-width="5"/>
+        <circle cx="150" cy="50" r="38" fill="none" stroke="#64ffda" stroke-width="5" stroke-linecap="round"
+                stroke-dasharray="238.76" stroke-dashoffset="191.01" transform="rotate(-90 150 50)"/>
+        <text x="150" y="55" text-anchor="middle" fill="#e0e0e0" font-size="16" font-weight="600" font-family="Inter,sans-serif">20</text>
+        <text x="150" y="104" text-anchor="middle" fill="#8892b0" font-size="12" font-family="Inter,sans-serif">dance</text>
+
+        <!-- acousticness 7% -->
+        <circle cx="250" cy="50" r="38" fill="none" stroke="rgba(136,146,176,0.25)" stroke-width="5"/>
+        <circle cx="250" cy="50" r="38" fill="none" stroke="#64ffda" stroke-width="5" stroke-linecap="round"
+                stroke-dasharray="238.76" stroke-dashoffset="222.05" transform="rotate(-90 250 50)"/>
+        <text x="250" y="55" text-anchor="middle" fill="#e0e0e0" font-size="16" font-weight="600" font-family="Inter,sans-serif">7</text>
+        <text x="250" y="104" text-anchor="middle" fill="#8892b0" font-size="12" font-family="Inter,sans-serif">acoustic</text>
+
+        <!-- instrumentalness 98% -->
+        <circle cx="350" cy="50" r="38" fill="none" stroke="rgba(136,146,176,0.25)" stroke-width="5"/>
+        <circle cx="350" cy="50" r="38" fill="none" stroke="#64ffda" stroke-width="5" stroke-linecap="round"
+                stroke-dasharray="238.76" stroke-dashoffset="4.78" transform="rotate(-90 350 50)"/>
+        <text x="350" y="55" text-anchor="middle" fill="#e0e0e0" font-size="16" font-weight="600" font-family="Inter,sans-serif">98</text>
+        <text x="350" y="104" text-anchor="middle" fill="#8892b0" font-size="11" font-family="Inter,sans-serif">instrumental</text>
+
+        <!-- liveness 10% -->
+        <circle cx="450" cy="50" r="38" fill="none" stroke="rgba(136,146,176,0.25)" stroke-width="5"/>
+        <circle cx="450" cy="50" r="38" fill="none" stroke="#64ffda" stroke-width="5" stroke-linecap="round"
+                stroke-dasharray="238.76" stroke-dashoffset="214.88" transform="rotate(-90 450 50)"/>
+        <text x="450" y="55" text-anchor="middle" fill="#e0e0e0" font-size="16" font-weight="600" font-family="Inter,sans-serif">10</text>
+        <text x="450" y="104" text-anchor="middle" fill="#8892b0" font-size="12" font-family="Inter,sans-serif">live</text>
+
+        <!-- speechiness 12% -->
+        <circle cx="550" cy="50" r="38" fill="none" stroke="rgba(136,146,176,0.25)" stroke-width="5"/>
+        <circle cx="550" cy="50" r="38" fill="none" stroke="#64ffda" stroke-width="5" stroke-linecap="round"
+                stroke-dasharray="238.76" stroke-dashoffset="210.11" transform="rotate(-90 550 50)"/>
+        <text x="550" y="55" text-anchor="middle" fill="#e0e0e0" font-size="16" font-weight="600" font-family="Inter,sans-serif">12</text>
+        <text x="550" y="104" text-anchor="middle" fill="#8892b0" font-size="12" font-family="Inter,sans-serif">speech</text>
+
+        <!-- loudness -4 dB (60% de escala 0..-10) -->
+        <circle cx="650" cy="50" r="38" fill="none" stroke="rgba(136,146,176,0.25)" stroke-width="5"/>
+        <circle cx="650" cy="50" r="38" fill="none" stroke="#64ffda" stroke-width="5" stroke-linecap="round"
+                stroke-dasharray="238.76" stroke-dashoffset="95.50" transform="rotate(-90 650 50)"/>
+        <text x="650" y="49" text-anchor="middle" fill="#e0e0e0" font-size="16" font-weight="600" font-family="Inter,sans-serif">−4</text>
+        <text x="650" y="63" text-anchor="middle" fill="#8892b0" font-size="10" font-family="Inter,sans-serif">dB</text>
+        <text x="650" y="104" text-anchor="middle" fill="#8892b0" font-size="12" font-family="Inter,sans-serif">loud</text>
+
+        <!-- key: A Minor (categórico — anillo completo, accent-secondary) -->
+        <circle cx="750" cy="50" r="38" fill="none" stroke="rgba(130,170,255,0.2)" stroke-width="5"/>
+        <circle cx="750" cy="50" r="38" fill="none" stroke="#82aaff" stroke-width="5" stroke-linecap="round"
+                stroke-dasharray="238.76" stroke-dashoffset="0"/>
+        <text x="750" y="48" text-anchor="middle" fill="#e0e0e0" font-size="19" font-weight="700" font-family="Inter,sans-serif">A</text>
+        <text x="750" y="62" text-anchor="middle" fill="#82aaff" font-size="13" font-family="Inter,sans-serif">Minor</text>
+        <text x="750" y="104" text-anchor="middle" fill="#8892b0" font-size="12" font-family="Inter,sans-serif">key</text>
+
+        <!-- mood / genre: Saudade / Jazz (categórico — anillo completo, accent-secondary) -->
+        <circle cx="850" cy="50" r="38" fill="none" stroke="rgba(130,170,255,0.2)" stroke-width="5"/>
+        <circle cx="850" cy="50" r="38" fill="none" stroke="#82aaff" stroke-width="5" stroke-linecap="round"
+                stroke-dasharray="238.76" stroke-dashoffset="0"/>
+        <text x="850" y="47" text-anchor="middle" fill="#e0e0e0" font-size="12" font-weight="600" font-family="Inter,sans-serif">Saudade</text>
+        <text x="850" y="61" text-anchor="middle" fill="#82aaff" font-size="13" font-weight="600" font-family="Inter,sans-serif">Jazz</text>
+        <text x="850" y="104" text-anchor="middle" fill="#8892b0" font-size="12" font-family="Inter,sans-serif">mood / genre</text>
+      </svg>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 3 — El problema
+    ═══════════════════════════════════════════════════ -->
+     <section>
+      <div class="section-label">Contexto</div>
+      <h2>La necesidad y el objetivo</h2>
+      <div style="display:flex; gap:14px; align-items:stretch; font-size:0.8em;">
+        <div class="bg-secondary-card" style="flex:1.3; text-align:center;">
+          <div style="color:var(--text-muted); font-size:0.6em; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px;">Fuentes externas</div>
+          <div style="color:var(--accent-secondary); margin-bottom:6px;">Spotify API</div>
+          <div style="color:var(--accent-secondary); margin-bottom:6px;">Gracenote</div>
+          <div style="color:var(--text-muted); font-size:0.7em; margin-top:8px;">Etiquetado manual</div>
+        </div>
+        <div style="display:flex; align-items:center; color:var(--text-muted); font-size:1.5em; flex-shrink:0;">→</div>
+        <div class="bg-code-card" style="flex:2; font-size:0.88em; padding-top:16px;">
+          <div style="margin-bottom:8px;"><span style="color:#e87070;">✗</span> Costos y límites de requests</div>
+          <div style="margin-bottom:8px;"><span style="color:#e87070;">✗</span> Dependencia de terceros</div>
+          <div style="margin-bottom:8px;"><span style="color:#e87070;">✗</span> Carga manual</div>
+          <div><span style="color:#e87070;">✗</span> Clases diferentes en Plusyc</div>
+        </div>
+        <div style="display:flex; align-items:center; color:var(--text-muted); font-size:1.5em; flex-shrink:0;">→</div>
+        <div class="bg-secondary-card" style="flex:1.3; text-align:center; border:2px solid var(--accent);">
+          <div style="color:var(--text-muted); font-size:0.6em; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px;">Solución</div>
+          <div style="color:var(--accent); font-weight:700; font-size:1.05em;">Sistema propio</div>
+          <div style="color:var(--text-muted); font-size:0.7em; margin-top:8px;">Inferencia automática</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 4 — El objetivo
+    ═══════════════════════════════════════════════════ -->
+ <section>
+      <div class="section-label">Contexto</div>
+      <h2>El objetivo</h2>
+      <p style="font-size:0.75em; color:var(--text-muted); margin-bottom:20px;">
+        Sistema propio
+      </p>
+      
+      <div style="display:flex; gap:20px; align-items:center; justify-content:center;">
+        
+        <div class="stage-box" style="text-align:center; padding:18px 20px; flex-shrink:0;">
+          <div style="font-size:2em; margin-bottom:6px; filter:invert(1);">🎵</div>
+          <div style="font-size:0.75em; color:var(--text-muted);">Audio crudo</div>
+          <div style="font-size:0.6em; color:var(--text-muted);">Catálogo Plusyc</div>
+        </div>
+        
+        <div style="color:var(--text-muted); font-size:2em; flex-shrink:0;">→</div>
+        
+        <div class="stage-box highlight" style="text-align:center; padding:18px 24px; flex-shrink:0;">
+          <div style="color:var(--accent); font-weight:700; font-size:1.1em; margin-bottom:4px;">Inferencia IA</div>  
+        </div>
+        
+        <div style="color:var(--text-muted); font-size:2em; flex-shrink:0;">→</div>
+        
+        <div class="stage-box" style="flex:2.2; padding:16px 20px; text-align:left;">
+          <div style="font-size:0.55em; text-transform:uppercase; letter-spacing:0.12em; color:var(--text-muted); margin-bottom:12px;">13 características</div>
+          <div style="font-size:0.66em; color:var(--text-primary); margin-bottom:8px;">
+            key &nbsp;·&nbsp; mode &nbsp;·&nbsp; tempo &nbsp;·&nbsp; loudness
+          </div>
+          <div style="font-size:0.66em; color:var(--accent); margin-bottom:8px; line-height:1.6;">
+            acousticness &nbsp;·&nbsp; danceability &nbsp;·&nbsp; energy &nbsp;·&nbsp; instrumentalness<br>
+            liveness &nbsp;·&nbsp; speechiness &nbsp;·&nbsp; valence
+          </div>
+          <div style="font-size:0.66em; color:var(--accent-secondary);">
+            primary mood &nbsp;·&nbsp; secondary mood &nbsp;·&nbsp; suggested genres
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 5 — Estado del arte
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <div class="section-label">Marco teórico</div>
+      <h2>Estado del arte</h2>
+      <p style="font-size:0.65em; color:var(--text-muted); margin-bottom:18px;">
+        <strong>MIR (Music Information Retrieval):</strong> Procesamiento de señales y Machine Learning para extraer información del audio.
+      </p>
+      <div style="display:flex; gap:16px; margin-top:20px; align-items:stretch;">
+        
+        <div class="bg-secondary-card" style="flex:1;">
+          <div style="color:var(--accent); font-weight:700; font-size:0.85em; margin-bottom:4px;">DSP Tradicional</div>
+          <div style="font-size:0.65em; color:var(--text-muted); margin-bottom:12px;">Librosa / Essentia</div>
+          <ul class="check-list">
+            <li class="arrow" style="font-size:0.7em; color:var(--text-primary);">Extraen descriptores físicos de la señal</li>
+            <li class="arrow" style="font-size:0.7em; color:#e87070;">Carecen de comprensión semántica (mood, género, habla)</li>
+          </ul>
+        </div>
+
+        <div class="bg-secondary-card" style="flex:1;">
+          <div style="color:var(--accent-secondary); font-weight:700; font-size:0.85em; margin-bottom:4px;">Deep Learning</div>
+          <div style="font-size:0.65em; color:var(--text-muted); margin-bottom:12px;">PANNs / musicnn</div>
+          <ul class="check-list">
+            <li class="arrow" style="font-size:0.7em; color:var(--text-primary);">Extraen contexto acústico profundo</li>
+            <li class="arrow" style="font-size:0.7em; color:#e87070;">Clasificadores genéricos, no adaptados al catálogo</li>
+          </ul>
+        </div>
+
+        <div class="bg-secondary-card" style="flex:1;">
+          <div style="color:var(--text-heading); font-weight:700; font-size:0.85em; margin-bottom:4px;">APIs Comerciales</div>
+          <div style="font-size:0.65em; color:var(--text-muted); margin-bottom:12px;">Spotify / Gracenote</div>
+          <ul class="check-list">
+            <li class="arrow" style="font-size:0.7em; color:var(--text-primary);">Solución directa y ya empaquetada</li>
+            <li class="arrow" style="font-size:0.7em; color:#e87070;">Inviable a escala por costos y dependencia</li>
+          </ul>
+        </div>
+      </div>
+      
+
+    </section>
+    <!-- 
+    <section>
+      <div class="section-label">Contexto</div>
+      <h2>Estado del arte</h2>
+      <table class="sota-table">
+        <thead>
+          <tr>
+            <th>Herramienta</th>
+            <th>Enfoque</th>
+            <th>Limitación para este caso</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Librosa / Essentia</td>
+            <td>DSP open-source</td>
+            <td class="bad">Solo señal, sin predicción semántica</td>
+          </tr>
+          <tr>
+            <td>PANNs / musicnn</td>
+            <td>Deep Learning (AudioSet)</td>
+            <td class="bad">Clases generales, no adaptado a Plusyc</td>
+          </tr>
+          <tr>
+            <td>Spotify / Gracenote</td>
+            <td>API SaaS</td>
+            <td class="bad">Costos recurrentes, límites, dependencia</td>
+          </tr>
+          <tr>
+            <td>Tunebat / manual</td>
+            <td>Etiquetado humano</td>
+            <td class="bad">No escalable a 60.000 canciones</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="margin-top:16px; font-size:0.7em; color:var(--text-muted);">
+        → Ninguna se adapta a las clases de Plusyc <em>y</em> es operable a escala sin costo adicional.
+      </p>
+    </section>
+    -->
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 7 — Los datos
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <div class="section-label">Datos</div>
+      <h2>Los datos</h2>
+
+      <!-- Catálogo Plusyc — barra superior -->
+      <div class="bg-secondary-card" style="border-left:4px solid var(--accent); padding:12px 20px; margin-top:14px; margin-bottom:14px; display:flex; gap:28px; font-size:0.74em; align-items:center;">
+        <div><strong style="color:var(--accent);">+60.000 canciones</strong> · catálogo de Plusyc</div>
+        <div style="color:var(--text-muted);">|</div>
+        <div><strong>Audio completo</strong> — no previews de 30s</div>
+        <div style="color:var(--text-muted);">|</div>
+        <div>Valores revisados manualmente</div>
+      </div>
+
+      <div style="font-size:0.55em; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); margin-bottom:10px;">
+        datasets públicos - ninguno tiene las 13 características
+      </div>
+
+      <!-- 4 tarjetas — datasets públicos -->
+      <div style="display:flex; gap:10px;">
+
+        <div class="bg-code-card" style="flex:1; font-size:0.58em;">
+          <div style="color:var(--accent-secondary); font-weight:700; margin-bottom:3px;">GTZAN</div>
+          <div style="color:var(--text-muted); font-size:0.88em; margin-bottom:10px;">1.000 clips · 30s · 10 géneros</div>
+          <div style="margin-bottom:5px;"><span style="color:var(--accent); font-weight:700;">✓</span> DSP: MFCC, chroma, RMS, descriptores espectrales</div>
+          <div style="margin-bottom:10px;"><span style="color:var(--accent); font-weight:700;">✓</span> Ventanas y estadísticos (media, varianza)</div>
+          <div style="color:#e87070;"><span style="font-weight:700;">✗</span> Previews de 30s · 10 géneros vs 500+ de Plusyc</div>
+        </div>
+
+        <div class="bg-code-card" style="flex:1; font-size:0.58em;">
+          <div style="color:var(--accent-secondary); font-weight:700; margin-bottom:3px;">FMA Estándar</div>
+          <div style="color:var(--text-muted); font-size:0.88em; margin-bottom:10px;">clips 30s · taxonomía jerárquica</div>
+          <div style="margin-bottom:5px;"><span style="color:var(--accent); font-weight:700;">✓</span> Más DSP: CQT, tonnetz, ZCR</div>
+          <div style="margin-bottom:5px;"><span style="color:var(--accent); font-weight:700;">✓</span> Estadísticos: media, std, asimetría, curtosis</div>
+          <div style="color:#e87070;"><span style="font-weight:700;">✗</span> Clips cortos · versión completa excede infraestructura</div>
+        </div>
+
+        <div class="bg-code-card" style="flex:1; font-size:0.58em;">
+          <div style="color:var(--accent-secondary); font-weight:700; margin-bottom:3px;">Million Song Dataset</div>
+          <div style="color:var(--text-muted); font-size:0.88em; margin-bottom:10px;">1M canciones · HDF5</div>
+          <div style="margin-bottom:5px;"><span style="color:var(--accent); font-weight:700;">✓</span> Gran cantidad de muestras</div>
+          <div style="color:#e87070;"><span style="font-weight:700;">✗</span> Sin audio crudo · difícil replicar la extracción</div>
+        </div>
+
+        <div class="bg-code-card" style="flex:1; font-size:0.58em;">
+          <div style="color:var(--accent-secondary); font-weight:700; margin-bottom:3px;">AudioSet</div>
+          <div style="color:var(--text-muted); font-size:0.88em; margin-bottom:10px;">2M clips · 10s · 527 clases</div>
+          <div style="margin-bottom:5px;"><span style="color:var(--accent); font-weight:700;">✓</span> Embeddings semánticos con CNN14 (PANNs)</div>
+          <div style="margin-bottom:5px;"><span style="color:var(--accent); font-weight:700;">✓</span> Ventanas de 10s para captura semántica</div>
+          <div style="margin-bottom:10px;"><span style="color:var(--accent); font-weight:700;">✓</span> Usado para limpiar etiquetas ruidosas</div>
+          <div style="color:#e87070;"><span style="font-weight:700;">✗</span> Clases diferentes</div>
+        </div>
+
+      </div>
+    </section>
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 8 — Representaciones DSP
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <div class="section-label">Datos y pipeline</div>
+      <h2>Representaciones DSP</h2>
+      <div class="comparison-2col" style="margin-top:16px; align-items:center; gap:28px;">
+        <div style="font-size:0.78em;">
+          <div style="margin-bottom:14px;">
+            <div style="color:var(--accent); margin-bottom:5px;">2D — tiempo × frecuencia</div>
+            <ul>
+              <li>Espectrograma mel</li>
+              <li>Cromagrama</li>
+              <li>Tonnetz</li>
+            </ul>
+          </div>
+          <div style="margin-bottom:14px;">
+            <div style="color:var(--accent-secondary); margin-bottom:5px;">Escalares por frame</div>
+            <ul>
+              <li>MFCC (13 coeficientes)</li>
+              <li>Centroide espectral</li>
+              <li>Ancho de banda, rolloff</li>
+              <li>Zero Crossing Rate</li>
+            </ul>
+          </div>
+          <div class="bg-secondary-card" style="font-size:0.85em;">
+            Ventanas de <strong>~64 ms</strong> → <span style="color:var(--accent);">7 estadísticos</span><br>
+            <span style="color:var(--text-muted); font-size:0.9em;">media · std · asimetría · curtosis · P10 · P50 · P90</span>
+          </div>
+        </div>
+        <div>
+          <img src="../Img/espectro_croma_tonnetz.png" alt="Espectrograma, cromagrama y tonnetz"
+               style="max-height:50vh; width:100%; object-fit:contain;">
+          <div class="img-caption">espectrograma · cromagrama · tonnetz — "Weird Fishes" (Radiohead)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 9 — PANNs / CNN14
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <div class="section-label">Datos y pipeline</div>
+      <h2>Semántica: PANNs / CNN14</h2>
+      <div class="comparison-2col" style="margin-top:16px; align-items:center; gap:28px;">
+        <div style="font-size:0.78em;">
+          <ul>
+            <li>
+              Red neuronal <strong>preentrenada en AudioSet</strong><br>
+              <span style="color:var(--text-muted);">2M clips de YouTube · 527 clases de audio</span>
+            </li>
+            <li style="margin-top:8px;">
+              Produce <span style="color:var(--accent);">embeddings</span> de 2048 dims<br>
+              <span style="color:var(--text-muted);">representación latente de la canción</span>
+            </li>
+            <li style="margin-top:8px;">
+              Produce <span style="color:var(--accent-secondary);">probabilidades</span> de 527 eventos<br>
+              <span style="color:var(--text-muted);">aplausos, habla, instrumentos, etc.</span>
+            </li>
+          </ul>
+          <div class="bg-secondary-card" style="margin-top:14px; font-size:0.85em;">
+            Ventanas de <strong>10s</strong> → <span style="color:var(--accent);">4 estadísticos</span><br>
+            <span style="color:var(--text-muted); font-size:0.9em;">media · máximo · std · P90</span>
+          </div>
+          <p style="margin-top:10px; font-size:0.8em; color:var(--text-muted);">
+            Clave para capturar semántica que el DSP clásico no puede.
+          </p>
+        </div>
+        <div>
+          <img src="../Img/mapa_top_clases.png" alt="Mapa de probabilidades PANNs"
+               style="max-height:50vh; width:100%; object-fit:contain;">
+          <div class="img-caption">probabilidades de eventos sonoros por canción</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 10 — El vector de características
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <div class="section-label">Datos y pipeline</div>
+      <h2>El vector de características</h2>
+      <div style="margin-top:22px; font-size:0.8em;">
+        <!-- Rama DSP -->
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+          <div class="flow-step active" style="min-width:130px; text-align:center; flex-shrink:0;">
+            Canción completa
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step active" style="flex:1;">
+            Rama <strong>DSP</strong> (Librosa)<br>
+            <span style="color:var(--text-muted); font-size:0.82em;">ventanas 64ms → 7 estadísticos</span>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step" style="flex:0.9; color:var(--accent); border-color:var(--accent); text-align:center;">
+            ~1.800 features<br>DSP
+          </div>
+        </div>
+
+        <!-- Flecha de concatenación -->
+        <div style="display:flex; padding-left:calc(130px + 10px + 10px);">
+          <div style="color:var(--text-muted); font-size:0.9em; padding-left:8px;">↘ concatenar</div>
+        </div>
+
+        <!-- Rama PANNs -->
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px;">
+          <div class="flow-step active" style="min-width:130px; text-align:center; flex-shrink:0;">
+            Canción completa
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step active" style="flex:1;">
+            Rama <strong>PANNs</strong> (CNN14)<br>
+            <span style="color:var(--text-muted); font-size:0.82em;">ventanas 10s → 4 estadísticos</span>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step" style="flex:0.9; color:var(--accent-secondary); border-color:var(--accent-secondary); text-align:center;">
+            ~9.000 features<br>semánticas
+          </div>
+        </div>
+
+        <!-- Vector resultado -->
+        <div style="display:flex; justify-content:center;">
+          <div class="bg-secondary-card" style="border:2px solid var(--accent); padding:14px 36px; text-align:center;">
+            <div style="color:var(--accent); font-weight:700; font-size:1.05em;">Vector por canción</div>
+            <div style="color:var(--text-muted); font-size:0.75em; margin-top:4px;">entrada unificada al modelo de ML</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 11 — Preprocesamiento
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <div class="section-label">Modelos</div>
+      <h2>Preprocesamiento</h2>
+      <div class="comparison-2col" style="margin-top:18px; align-items:center; gap:28px;">
+        <div>
+          <ul class="check-list">
+            <li>
+              <strong>Corte del histórico</strong><br>
+              <span style="color:var(--text-muted); font-size:0.88em;">Cambio de distribución detectado en fecha → solo datos recientes</span>
+            </li>
+            <li>
+              <strong>Submuestreo balanceado</strong><br>
+              <span style="color:var(--text-muted); font-size:0.88em;">liveness y speechiness tienen clases muy desbalanceadas</span>
+            </li>
+            <li>
+              <strong>Limpieza con AudioSet</strong><br>
+              <span style="color:var(--text-muted); font-size:0.88em;">modelo preentrenado detecta y elimina falsas etiquetas</span>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <img src="../Img/liveness_antes_rvp.png" alt="Distribución liveness — datos ruidosos"
+               style="max-height:46vh; width:100%; object-fit:contain;">
+          <div class="img-caption">liveness antes de limpieza — distribución con ruido</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 12 — Modelo MLP
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <div class="section-label">Modelos</div>
+      <h2>Modelo MLP — variables continuas</h2>
+      <div class="comparison-2col" style="margin-top:16px; align-items:center; gap:28px;">
+        <div style="font-size:0.8em;">
+          <p style="margin-bottom:12px;"><strong>Multi-output</strong> — 5 salidas simultáneas:</p>
+          <div style="margin-bottom:14px;">
+            <span class="tag-chip accent">acousticness</span>
+            <span class="tag-chip accent">danceability</span>
+            <span class="tag-chip accent">energy</span>
+            <span class="tag-chip accent">instrumentalness</span>
+            <span class="tag-chip accent">valence</span>
+          </div>
+          <ul>
+            <li><strong>Huber loss</strong> — robusto a outliers</li>
+            <li>Adam optimizer</li>
+            <li>Early stopping en iteración 74</li>
+          </ul>
+        </div>
+        <div>
+          <img src="../Img/mlp_block.png" alt="Diagrama MLP"
+               style="max-height:50vh; width:100%; object-fit:contain;">
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 13 — Modelo LightGBM
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <div class="section-label">Modelos</div>
+      <h2>Modelos LightGBM — clasificación</h2>
+      <div class="comparison-2col" style="margin-top:16px; align-items:center; gap:28px;">
+        <div style="font-size:0.78em;">
+          <p style="margin-bottom:10px;"><strong>9 modelos individuales</strong>, uno por variable:</p>
+          <div style="margin-bottom:14px;">
+            <span class="tag-chip">tempo</span>
+            <span class="tag-chip">loudness</span>
+            <span class="tag-chip">key</span>
+            <span class="tag-chip">mode</span>
+            <span class="tag-chip">liveness</span>
+            <span class="tag-chip">speechiness</span>
+            <span class="tag-chip secondary">primary mood</span>
+            <span class="tag-chip secondary">secondary mood</span>
+            <span class="tag-chip secondary">genres</span>
+          </div>
+          <ul>
+            <li>Ensamble de árboles de decisión (gradient boosting)</li>
+            <li>Hiperparámetros optimizados con <span style="color:var(--accent);">Optuna</span></li>
+            <li>Entrenamiento separado → mayor precisión por variable</li>
+          </ul>
+        </div>
+        <div>
+          <img src="../Img/lgbm_block.png" alt="Diagrama LightGBM"
+               style="max-height:50vh; width:100%; object-fit:contain;">
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 14 — Desafío: liveness & speechiness
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <div class="section-label">Resultados</div>
+      <h2>Desafío: liveness &amp; speechiness</h2>
+      <p style="font-size:0.7em; color:var(--text-muted); margin-bottom:12px;">
+        Primera versión: R²≈0.15 (liveness) y R²≈0.28 (speechiness) — etiquetas ruidosas en el catálogo histórico
+      </p>
+      <div class="comparison-2col" style="gap:18px; align-items:flex-start;">
+        <div style="text-align:center;">
+          <div style="color:#e87070; font-size:0.58em; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px;">Antes</div>
+          <img src="../Img/speechiness_antes_rvp.png" alt="Speechiness — antes de limpieza"
+               style="max-height:40vh; width:100%; object-fit:contain;">
+        </div>
+        <div style="text-align:center;">
+          <div style="color:var(--accent); font-size:0.58em; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px;">Después — limpieza con AudioSet</div>
+          <img src="../Img/speechiness_despues_rvp.png" alt="Speechiness — después de limpieza"
+               style="max-height:40vh; width:100%; object-fit:contain;">
+        </div>
+      </div>
+      <p style="font-size:0.62em; color:var(--text-muted); margin-top:8px; text-align:center;">
+        Modelo preentrenado detecta canciones mal etiquetadas → se excluyen del entrenamiento
+      </p>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 15 — Resultados MLP
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <div class="section-label">Resultados</div>
+      <h2>Resultados MLP</h2>
+      <div class="comparison-2col" style="margin-top:16px; align-items:center; gap:28px;">
+        <div>
+          <img src="../Img/curva_fivep.png" alt="Curvas de aprendizaje MLP"
+               style="max-height:48vh; width:100%; object-fit:contain;">
+          <div class="img-caption">Huber loss + MAE en entrenamiento y validación</div>
+        </div>
+        <div>
+          <table class="metric-table">
+            <thead>
+              <tr><th>Variable</th><th>R²</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>acousticness</td><td class="val">0.89</td></tr>
+              <tr><td>energy</td><td class="val">0.86</td></tr>
+              <tr><td>instrumentalness</td><td class="val">0.83</td></tr>
+              <tr><td>valence</td><td class="val">0.75</td></tr>
+              <tr><td>danceability</td><td class="val">0.74</td></tr>
+              <tr>
+                <td style="color:var(--accent); font-weight:700;">Global (MLP)</td>
+                <td class="val-hi">0.8152</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="font-size:0.62em; color:var(--text-muted); margin-top:12px;">
+            Early stopping en iter. 74<br>(mínimo de validación en iter. 59)
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 16 — Resultados clasificación
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <div class="section-label">Resultados</div>
+      <h2>Resultados — moods y géneros</h2>
+      <div class="comparison-2col" style="margin-top:16px; align-items:center; gap:28px;">
+        <div>
+          <img src="../Img/primary_mood_ncm.png" alt="Confusion matrix primary mood"
+               style="max-height:50vh; width:100%; object-fit:contain;">
+          <div class="img-caption">matriz de confusión normalizada — primary mood</div>
+        </div>
+        <div style="font-size:0.78em;">
+          <ul>
+            <li>Clasificación multiclase con LightGBM</li>
+            <li style="margin-top:8px;">Diagonal clara → el modelo aprende las clases</li>
+            <li style="margin-top:8px;">
+              Confusión entre clases adyacentes refleja<br>
+              <strong>ambigüedad inherente al etiquetado humano</strong>
+            </li>
+          </ul>
+          <div class="bg-secondary-card" style="margin-top:16px; font-size:0.82em;">
+            <div style="color:var(--accent-secondary);">Géneros → multi-etiqueta</div>
+            <div style="color:var(--text-muted); font-size:0.9em; margin-top:4px;">
+              una canción puede pertenecer a múltiples géneros simultáneamente
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 17 — Resumen de métricas
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <div class="section-label">Resultados</div>
+      <h2>Resumen de métricas</h2>
+      <div style="display:flex; gap:24px; margin-top:16px; font-size:0.8em;">
+        <div style="flex:1.2;">
+          <div style="color:var(--accent); font-size:0.65em; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px;">MLP — Regresión (R²)</div>
+          <table class="metric-table" style="font-size:0.95em;">
+            <thead><tr><th>Variable</th><th>R²</th></tr></thead>
+            <tbody>
+              <tr><td>acousticness</td><td class="val">0.89</td></tr>
+              <tr><td>energy</td><td class="val">0.86</td></tr>
+              <tr><td>instrumentalness</td><td class="val">0.83</td></tr>
+              <tr><td>valence</td><td class="val">0.75</td></tr>
+              <tr><td>danceability</td><td class="val">0.74</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:10px; padding:8px 12px; background:var(--bg-code); border-radius:6px; font-size:0.72em;">
+            R² global MLP: <span style="color:var(--accent); font-weight:700;">0.8152</span>
+          </div>
+        </div>
+        <div style="flex:1.6;">
+          <div style="color:var(--accent-secondary); font-size:0.65em; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px;">LightGBM — Clasificación</div>
+          <table class="metric-table" style="font-size:0.95em;">
+            <thead><tr><th>Variable</th><th>Tipo</th></tr></thead>
+            <tbody>
+              <tr><td>tempo</td><td class="val">regresión</td></tr>
+              <tr><td>loudness</td><td class="val">regresión</td></tr>
+              <tr><td>key / mode</td><td class="val">multiclase</td></tr>
+              <tr><td>liveness / speechiness</td><td class="val">binaria</td></tr>
+              <tr><td>primary mood</td><td class="val">multiclase</td></tr>
+              <tr><td>secondary mood</td><td class="val">multiclase</td></tr>
+              <tr><td>suggested genres</td><td class="val">multi-etiqueta</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:10px; font-size:0.68em; color:var(--text-muted);">
+            Hiperparámetros optimizados individualmente con Optuna
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 18 — Arquitectura en producción
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <div class="section-label">Producción</div>
+      <h2>Arquitectura en producción</h2>
+      <div class="comparison-2col" style="margin-top:16px; align-items:center; gap:28px;">
+        <div>
+          <img src="../Img/infra.png" alt="Diagrama de infraestructura"
+               style="max-height:50vh; width:100%; object-fit:contain;">
+        </div>
+        <div style="font-size:0.78em;">
+          <ul class="check-list">
+            <li><strong>FastAPI</strong> — API REST de inferencia</li>
+            <li><strong>Docker</strong> — contenedores reproducibles</li>
+            <li><strong>OCI</strong> — Oracle Cloud Infrastructure</li>
+            <li>
+              <strong>Beethoven</strong> — integración asíncrona<br>
+              <span style="color:var(--text-muted); font-size:0.88em;">herramienta interna de Plusyc</span>
+            </li>
+          </ul>
+          <div class="bg-secondary-card" style="margin-top:16px; font-size:0.82em;">
+            <div style="color:var(--accent); margin-bottom:6px;">Flujo de una canción nueva:</div>
+            <div style="color:var(--text-muted);">
+              ingresa al catálogo → Beethoven dispara inferencia → 13 características asignadas automáticamente
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 19 — Plusyc hoy
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <div class="section-label">Producción</div>
+      <h2>Plusyc hoy</h2>
+      <p style="font-size:0.72em; color:var(--accent); font-weight:600; margin-bottom:14px;">
+        El sistema está en producción — clasifica canciones entrantes en tiempo real
+      </p>
+      <div class="comparison-2col" style="gap:16px; align-items:center;">
+        <div style="text-align:center;">
+          <img src="../Img/ui_features.png" alt="Plusyc — características asignadas"
+               style="max-height:43vh; width:100%; object-fit:contain;">
+          <div class="img-caption">características asignadas automáticamente</div>
+        </div>
+        <div style="text-align:center;">
+          <img src="../Img/ui_mood.png" alt="Plusyc — moods y géneros"
+               style="max-height:43vh; width:100%; object-fit:contain;">
+          <div class="img-caption">moods y géneros</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 20 — Demo
+    ═══════════════════════════════════════════════════ -->
+    <section style="text-align:center;">
+      <div style="margin-bottom:14px; color:var(--text-muted); font-size:0.55em; letter-spacing:0.2em; text-transform:uppercase;">
+        a continuación
+      </div>
+      <h1 style="font-size:3.2em; color:var(--accent); margin-bottom:14px;">Demo</h1>
+      <p style="font-size:0.78em; color:var(--text-muted);">Sistema en producción — Plusyc Live</p>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 21 — Conclusiones
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <div class="section-label">Cierre</div>
+      <h2>Conclusiones</h2>
+      <ul class="check-list" style="margin-top:18px;">
+        <li>
+          <strong>PANNs fue la clave</strong><br>
+          <span style="color:var(--text-muted); font-size:0.88em;">embeddings preentrenados capturan semántica que DSP clásico no puede</span>
+        </li>
+        <li>
+          <strong>ML clásico funciona</strong><br>
+          <span style="color:var(--text-muted); font-size:0.88em;">LightGBM + Optuna supera arquitecturas más complejas en este dominio y escala</span>
+        </li>
+        <li>
+          <strong>Pipeline propio sobre canciones completas</strong><br>
+          <span style="color:var(--text-muted); font-size:0.88em;">clases adaptadas al catálogo de Plusyc, no a datasets genéricos</span>
+        </li>
+        <li>
+          <strong>Sistema en producción</strong><br>
+          <span style="color:var(--text-muted); font-size:0.88em;">clasifica canciones entrantes, costo de inferencia cero, sin dependencia de terceros</span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 22 — Próximos pasos
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <div class="section-label">Cierre</div>
+      <h2>Próximos pasos</h2>
+      <ul class="check-list" style="margin-top:18px;">
+        <li class="arrow">
+          <strong>Reentrenamiento periódico</strong><br>
+          <span style="color:var(--text-muted); font-size:0.88em;">Airflow + MLflow para orquestar y versionar modelos</span>
+        </li>
+        <li class="arrow">
+          <strong>Clasificación jerárquica de moods</strong><br>
+          <span style="color:var(--text-muted); font-size:0.88em;">estructura más fina y coherente para ambientación de precisión</span>
+        </li>
+        <li class="arrow">
+          <strong>Arquitecturas transformer</strong><br>
+          <span style="color:var(--text-muted); font-size:0.88em;">cuando el volumen de datos etiquetados lo justifique</span>
+        </li>
+        <li class="arrow">
+          <strong>SaaS posible</strong><br>
+          <span style="color:var(--text-muted); font-size:0.88em;">sistema extensible a otros catálogos y empresas</span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 23 — Cierre / Gracias
+    ═══════════════════════════════════════════════════ -->
+    <section style="text-align:center;">
+      <h1 style="font-size:2.8em; color:var(--text-heading); margin-bottom:16px;">¡Gracias!</h1>
+      <p style="font-size:0.75em; color:var(--text-muted); margin-bottom:30px;">
+        Ing. Carlos Alberto Rivas Araque
+      </p>
+      <div style="font-size:0.58em; color:var(--text-muted); line-height:2.2;">
+        Director: Esp. Ing. Martín Moreyra<br>
+        CEIA &nbsp;·&nbsp; FIUBA &nbsp;·&nbsp; junio 2026
+      </div>
+    </section>
+
+  </div><!-- /slides -->
+
+  <!-- Footer persistente (se oculta en portada y demo vía JS) -->
+  <footer class="slide-footer-bar" id="slide-footer">
+    Carlos Rivas &nbsp;·&nbsp; CEIA FIUBA &nbsp;·&nbsp; 2026
+  </footer>
+
+</div><!-- /reveal -->
+
+<script src="https://unpkg.com/reveal.js/dist/reveal.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c',
+    transition: 'slide',
+    transitionSpeed: 'fast',
+    controls: false,
+    progress: true,
+    history: true,
+    keyboard: true,
+    touch: true,
+    width: 1280,
+    height: 720,
+    margin: 0.06,
+  });
+
+  // Ocultar footer y número en portada (slide 0) y demo (slide 19)
+  const HIDE_ON = new Set([0, 18]);
+
+  function updateChrome(indexh) {
+    const footer = document.getElementById('slide-footer');
+    const slideNum = document.querySelector('.slide-number');
+    const hide = HIDE_ON.has(indexh);
+    if (footer) footer.style.opacity = hide ? '0' : '1';
+    if (slideNum) slideNum.style.opacity = hide ? '0' : '1';
+  }
+
+  Reveal.on('ready', e => updateChrome(e.indexh));
+  Reveal.on('slidechanged', e => updateChrome(e.indexh));
+</script>
+</body>
+</html>
