@@ -161,7 +161,7 @@
             hoteles, restaurantes, retail.
           </p>
           <ul style="font-size:0.72em;">
-            <li>Catálogo privado de <span style="color:var(--accent); font-weight:700;">60.000+</span> canciones completas</li>
+            <li>Catálogo privado de <span style="color:var(--accent); font-weight:700;">60000+</span> canciones completas</li>
             <li>Listas curadas por <strong>características musicales</strong></li>
             <li>Elecciones basadas en <strong>valores</strong></li>
           </ul>
@@ -325,7 +325,7 @@
       <div style="display:flex; gap:16px; margin-top:20px; align-items:stretch;">
         
         <div class="bg-secondary-card" style="flex:1;">
-          <div style="color:var(--accent); font-weight:700; font-size:0.85em; margin-bottom:4px;">DSP Tradicional</div>
+          <div style="color:var(--accent); font-weight:700; font-size:0.85em; margin-bottom:4px;">DSP tradicional</div>
           <div style="font-size:0.65em; color:var(--text-muted); margin-bottom:12px;">Librosa / Essentia</div>
           <ul class="check-list">
             <li class="arrow" style="font-size:0.7em; color:var(--text-primary);">Extraen descriptores físicos de la señal</li>
@@ -343,7 +343,7 @@
         </div>
 
         <div class="bg-secondary-card" style="flex:1;">
-          <div style="color:var(--text-heading); font-weight:700; font-size:0.85em; margin-bottom:4px;">APIs Comerciales</div>
+          <div style="color:var(--text-heading); font-weight:700; font-size:0.85em; margin-bottom:4px;">APIs comerciales</div>
           <div style="font-size:0.65em; color:var(--text-muted); margin-bottom:12px;">Spotify / Gracenote</div>
           <ul class="check-list">
             <li class="arrow" style="font-size:0.7em; color:var(--text-primary);">Solución directa y ya empaquetada</li>
@@ -354,49 +354,9 @@
       
 
     </section>
-    <!-- 
-    <section>
-      <div class="section-label">Contexto</div>
-      <h2>Estado del arte</h2>
-      <table class="sota-table">
-        <thead>
-          <tr>
-            <th>Herramienta</th>
-            <th>Enfoque</th>
-            <th>Limitación para este caso</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Librosa / Essentia</td>
-            <td>DSP open-source</td>
-            <td class="bad">Solo señal, sin predicción semántica</td>
-          </tr>
-          <tr>
-            <td>PANNs / musicnn</td>
-            <td>Deep Learning (AudioSet)</td>
-            <td class="bad">Clases generales, no adaptado a Plusyc</td>
-          </tr>
-          <tr>
-            <td>Spotify / Gracenote</td>
-            <td>API SaaS</td>
-            <td class="bad">Costos recurrentes, límites, dependencia</td>
-          </tr>
-          <tr>
-            <td>Tunebat / manual</td>
-            <td>Etiquetado humano</td>
-            <td class="bad">No escalable a 60.000 canciones</td>
-          </tr>
-        </tbody>
-      </table>
-      <p style="margin-top:16px; font-size:0.7em; color:var(--text-muted);">
-        → Ninguna se adapta a las clases de Plusyc <em>y</em> es operable a escala sin costo adicional.
-      </p>
-    </section>
-    -->
 
     <!-- ═══════════════════════════════════════════════════
-         SLIDE 7 — Los datos
+         SLIDE 6 — Los datos
     ═══════════════════════════════════════════════════ -->
     <section>
       <div class="section-label">Datos</div>
@@ -404,7 +364,7 @@
 
       <!-- Catálogo Plusyc — barra superior -->
       <div class="bg-secondary-card" style="border-left:4px solid var(--accent); padding:12px 20px; margin-top:14px; margin-bottom:14px; display:flex; gap:28px; font-size:0.74em; align-items:center;">
-        <div><strong style="color:var(--accent);">+60.000 canciones</strong> · catálogo de Plusyc</div>
+        <div><strong style="color:var(--accent);">+60000 canciones</strong> · catálogo de Plusyc</div>
         <div style="color:var(--text-muted);">|</div>
         <div><strong>Audio completo</strong> — no previews de 30s</div>
         <div style="color:var(--text-muted);">|</div>
@@ -420,14 +380,14 @@
 
         <div class="bg-code-card" style="flex:1; font-size:0.58em;">
           <div style="color:var(--accent-secondary); font-weight:700; margin-bottom:3px;">GTZAN</div>
-          <div style="color:var(--text-muted); font-size:0.88em; margin-bottom:10px;">1.000 clips · 30s · 10 géneros</div>
+          <div style="color:var(--text-muted); font-size:0.88em; margin-bottom:10px;">1000 clips · 30s · 10 géneros</div>
           <div style="margin-bottom:5px;"><span style="color:var(--accent); font-weight:700;">✓</span> DSP: MFCC, chroma, RMS, descriptores espectrales</div>
           <div style="margin-bottom:10px;"><span style="color:var(--accent); font-weight:700;">✓</span> Ventanas y estadísticos (media, varianza)</div>
           <div style="color:#e87070;"><span style="font-weight:700;">✗</span> Previews de 30s · 10 géneros vs 500+ de Plusyc</div>
         </div>
 
         <div class="bg-code-card" style="flex:1; font-size:0.58em;">
-          <div style="color:var(--accent-secondary); font-weight:700; margin-bottom:3px;">FMA Estándar</div>
+          <div style="color:var(--accent-secondary); font-weight:700; margin-bottom:3px;">FMA estándar</div>
           <div style="color:var(--text-muted); font-size:0.88em; margin-bottom:10px;">clips 30s · taxonomía jerárquica</div>
           <div style="margin-bottom:5px;"><span style="color:var(--accent); font-weight:700;">✓</span> Más DSP: CQT, tonnetz, ZCR</div>
           <div style="margin-bottom:5px;"><span style="color:var(--accent); font-weight:700;">✓</span> Estadísticos: media, std, asimetría, curtosis</div>
@@ -453,7 +413,7 @@
       </div>
     </section>
     <!-- ═══════════════════════════════════════════════════
-         SLIDE 8 — Representaciones DSP
+         SLIDE 7 — Representaciones DSP
     ═══════════════════════════════════════════════════ -->
     <section>
       <div class="section-label">Datos y pipeline</div>
@@ -461,25 +421,26 @@
       <div class="comparison-2col" style="margin-top:16px; align-items:center; gap:28px;">
         <div style="font-size:0.78em;">
           <div style="margin-bottom:14px;">
-            <div style="color:var(--accent); margin-bottom:5px;">2D — tiempo × frecuencia</div>
+            <div style="color:var(--accent); margin-bottom:5px;">Variables por frame (~64 ms)</div>
             <ul>
-              <li>Espectrograma mel</li>
-              <li>Cromagrama</li>
-              <li>Tonnetz</li>
+              <li>MFCC · centroide · ancho de banda · rolloff</li>
+              <li>Zero Crossing Rate · RMS</li>
+              <li>Cromagrama · Tonnetz</li>
             </ul>
+            <div class="bg-secondary-card" style="margin-top:8px; font-size:0.88em;">
+              92 atributos × <span style="color:var(--accent);">7 estadísticos</span> = <strong>644 features</strong><br>
+              <span style="color:var(--text-muted); font-size:0.9em;">media · std · asimetría · curtosis · P10 · P50 · P90</span>
+            </div>
           </div>
-          <div style="margin-bottom:14px;">
-            <div style="color:var(--accent-secondary); margin-bottom:5px;">Escalares por frame</div>
+          <div>
+            <div style="color:var(--accent-secondary); margin-bottom:5px;">Atributos globales (pista entera)</div>
             <ul>
-              <li>MFCC (13 coeficientes)</li>
-              <li>Centroide espectral</li>
-              <li>Ancho de banda, rolloff</li>
-              <li>Zero Crossing Rate</li>
+              <li>Tempo · LUFS · Pitch global</li>
+              <li>Perfiles tonales (Krumhansl / Temperley)</li>
             </ul>
-          </div>
-          <div class="bg-secondary-card" style="font-size:0.85em;">
-            Ventanas de <strong>~64 ms</strong> → <span style="color:var(--accent);">7 estadísticos</span><br>
-            <span style="color:var(--text-muted); font-size:0.9em;">media · std · asimetría · curtosis · P10 · P50 · P90</span>
+            <div class="bg-secondary-card" style="margin-top:8px; font-size:0.88em;">
+              <span style="color:var(--accent-secondary);">62 features</span> — sin ventaneo
+            </div>
           </div>
         </div>
         <div>
@@ -491,7 +452,7 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════
-         SLIDE 9 — PANNs / CNN14
+         SLIDE 8 — PANNs / CNN14
     ═══════════════════════════════════════════════════ -->
     <section>
       <div class="section-label">Datos y pipeline</div>
@@ -509,7 +470,11 @@
             </li>
             <li style="margin-top:8px;">
               Produce <span style="color:var(--accent-secondary);">probabilidades</span> de 527 eventos<br>
-              <span style="color:var(--text-muted);">aplausos, habla, instrumentos, etc.</span>
+              <span style="font-size:0.88em;">
+                <span style="color:var(--accent);">Voz / habla</span> ·
+                <span style="color:var(--accent);">Público en vivo</span> ·
+                <span style="color:var(--text-muted);">Instrumentos · Géneros · Distorsión</span>
+              </span>
             </li>
           </ul>
           <div class="bg-secondary-card" style="margin-top:14px; font-size:0.85em;">
@@ -529,55 +494,128 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════
-         SLIDE 10 — El vector de características
+         SLIDE 9 — El vector de características
     ═══════════════════════════════════════════════════ -->
     <section>
-      <div class="section-label">Datos y pipeline</div>
-      <h2>El vector de características</h2>
-      <div style="margin-top:22px; font-size:0.8em;">
-        <!-- Rama DSP -->
-        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-          <div class="flow-step active" style="min-width:130px; text-align:center; flex-shrink:0;">
-            Canción completa
-          </div>
-          <div class="flow-arrow">→</div>
-          <div class="flow-step active" style="flex:1;">
-            Rama <strong>DSP</strong> (Librosa)<br>
-            <span style="color:var(--text-muted); font-size:0.82em;">ventanas 64ms → 7 estadísticos</span>
-          </div>
-          <div class="flow-arrow">→</div>
-          <div class="flow-step" style="flex:0.9; color:var(--accent); border-color:var(--accent); text-align:center;">
-            ~1.800 features<br>DSP
-          </div>
-        </div>
+      <div class="section-label">Datos</div>
+      <h2>El dataset</h2>
+      <svg viewBox="0 0 860 400" style="width:96%; max-height:56vh; display:block; margin:10px auto 0;"
+           font-family="Inter,system-ui,sans-serif" font-size="13">
+        <defs>
+          <marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0,8 3,0 6" fill="#8892b0"/>
+          </marker>
+          <marker id="ah-teal" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0,8 3,0 6" fill="#64ffda"/>
+          </marker>
+          <marker id="ah-blue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0,8 3,0 6" fill="#82aaff"/>
+          </marker>
+        </defs>
 
-        <!-- Flecha de concatenación -->
-        <div style="display:flex; padding-left:calc(130px + 10px + 10px);">
-          <div style="color:var(--text-muted); font-size:0.9em; padding-left:8px;">↘ concatenar</div>
-        </div>
+        <!-- Audio box -->
+        <rect x="330" y="8" width="200" height="46" rx="8" fill="#16213e" stroke="#64ffda" stroke-width="2"/>
+        <text x="430" y="27" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="14">Audio</text>
+        <text x="430" y="45" text-anchor="middle" fill="#8892b0" font-size="11">canción</text>
 
-        <!-- Rama PANNs -->
-        <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px;">
-          <div class="flow-step active" style="min-width:130px; text-align:center; flex-shrink:0;">
-            Canción completa
-          </div>
-          <div class="flow-arrow">→</div>
-          <div class="flow-step active" style="flex:1;">
-            Rama <strong>PANNs</strong> (CNN14)<br>
-            <span style="color:var(--text-muted); font-size:0.82em;">ventanas 10s → 4 estadísticos</span>
-          </div>
-          <div class="flow-arrow">→</div>
-          <div class="flow-step" style="flex:0.9; color:var(--accent-secondary); border-color:var(--accent-secondary); text-align:center;">
-            ~9.000 features<br>semánticas
-          </div>
-        </div>
+        <!-- Fork lines: audio→DSP branch and audio→PANNs branch -->
+        <!-- Down from audio to fork point -->
+        <line x1="430" y1="54" x2="430" y2="78" stroke="#8892b0" stroke-width="1.5" marker-end="url(#ah)"/>
+        <!-- Left to DSP -->
+        <line x1="430" y1="78" x2="165" y2="78" stroke="#8892b0" stroke-width="1.5"/>
+        <line x1="165" y1="78" x2="165" y2="96" stroke="#64ffda" stroke-width="1.5" marker-end="url(#ah-teal)"/>
+        <!-- Right to PANNs -->
+        <line x1="430" y1="78" x2="695" y2="78" stroke="#8892b0" stroke-width="1.5"/>
+        <line x1="695" y1="78" x2="695" y2="96" stroke="#82aaff" stroke-width="1.5" marker-end="url(#ah-blue)"/>
 
-        <!-- Vector resultado -->
-        <div style="display:flex; justify-content:center;">
-          <div class="bg-secondary-card" style="border:2px solid var(--accent); padding:14px 36px; text-align:center;">
-            <div style="color:var(--accent); font-weight:700; font-size:1.05em;">Vector por canción</div>
-            <div style="color:var(--text-muted); font-size:0.75em; margin-top:4px;">entrada unificada al modelo de ML</div>
-          </div>
+        <!-- DSP column (left) -->
+        <!-- Frames box -->
+        <rect x="57" y="96" width="220" height="55" rx="7" fill="#16213e" stroke="#64ffda" stroke-width="1.5"/>
+        <text x="162" y="116" text-anchor="middle" fill="#64ffda" font-weight="700">Variables por frame</text>
+        <text x="165" y="133" text-anchor="middle" fill="#8892b0" font-size="12">MFCC · chroma · ZCR · RMS · tonnetz</text>
+        <text x="165" y="147" text-anchor="middle" fill="#8892b0" font-size="11">92 atributos</text>
+
+        <!-- Globals box (dashed) -->
+        <rect x="57" y="164" width="220" height="44" rx="7" fill="#0f0f1a" stroke="#64ffda" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <text x="165" y="182" text-anchor="middle" fill="#64ffda" font-weight="700">Atributos globales</text>
+        <text x="165" y="198" text-anchor="middle" fill="#8892b0" font-size="12">tempo · LUFS · pitch · perfiles tonales</text>
+
+        <!-- 7 Stats box -->
+        <line x1="165" y1="148" x2="165" y2="164" stroke="#64ffda" stroke-width="1.5" marker-end="url(#ah-teal)"/>
+        <rect x="27" y="224" width="280" height="52" rx="7" fill="#16213e" stroke="#64ffda" stroke-width="1.5"/>
+        <text x="165" y="244" text-anchor="middle" fill="#ffffff" font-weight="700">7 estadísticos</text>
+        <text x="165" y="259" text-anchor="middle" fill="#8892b0" font-size="12">media · std · asimetría · curtosis · P10 · P50 · P90</text>
+        <text x="165" y="272" text-anchor="middle" fill="#64ffda" font-size="12">644 variables DSP</text>
+        <!-- Arrow from frames to 7stats -->
+        <!-- Globals goes direct (dashed line to stats box) -->
+        <line x1="165" y1="208" x2="165" y2="224" stroke="#64ffda" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#ah-teal)"/>
+
+        <!-- PANNs column (right) -->
+        <!-- CNN14 box -->
+        <rect x="590" y="96" width="210" height="55" rx="7" fill="#16213e" stroke="#82aaff" stroke-width="1.5"/>
+        <text x="695" y="116" text-anchor="middle" fill="#82aaff" font-weight="700">CNN14 (PANNs)</text>
+        <text x="695" y="133" text-anchor="middle" fill="#8892b0" font-size="11">ventanas de 10s · AudioSet</text>
+        <text x="695" y="147" text-anchor="middle" fill="#8892b0" font-size="10">2M clips · 527 clases</text>
+
+        <!-- Emb+Prob box -->
+        <line x1="695" y1="148" x2="695" y2="164" stroke="#82aaff" stroke-width="1.5" marker-end="url(#ah-blue)"/>
+        <rect x="590" y="164" width="210" height="44" rx="7" fill="#16213e" stroke="#82aaff" stroke-width="1.5"/>
+        <text x="695" y="182" text-anchor="middle" fill="#82aaff" font-weight="700">Embeddings + Probabilidades</text>
+        <text x="695" y="198" text-anchor="middle" fill="#8892b0" font-size="11">2048 dims + 173 clases filtradas</text>
+
+        <!-- 4 Stats box -->
+        <line x1="695" y1="208" x2="695" y2="224" stroke="#82aaff" stroke-width="1.5" marker-end="url(#ah-blue)"/>
+        <rect x="560" y="224" width="270" height="52" rx="7" fill="#16213e" stroke="#82aaff" stroke-width="1.5"/>
+        <text x="695" y="244" text-anchor="middle" fill="#ffffff" font-weight="700">4 estadísticos</text>
+        <text x="695" y="259" text-anchor="middle" fill="#8892b0" font-size="11">media · máximo · std · P90</text>
+        <text x="695" y="272" text-anchor="middle" fill="#82aaff" font-size="11">8884 variables semánticas</text>
+
+        <!-- Flatten box -->
+        <rect x="320" y="296" width="220" height="36" rx="7" fill="#16213e" stroke="#8892b0" stroke-width="1.5"/>
+        <text x="430" y="319" text-anchor="middle" fill="#e0e0e0" font-weight="700">Flatten · concatenar</text>
+
+        <!-- L-shaped arrows from DSP stats → Flatten -->
+        <line x1="165" y1="276" x2="165" y2="314" stroke="#64ffda" stroke-width="1.5"/>
+        <line x1="165" y1="314" x2="320" y2="314" stroke="#64ffda" stroke-width="1.5" marker-end="url(#ah-teal)"/>
+        <!-- L-shaped arrows from PANNs stats → Flatten -->
+        <line x1="695" y1="276" x2="695" y2="314" stroke="#82aaff" stroke-width="1.5"/>
+        <line x1="695" y1="314" x2="540" y2="314" stroke="#82aaff" stroke-width="1.5" marker-end="url(#ah-blue)"/>
+
+        <!-- Vector box -->
+        <line x1="430" y1="332" x2="430" y2="348" stroke="#64ffda" stroke-width="2" marker-end="url(#ah-teal)"/>
+        <rect x="290" y="348" width="280" height="46" rx="8" fill="#16213e" stroke="#64ffda" stroke-width="2.5"/>
+        <text x="430" y="368" text-anchor="middle" fill="#64ffda" font-weight="700" font-size="15">Vector por canción</text>
+        <text x="430" y="386" text-anchor="middle" fill="#8892b0" font-size="12">9590 variables para selección</text>
+      </svg>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 10b — Preparación del vector
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <div class="section-label">Datos</div>
+      <h2>Preprocesamiento — I</h2>
+      <div class="comparison-2col" style="margin-top:16px; align-items:center; gap:28px;">
+        <div>
+          <ul class="check-list">
+            <li>
+              <strong>Corte del histórico</strong><br>
+              <span style="color:var(--text-muted); font-size:0.88em;">cambio de distribución detectado en fecha → solo datos anteriores</span>
+            </li>
+            <li>
+              <strong>Recorte de colas de silencio</strong><br>
+              <span style="color:var(--text-muted); font-size:0.88em;">evita valores nulos en los estadísticos de ventanas vacías</span>
+            </li>
+            <li>
+              <strong>Transformaciones estadísticas</strong><br>
+              <span style="color:var(--text-muted); font-size:0.88em;">ej. <em>Shifted Log Transformation</em> en Loudness para normalizar la distribución sesgada</span>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <img src="../Img/distribucion_de_loudness.png" alt="Distribución de Loudness"
+               style="max-height:50vh; width:100%; object-fit:contain;">
+          <div class="img-caption">distribución de Loudness - transformación</div>
         </div>
       </div>
     </section>
@@ -586,23 +624,27 @@
          SLIDE 11 — Preprocesamiento
     ═══════════════════════════════════════════════════ -->
     <section>
-      <div class="section-label">Modelos</div>
-      <h2>Preprocesamiento</h2>
+      <div class="section-label">Datos</div>
+      <h2>Preprocesamiento — II</h2>
       <div class="comparison-2col" style="margin-top:18px; align-items:center; gap:28px;">
         <div>
           <ul class="check-list">
             <li>
-              <strong>Corte del histórico</strong><br>
-              <span style="color:var(--text-muted); font-size:0.88em;">Cambio de distribución detectado en fecha → solo datos recientes</span>
-            </li>
-            <li>
-              <strong>Submuestreo balanceado</strong><br>
-              <span style="color:var(--text-muted); font-size:0.88em;">liveness y speechiness tienen clases muy desbalanceadas</span>
-            </li>
-            <li>
               <strong>Limpieza con AudioSet</strong><br>
               <span style="color:var(--text-muted); font-size:0.88em;">modelo preentrenado detecta y elimina falsas etiquetas</span>
             </li>
+            <li>
+              <strong>Muestreo balanceado</strong><br>
+              <span style="color:var(--text-muted); font-size:0.88em;">mood y genres tienen clases muy desbalanceadas</span>
+            </li>
+            <li>
+              <strong>Selección de variables — 3 etapas</strong><br>
+              <span style="color:var(--text-muted); font-size:0.88em;">
+                <span style="color:var(--accent-secondary);">①</span> Filtro de varianza
+                · <span style="color:var(--accent-secondary);">②</span> Importancia basada en ganancia (árboles)
+                · <span style="color:var(--accent-secondary);">③</span> Exclusión por colinealidad (Pearson)
+              </span>
+            </li>            
           </ul>
         </div>
         <div>
@@ -617,11 +659,11 @@
          SLIDE 12 — Modelo MLP
     ═══════════════════════════════════════════════════ -->
     <section>
-      <div class="section-label">Modelos</div>
-      <h2>Modelo MLP — variables continuas</h2>
+      <div class="section-label">Diseño</div>
+      <h2>Modelo MLP</h2>
       <div class="comparison-2col" style="margin-top:16px; align-items:center; gap:28px;">
         <div style="font-size:0.8em;">
-          <p style="margin-bottom:12px;"><strong>Multi-output</strong> — 5 salidas simultáneas:</p>
+          <p style="margin-bottom:12px;"><strong>Multi-output</strong> — 5 salidas:</p>
           <div style="margin-bottom:14px;">
             <span class="tag-chip accent">acousticness</span>
             <span class="tag-chip accent">danceability</span>
@@ -630,15 +672,56 @@
             <span class="tag-chip accent">valence</span>
           </div>
           <ul>
-            <li><strong>Huber loss</strong> — robusto a outliers</li>
-            <li>Adam optimizer</li>
+            <li>Salidas en <span style="color:var(--accent);">[0, 1]</span> — Sigmoid final (escala de las variables objetivo)</li>
+            <li><strong>Huber loss</strong> — robusto a outliers en variables continuas</li>
+            <li><strong>AdamW</strong> — regularización L2 (Weight Decay) para evitar el sobreajuste</li>
             <li>Early stopping en iteración 74</li>
           </ul>
         </div>
         <div>
-          <img src="../Img/mlp_block.png" alt="Diagrama MLP"
-               style="max-height:50vh; width:100%; object-fit:contain;">
+          <svg viewBox="0 0 440 490" style="width:100%; max-height:55vh; display:block; margin:auto;" font-family="Inter,system-ui,sans-serif">
+            <defs>
+              <marker id="arrow" markerWidth="6" markerHeight="6" refX="3" refY="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 6 0 L 3 6 z" fill="#8892b0"/>
+              </marker>
+            </defs>
+
+            <rect x="110" y="10" width="220" height="50" rx="8" fill="#16213e" stroke="#64ffda" stroke-width="2"/>
+            <text x="220" y="30" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="14">Entrada (X)</text>
+            <text x="220" y="47" text-anchor="middle" fill="#64ffda" font-size="12">Dimensión: 2145</text>
+            <line x1="220" y1="60" x2="220" y2="76" stroke="#8892b0" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+            <rect x="80" y="80" width="280" height="60" rx="6" fill="#0f0f1a" stroke="#82aaff" stroke-width="1.5"/>
+            <text x="220" y="100" text-anchor="middle" fill="#82aaff" font-weight="700" font-size="13">Capa Oculta 1</text>
+            <text x="220" y="117" text-anchor="middle" fill="#e0e0e0" font-size="11">Linear (512) · Batch Norm 1D</text>
+            <text x="220" y="132" text-anchor="middle" fill="#8892b0" font-size="11">LeakyReLU (0,1) · Dropout (0,3)</text>
+            <line x1="220" y1="140" x2="220" y2="156" stroke="#8892b0" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+            <rect x="80" y="160" width="280" height="60" rx="6" fill="#0f0f1a" stroke="#82aaff" stroke-width="1.5"/>
+            <text x="220" y="180" text-anchor="middle" fill="#82aaff" font-weight="700" font-size="13">Capa Oculta 2</text>
+            <text x="220" y="197" text-anchor="middle" fill="#e0e0e0" font-size="11">Linear (256) · Batch Norm 1D</text>
+            <text x="220" y="212" text-anchor="middle" fill="#8892b0" font-size="11">LeakyReLU (0,1) · Dropout (0,2)</text>
+            <line x1="220" y1="220" x2="220" y2="236" stroke="#8892b0" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+            <rect x="80" y="240" width="280" height="60" rx="6" fill="#0f0f1a" stroke="#82aaff" stroke-width="1.5"/>
+            <text x="220" y="260" text-anchor="middle" fill="#82aaff" font-weight="700" font-size="13">Capa Oculta 3</text>
+            <text x="220" y="277" text-anchor="middle" fill="#e0e0e0" font-size="11">Linear (128) · Batch Norm 1D</text>
+            <text x="220" y="292" text-anchor="middle" fill="#8892b0" font-size="11">LeakyReLU (0,1) · Dropout (0,2)</text>
+            <line x1="220" y1="300" x2="220" y2="316" stroke="#8892b0" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+            <rect x="110" y="320" width="220" height="50" rx="6" fill="#16213e" stroke="#64ffda" stroke-width="1.5"/>
+            <text x="220" y="340" text-anchor="middle" fill="#64ffda" font-weight="700" font-size="13">Capa de Salida</text>
+            <text x="220" y="357" text-anchor="middle" fill="#e0e0e0" font-size="12">Linear (5) · <tspan fill="#64ffda">Sigmoid</tspan></text>
+            <line x1="220" y1="370" x2="220" y2="386" stroke="#8892b0" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+            <rect x="95" y="390" width="250" height="88" rx="8" fill="#16213e" stroke="#64ffda" stroke-width="2"/>
+            <text x="220" y="412" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="14">Salida (Y) [0, 1]</text>
+            <text x="220" y="430" text-anchor="middle" fill="#64ffda" font-size="11">acousticness · danceability</text>
+            <text x="220" y="446" text-anchor="middle" fill="#64ffda" font-size="11">energy · instrumentalness</text>
+            <text x="220" y="462" text-anchor="middle" fill="#64ffda" font-size="11">valence</text>
+          </svg>
         </div>
+
       </div>
     </section>
 
@@ -646,16 +729,14 @@
          SLIDE 13 — Modelo LightGBM
     ═══════════════════════════════════════════════════ -->
     <section>
-      <div class="section-label">Modelos</div>
-      <h2>Modelos LightGBM — clasificación</h2>
+      <div class="section-label">Diseño</div>
+      <h2>Modelos LightGBM</h2>
       <div class="comparison-2col" style="margin-top:16px; align-items:center; gap:28px;">
         <div style="font-size:0.78em;">
-          <p style="margin-bottom:10px;"><strong>9 modelos individuales</strong>, uno por variable:</p>
+          <p style="margin-bottom:10px;"><strong>7 modelos individuales</strong></p>
           <div style="margin-bottom:14px;">
-            <span class="tag-chip">tempo</span>
             <span class="tag-chip">loudness</span>
-            <span class="tag-chip">key</span>
-            <span class="tag-chip">mode</span>
+            <span class="tag-chip">key y mode</span>
             <span class="tag-chip">liveness</span>
             <span class="tag-chip">speechiness</span>
             <span class="tag-chip secondary">primary mood</span>
@@ -664,13 +745,69 @@
           </div>
           <ul>
             <li>Ensamble de árboles de decisión (gradient boosting)</li>
+            <li>Eficiencia computacional</li>
             <li>Hiperparámetros optimizados con <span style="color:var(--accent);">Optuna</span></li>
-            <li>Entrenamiento separado → mayor precisión por variable</li>
           </ul>
         </div>
         <div>
-          <img src="../Img/lgbm_block.png" alt="Diagrama LightGBM"
-               style="max-height:50vh; width:100%; object-fit:contain;">
+          <svg viewBox="0 0 460 270" style="width:100%; max-height:50vh; display:block; margin:auto;"
+               font-family="Inter,system-ui,sans-serif">
+            <defs>
+              <marker id="la" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
+                <polygon points="0 0,7 2.5,0 5" fill="#8892b0"/>
+              </marker>
+              <marker id="la-teal" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
+                <polygon points="0 0,7 2.5,0 5" fill="#64ffda"/>
+              </marker>
+            </defs>
+
+            <!-- Input -->
+            <rect x="155" y="6" width="150" height="48" rx="7" fill="#16213e" stroke="#82aaff" stroke-width="2"/>
+            <text x="230" y="24" text-anchor="middle" fill="#82aaff" font-weight="700" font-size="12">Entrada de datos</text>
+            <line x1="155" y1="31" x2="305" y2="31" stroke="#82aaff" stroke-width="0.5" opacity="0.4"/>
+            <text x="230" y="43" text-anchor="middle" fill="#8892b0" font-size="10">Selección · DSP + PANNs</text>
+
+            <!-- Arrow down -->
+            <line x1="230" y1="54" x2="230" y2="70" stroke="#8892b0" stroke-width="1.5" marker-end="url(#la)"/>
+
+            <!-- LGBM -->
+            <rect x="110" y="70" width="240" height="60" rx="7" fill="#160d2a" stroke="#a78bfa" stroke-width="2"/>
+            <text x="230" y="90" text-anchor="middle" fill="#a78bfa" font-weight="700" font-size="12">Motor LightGBM</text>
+            <line x1="110" y1="97" x2="350" y2="97" stroke="#a78bfa" stroke-width="0.5" opacity="0.4"/>
+            <text x="230" y="111" text-anchor="middle" fill="#e0e0e0" font-size="10">Gradient Boosting (leaf-wise)</text>
+            <text x="230" y="124" text-anchor="middle" fill="#8892b0" font-size="10">Optuna · modelos individuales</text>
+
+            <!-- Fork: stem → horizontal bar → 3 drops -->
+            <line x1="230" y1="130" x2="230" y2="152" stroke="#8892b0" stroke-width="1.5"/>
+            <line x1="80" y1="152" x2="380" y2="152" stroke="#8892b0" stroke-width="1.5"/>
+            <line x1="80"  y1="152" x2="80"  y2="164" stroke="#64ffda" stroke-width="1.5" marker-end="url(#la-teal)"/>
+            <line x1="230" y1="152" x2="230" y2="164" stroke="#64ffda" stroke-width="1.5" marker-end="url(#la-teal)"/>
+            <line x1="380" y1="152" x2="380" y2="164" stroke="#64ffda" stroke-width="1.5" marker-end="url(#la-teal)"/>
+
+            <!-- C1: Clasificación multiclase -->
+            <rect x="10" y="164" width="140" height="96" rx="6" fill="#091a10" stroke="#64ffda" stroke-width="1.5"/>
+            <text x="80" y="180" text-anchor="middle" fill="#64ffda" font-weight="700" font-size="11">Clasificación</text>
+            <line x1="10" y1="186" x2="150" y2="186" stroke="#64ffda" stroke-width="0.5" opacity="0.4"/>
+            <text x="80" y="204" text-anchor="middle" fill="#e0e0e0" font-size="10">key · moods · genres</text>
+            <text x="80" y="219" text-anchor="middle" fill="#8892b0" font-size="9">multi_logloss</text>
+            <text x="80" y="234" text-anchor="middle" fill="#8892b0" font-size="9">class_weight='balanced'</text>
+
+            <!-- C2: Regresión estratificada -->
+            <rect x="160" y="164" width="140" height="96" rx="6" fill="#091a10" stroke="#64ffda" stroke-width="1.5"/>
+            <text x="230" y="180" text-anchor="middle" fill="#64ffda" font-weight="700" font-size="11">Reg. estratificada</text>
+            <line x1="160" y1="186" x2="300" y2="186" stroke="#64ffda" stroke-width="0.5" opacity="0.4"/>
+            <text x="230" y="200" text-anchor="middle" fill="#e0e0e0" font-size="10">liveness · speechiness</text>
+            <text x="230" y="213" text-anchor="middle" fill="#8892b0" font-size="9">rangos probabilísticos</text>
+            <text x="230" y="225" text-anchor="middle" fill="#8892b0" font-size="9">RMSE loss</text>
+            <text x="230" y="237" text-anchor="middle" fill="#8892b0" font-size="9">class_weight='balanced'</text>
+
+            <!-- R1: Regresión directa -->
+            <rect x="310" y="164" width="140" height="96" rx="6" fill="#091a10" stroke="#64ffda" stroke-width="1.5"/>
+            <text x="380" y="180" text-anchor="middle" fill="#64ffda" font-weight="700" font-size="11">Regresión</text>
+            <line x1="310" y1="186" x2="450" y2="186" stroke="#64ffda" stroke-width="0.5" opacity="0.4"/>
+            <text x="380" y="200" text-anchor="middle" fill="#e0e0e0" font-size="10">loudness</text>
+            <text x="380" y="213" text-anchor="middle" fill="#8892b0" font-size="9">RMSE loss</text>
+          </svg>
         </div>
       </div>
     </section>
