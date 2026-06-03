@@ -100,6 +100,29 @@
       text-align: center;
       margin-top: 5px;
     }
+
+    /* Mini-bar metric rows */
+    .metric-row { display: flex; flex-direction: column; gap: 8px; }
+    .metric-item { display: flex; flex-direction: column; gap: 3px; }
+    .metric-header { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.78em; }
+    .metric-label { color: var(--text-primary); }
+    .metric-value { font-weight: 700; font-size: 0.95em; }
+    .mini-bar-bg {
+      background: var(--bg-secondary);
+      border-radius: 4px;
+      height: 7px;
+      overflow: hidden;
+    }
+    .mini-bar-fill { height: 100%; border-radius: 4px; }
+    .metric-global {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(136,146,176,0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82em;
+    }
   </style>
 </head>
 <body>
@@ -298,7 +321,7 @@
         <div style="color:var(--text-muted); font-size:2em; flex-shrink:0;">→</div>
         
         <div class="stage-box" style="flex:2.2; padding:16px 20px; text-align:left;">
-          <div style="font-size:0.55em; text-transform:uppercase; letter-spacing:0.12em; color:var(--text-muted); margin-bottom:12px;">13 características</div>
+          <div style="font-size:0.55em; text-transform:uppercase; letter-spacing:0.12em; color:var(--text-muted); margin-bottom:12px;">14 características</div>
           <div style="font-size:0.66em; color:var(--text-primary); margin-bottom:8px;">
             key &nbsp;·&nbsp; mode &nbsp;·&nbsp; tempo &nbsp;·&nbsp; loudness
           </div>
@@ -372,7 +395,7 @@
       </div>
 
       <div style="font-size:0.55em; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); margin-bottom:10px;">
-        datasets públicos - ninguno tiene las 13 características
+        datasets públicos - ninguno tiene todas las 14 características
       </div>
 
       <!-- 4 tarjetas — datasets públicos -->
@@ -813,29 +836,54 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════
-         SLIDE 14 — Desafío: liveness & speechiness
+         SLIDE — Diseño: Tempo (caso especial)
     ═══════════════════════════════════════════════════ -->
     <section>
-      <div class="section-label">Resultados</div>
-      <h2>Desafío: liveness &amp; speechiness</h2>
-      <p style="font-size:0.7em; color:var(--text-muted); margin-bottom:12px;">
-        Primera versión: R²≈0.15 (liveness) y R²≈0.28 (speechiness) — etiquetas ruidosas en el catálogo histórico
-      </p>
-      <div class="comparison-2col" style="gap:18px; align-items:flex-start;">
-        <div style="text-align:center;">
-          <div style="color:#e87070; font-size:0.58em; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px;">Antes</div>
-          <img src="../Img/speechiness_antes_rvp.png" alt="Speechiness — antes de limpieza"
-               style="max-height:40vh; width:100%; object-fit:contain;">
+      <div class="section-label">Diseño · Caso especial</div>
+      <h2>Tempo — extracción directa</h2>
+      <div class="comparison-2col" style="margin-top:12px; align-items:flex-start; gap:22px;">
+
+        <!-- Izquierda: explicación -->
+        <div style="flex:1;">
+          <ul style="font-size:0.76em;">
+            <li>
+              <strong>Octave error</strong> en el etiquetado<br>
+              <span style="color:var(--text-muted); font-size:0.88em;">proporciones métricas: ½ · ⅔ · 1 · 1½ · 2× del tempo real</span>
+            </li>
+            <li style="margin-top:8px;">
+              Árboles sin señal de aprendizaje — <span style="color:#e87070; white-space:nowrap;">R² ≈ 0</span>
+            </li>
+            <li style="margin-top:8px;">
+              <strong>Solución: Essentia</strong> — estimación DSP directa del tempo global
+            </li>
+          </ul>
+          <div class="bg-secondary-card" style="margin-top:16px; font-size:0.68em;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+              <span style="color:var(--text-muted);">MAE exacto (y ≈ x)</span>
+              <span style="color:var(--accent-secondary); font-weight:700;">12,81 BPM</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span style="color:var(--text-muted);">MAE admitiendo proporciones métricas</span>
+              <span style="color:var(--accent); font-weight:700; white-space:nowrap;">1,45 BPM</span>
+            </div>
+          </div>
         </div>
-        <div style="text-align:center;">
-          <div style="color:var(--accent); font-size:0.58em; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px;">Después — limpieza con AudioSet</div>
-          <img src="../Img/speechiness_despues_rvp.png" alt="Speechiness — después de limpieza"
-               style="max-height:40vh; width:100%; object-fit:contain;">
+
+        <!-- Derecha: imágenes -->
+        <div style="flex:1.4; display:flex; flex-direction:column; gap:8px;">
+          <div style="text-align:center;">
+            <img src="../Img/tempo_multiple_relations.png" alt="Relaciones métricas del tempo"
+                 style="width:100%; max-height:26vh; object-fit:contain;">
+            <div class="img-caption">relaciones métricas en el etiquetado — octave error</div>
+          </div>
+          <div style="text-align:center;">
+            <img src="../Img/tempo_distributions.png" alt="Distribución tempo Essentia vs etiquetas"
+                 style="width:100%; max-height:24vh; object-fit:contain;">
+            <div class="img-caption">distribución estimación Essentia vs etiquetas del catálogo</div>
+          </div>
         </div>
+
       </div>
-      <p style="font-size:0.62em; color:var(--text-muted); margin-top:8px; text-align:center;">
-        Modelo preentrenado detecta canciones mal etiquetadas → se excluyen del entrenamiento
-      </p>
     </section>
 
     <!-- ═══════════════════════════════════════════════════
@@ -845,32 +893,221 @@
       <div class="section-label">Resultados</div>
       <h2>Resultados MLP</h2>
       <div class="comparison-2col" style="margin-top:16px; align-items:center; gap:28px;">
-        <div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
           <img src="../Img/curva_fivep.png" alt="Curvas de aprendizaje MLP"
-               style="max-height:48vh; width:100%; object-fit:contain;">
-          <div class="img-caption">Huber loss + MAE en entrenamiento y validación</div>
+               style="width:100%; max-height:26vh; object-fit:contain;">
+          <div class="img-caption">Huber loss + MAE — entrenamiento y validación</div>
+          <div style="display:flex; gap:8px;">
+            <div style="flex:1;">
+              <img src="../Img/acousticness_actual_vs_predicted.png" alt="Acousticness real vs predicho"
+                   style="width:100%; max-height:22vh; object-fit:contain;">
+              <div class="img-caption">acousticness</div>
+            </div>
+            <div style="flex:1;">
+              <img src="../Img/danceability_actual_vs_predicted.png" alt="Danceability real vs predicho"
+                   style="width:100%; max-height:22vh; object-fit:contain;">
+              <div class="img-caption">danceability</div>
+            </div>
+          </div>
         </div>
         <div>
-          <table class="metric-table">
+          <table class="metric-table" style="font-size:0.62em;">
             <thead>
-              <tr><th>Variable</th><th>R²</th></tr>
+              <tr>
+                <th>Variable</th>
+                <th>R² <span style="color:var(--text-muted); font-weight:400;">(↑)</span></th>
+                <th>MAE <span style="color:var(--text-muted); font-weight:400;">(↓)</span></th>
+              </tr>
             </thead>
             <tbody>
-              <tr><td>acousticness</td><td class="val">0.89</td></tr>
-              <tr><td>energy</td><td class="val">0.86</td></tr>
-              <tr><td>instrumentalness</td><td class="val">0.83</td></tr>
-              <tr><td>valence</td><td class="val">0.75</td></tr>
-              <tr><td>danceability</td><td class="val">0.74</td></tr>
+              <tr><td>Acousticness</td>    <td class="val-hi">0,8903</td><td class="val-hi">0,0681</td></tr>
+              <tr><td>Energy</td>          <td class="val-hi">0,8626</td><td class="val-hi">0,0581</td></tr>
+              <tr><td>Instrumentalness</td><td class="val-hi">0,8308</td><td class="val-hi">0,0671</td></tr>
+              <tr><td>Valence</td>         <td class="val">0,7539</td>   <td class="val">0,0964</td></tr>
+              <tr><td>Danceability</td>    <td class="val">0,7381</td>   <td class="val-hi">0,0594</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE — Resultados Loudness
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <div class="section-label">Resultados · LightGBM</div>
+      <h2>Resultados Loudness</h2>
+      <div class="comparison-2col" style="margin-top:12px; align-items:flex-start; gap:22px;">
+
+        <!-- Columna izquierda: tabla comparativa -->
+        <div style="flex:1;">
+          <table class="metric-table" style="font-size:0.62em;">
+            <thead>
               <tr>
-                <td style="color:var(--accent); font-weight:700;">Global (MLP)</td>
-                <td class="val-hi">0.8152</td>
+                <th>Config.</th>
+                <th>R² <span style="color:var(--text-muted); font-weight:400;">(↑)</span></th>
+                <th>RMSE <span style="color:var(--text-muted); font-weight:400;">(↓)</span></th>
+                <th>MAE <span style="color:var(--text-muted); font-weight:400;">(↓)</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>L1 <span style="color:var(--text-muted); font-size:0.9em;">(regression_l1)</span></td>
+                <td class="val">0,8300</td>
+                <td class="val">1,8534</td>
+                <td class="val-hi">1,1469</td>
+              </tr>
+              <tr>
+                <td style="white-space:nowrap;">L2 <span style="color:var(--text-muted); font-size:0.9em;">(regression_l2)</span></td>
+                <td class="val-hi">0,8367</td>
+                <td class="val-hi">1,8167</td>
+                <td class="val">1,1889</td>
               </tr>
             </tbody>
           </table>
-          <p style="font-size:0.62em; color:var(--text-muted); margin-top:12px;">
-            Early stopping en iter. 74<br>(mínimo de validación en iter. 59)
+          <p style="font-size:0.60em; color:var(--text-muted); margin-top:14px; line-height:1.6;">
+            L2 aplana predicciones hacia valores extremos.<br>
+            Métricas globales similares, mejor distribución.<br>
+            <span style="color:var(--accent-secondary);">Configuración elegida: L2.</span>
           </p>
         </div>
+
+        <!-- Columna derecha: cuadrícula 2×2 de imágenes -->
+        <div style="flex:1.6; display:flex; flex-direction:column; gap:8px;">
+          <div style="display:flex; gap:8px;">
+            <div style="flex:1; text-align:center;">
+              <img src="../Img/loudness_l1.png" alt="Loudness L1 real vs predicho"
+                   style="width:100%; max-height:26vh; object-fit:contain;">
+              <div class="img-caption">L1 — real vs predicho</div>
+            </div>
+            <div style="flex:1; text-align:center;">
+              <img src="../Img/loudness_l2.png" alt="Loudness L2 real vs predicho"
+                   style="width:100%; max-height:26vh; object-fit:contain;">
+              <div class="img-caption">L2 — real vs predicho</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <div style="flex:0.7; text-align:center;">
+              <img src="../Img/curva_loudness_l1.png" alt="Curva de aprendizaje Loudness"
+                   style="width:100%; max-height:20vh; object-fit:contain;">
+              <div class="img-caption">curva de aprendizaje</div>
+            </div>
+            <div style="flex:1.3; text-align:center;">
+              <img src="../Img/loudness_top15.png" alt="Feature importance top 15"
+                   style="width:100%; max-height:28vh; object-fit:contain;">
+              <div class="img-caption">feature importance top 15</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE — Resultados Key / Mode
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <div class="section-label">Resultados · LightGBM</div>
+      <h2>Resultados Key / Mode</h2>
+      <div class="comparison-2col" style="margin-top:12px; align-items:center; gap:24px;">
+
+        <!-- Izquierda: matriz de confusión -->
+        <div style="flex:1.5; text-align:center;">
+          <img src="../Img/key_cr.png" alt="Matriz de confusión Key/Mode"
+               style="width:100%; max-height:52vh; object-fit:contain;">
+          <div class="img-caption">matriz de confusión — 24 clases (key × mode)</div>
+        </div>
+
+        <!-- Derecha: métricas -->
+        <div style="flex:1;">
+          <table class="metric-table" style="font-size:0.64em;">
+            <thead>
+              <tr><th>Métrica</th><th>Valor</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Accuracy</td>         <td class="val">0,6106</td></tr>
+              <tr><td>F1-Score ponderado</td><td class="val">0,6115</td></tr>
+              <tr><td>AUC-ROC promedio</td>  <td class="val-hi">0,9589</td></tr>
+              <tr><td>Accuracy top-3</td>    <td class="val-hi">0,8671</td></tr>
+            </tbody>
+          </table>
+          <div class="bg-secondary-card" style="margin-top:16px; font-size:0.62em; line-height:1.6;">
+            <span style="color:var(--accent-secondary);">Top-3</span> suele incluir la tónica,<br>
+            dominante, subdominante o relativa —<br>
+            relaciones armónicas principales
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE 14 — Desafío: liveness & speechiness
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <div class="section-label">Resultados · LightGBM</div>
+      <h2>Liveness &amp; speechiness</h2>
+      <div class="comparison-2col" style="margin-top:10px; gap:20px; align-items:flex-start;">
+
+        <!-- Izquierda: tabla comparativa -->
+        <div style="flex:1; align-self:center;">
+          <table class="metric-table" style="font-size:0.57em;">
+            <thead>
+              <tr>
+                <th rowspan="2" style="vertical-align:middle;">Variable</th>
+                <th colspan="2" style="text-align:center; border-bottom:none; padding-bottom:2px;">R² (↑)</th>
+                <th colspan="2" style="text-align:center; border-bottom:none; padding-bottom:2px;">MAE (↓)</th>
+                <th colspan="2" style="text-align:center; border-bottom:none; padding-bottom:2px;">RMSE (↓)</th>
+              </tr>
+              <tr>
+                <th style="color:var(--text-muted); font-weight:400; padding-top:0;">ini.</th>
+                <th style="padding-top:0;">act.</th>
+                <th style="color:var(--text-muted); font-weight:400; padding-top:0;">ini.</th>
+                <th style="padding-top:0;">act.</th>
+                <th style="color:var(--text-muted); font-weight:400; padding-top:0;">ini.</th>
+                <th style="padding-top:0;">act.</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Speechiness</td>
+                <td style="color:var(--text-muted);">0,28</td><td class="val">0,67</td>
+                <td style="color:var(--text-muted);">0,06</td><td class="val-hi">0,04</td>
+                <td style="color:var(--text-muted);">0,10</td><td class="val">0,07</td>
+              </tr>
+              <tr>
+                <td>Liveness</td>
+                <td style="color:var(--text-muted);">0,16</td><td class="val">0,63</td>
+                <td style="color:var(--text-muted);">0,10</td><td class="val">0,08</td>
+                <td style="color:var(--text-muted);">0,14</td><td class="val">0,13</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="font-size:0.60em; color:var(--text-muted); margin-top:12px; line-height:1.5;">
+            Inicial → actual, tras limpieza<br>con modelo preentrenado en AudioSet.
+          </p>
+        </div>
+
+        <!-- Derecha: imágenes antes/después -->
+        <div style="flex:1.3; display:flex; flex-direction:column; gap:6px;">
+          <p style="font-size:0.65em; color:var(--text-muted); margin:0 0 6px;">
+            Etiquetas ruidosas en el catálogo histórico → limpieza con AudioSet
+          </p>
+          <div style="display:flex; gap:8px;">
+            <div style="flex:1; text-align:center;">
+              <div style="color:#e87070; font-size:0.52em; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:4px;">Antes</div>
+              <img src="../Img/speechiness_antes_rvp.png" alt="Speechiness — antes de limpieza"
+                   style="width:100%; max-height:38vh; object-fit:contain;">
+            </div>
+            <div style="flex:1; text-align:center;">
+              <div style="color:var(--accent); font-size:0.52em; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:4px;">Después</div>
+              <img src="../Img/speechiness_despues_rvp.png" alt="Speechiness — después de limpieza"
+                   style="width:100%; max-height:38vh; object-fit:contain;">
+            </div>
+          </div>
+          <div class="img-caption">speechiness — distribución antes y después de la limpieza</div>
+        </div>
+
       </div>
     </section>
 
@@ -878,30 +1115,66 @@
          SLIDE 16 — Resultados clasificación
     ═══════════════════════════════════════════════════ -->
     <section>
-      <div class="section-label">Resultados</div>
+      <div class="section-label">Resultados · LightGBM</div>
       <h2>Resultados — moods y géneros</h2>
-      <div class="comparison-2col" style="margin-top:16px; align-items:center; gap:28px;">
-        <div>
-          <img src="../Img/primary_mood_ncm.png" alt="Confusion matrix primary mood"
-               style="max-height:50vh; width:100%; object-fit:contain;">
-          <div class="img-caption">matriz de confusión normalizada — primary mood</div>
+      <div class="comparison-2col" style="margin-top:10px; gap:22px; align-items:flex-start;">
+
+        <!-- Izquierda: matriz de confusión géneros -->
+        <div style="flex:1.3; text-align:center;">
+          <img src="../Img/genre_ncm.png" alt="Confusion matrix géneros"
+               style="width:100%; max-height:50vh; object-fit:contain;">
+          <div class="img-caption">matriz de confusión normalizada — géneros (197 clases)</div>
         </div>
-        <div style="font-size:0.78em;">
-          <ul>
-            <li>Clasificación multiclase con LightGBM</li>
-            <li style="margin-top:8px;">Diagonal clara → el modelo aprende las clases</li>
-            <li style="margin-top:8px;">
-              Confusión entre clases adyacentes refleja<br>
-              <strong>ambigüedad inherente al etiquetado humano</strong>
-            </li>
-          </ul>
-          <div class="bg-secondary-card" style="margin-top:16px; font-size:0.82em;">
-            <div style="color:var(--accent-secondary);">Géneros → multi-etiqueta</div>
-            <div style="color:var(--text-muted); font-size:0.9em; margin-top:4px;">
-              una canción puede pertenecer a múltiples géneros simultáneamente
+
+        <!-- Derecha: tabla de métricas + notas -->
+        <div style="flex:1;">
+          <table class="metric-table" style="font-size:0.57em;">
+            <thead>
+              <tr>
+                <th>Modelo</th>
+                <th>Acc.</th>
+                <th>F1</th>
+                <th>Top-3</th>
+                <th>Top-5</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Género <span style="color:var(--text-muted);">197 cl.</span></td>
+                <td class="val">0,47</td>
+                <td class="val">0,47</td>
+                <td class="val">68,32%</td>
+                <td class="val-hi">77,31%</td>
+              </tr>
+              <tr>
+                <td>Primary mood <span style="color:var(--text-muted);">20 cl.</span></td>
+                <td class="val">0,25</td>
+                <td class="val">0,24</td>
+                <td class="val">55,81%</td>
+                <td class="val-hi">73,64%</td>
+              </tr>
+              <tr>
+                <td>Secondary mood <span style="color:var(--text-muted);">102 cl.</span></td>
+                <td style="color:var(--text-muted);">0,19</td>
+                <td style="color:var(--text-muted);">0,15</td>
+                <td style="color:var(--text-muted);">—</td>
+                <td style="color:var(--text-muted);">46,57%</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="margin-top:14px; font-size:0.62em; display:flex; flex-direction:column; gap:8px;">
+            <div class="bg-secondary-card" style="line-height:1.5;">
+              <span style="color:var(--accent-secondary);">Alta cardinalidad</span> y fronteras subjetivas<br>
+              Predicciones coherentes
+            </div>
+            <div class="bg-secondary-card" style="line-height:1.5;">
+              <span style="color:#e87070;">Primary mood</span> — subjetividad<br>
+              <span style="color:var(--text-muted);">Secondary mood</span> — no se usa en producción
             </div>
           </div>
         </div>
+
       </div>
     </section>
 
