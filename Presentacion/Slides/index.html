@@ -936,7 +936,7 @@
     ═══════════════════════════════════════════════════ -->
     <section>
       <div class="section-label">Resultados · LightGBM</div>
-      <h2>Resultados Loudness</h2>
+      <h2>Resultados loudness</h2>
       <div class="comparison-2col" style="margin-top:12px; align-items:flex-start; gap:22px;">
 
         <!-- Columna izquierda: tabla comparativa -->
@@ -1008,7 +1008,7 @@
     ═══════════════════════════════════════════════════ -->
     <section>
       <div class="section-label">Resultados · LightGBM</div>
-      <h2>Resultados Key / Mode</h2>
+      <h2>Resultados key / mode</h2>
       <div class="comparison-2col" style="margin-top:12px; align-items:center; gap:24px;">
 
         <!-- Izquierda: matriz de confusión -->
@@ -1116,7 +1116,7 @@
     ═══════════════════════════════════════════════════ -->
     <section>
       <div class="section-label">Resultados · LightGBM</div>
-      <h2>Resultados — moods y géneros</h2>
+      <h2>Resultados — moods y genres</h2>
       <div class="comparison-2col" style="margin-top:10px; gap:22px; align-items:flex-start;">
 
         <!-- Izquierda: matriz de confusión géneros -->
@@ -1140,7 +1140,7 @@
             </thead>
             <tbody>
               <tr>
-                <td>Género <span style="color:var(--text-muted);">197 cl.</span></td>
+                <td>Genre <span style="color:var(--text-muted);">197 cl.</span></td>
                 <td class="val">0,47</td>
                 <td class="val">0,47</td>
                 <td class="val">68,32%</td>
@@ -1226,18 +1226,14 @@
          SLIDE 18 — Arquitectura en producción
     ═══════════════════════════════════════════════════ -->
     <section>
-      <div class="section-label">Producción</div>
-      <h2>Arquitectura en producción</h2>
-      <div class="comparison-2col" style="margin-top:16px; align-items:center; gap:28px;">
-        <div>
-          <img src="../Img/infra.png" alt="Diagrama de infraestructura"
-               style="max-height:50vh; width:100%; object-fit:contain;">
-        </div>
-        <div style="font-size:0.78em;">
+      <div class="section-label">Despliegue</div>
+      <h2>Despliegue e integración</h2>
+      <div class="comparison-2col" style="margin-top:12px; align-items:flex-start; gap:24px;">
+        <div style="flex:1; font-size:0.78em;">
           <ul class="check-list">
             <li><strong>FastAPI</strong> — API REST de inferencia</li>
-            <li><strong>Docker</strong> — contenedores reproducibles</li>
-            <li><strong>OCI</strong> — Oracle Cloud Infrastructure</li>
+            <li><strong>Docker</strong> — contenedor reproducible</li>
+            <li><strong>Compute instance</strong> — Oracle Cloud Infrastructure</li>
             <li>
               <strong>Beethoven</strong> — integración asíncrona<br>
               <span style="color:var(--text-muted); font-size:0.88em;">herramienta interna de Plusyc</span>
@@ -1246,35 +1242,75 @@
           <div class="bg-secondary-card" style="margin-top:16px; font-size:0.82em;">
             <div style="color:var(--accent); margin-bottom:6px;">Flujo de una canción nueva:</div>
             <div style="color:var(--text-muted);">
-              ingresa al catálogo → Beethoven dispara inferencia → 13 características asignadas automáticamente
+              ingresa al catálogo → Beethoven dispara inferencia → secuencia de modelos JSON →  14 características asignadas automáticamente
             </div>
           </div>
+        </div>
+        <div style="flex:1.4; display:flex; flex-direction:column; gap:10px;">
+          <svg viewBox="0 0 430 170" style="width:100%; max-height:23vh; display:block;" font-family="Inter,system-ui,sans-serif">
+            <defs>
+              <marker id="dp1" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#8892b0"/></marker>
+              <marker id="dp1-t" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64ffda"/></marker>
+              <marker id="dp1-b" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#82aaff"/></marker>
+            </defs>
+            <rect x="4" y="4" width="422" height="162" rx="8" fill="none" stroke="#8892b0" stroke-width="1.5" stroke-dasharray="6,4"/>
+            <text x="14" y="20" fill="#8892b0" font-size="11" font-weight="600">Docker</text>
+            <rect x="16" y="60" width="90" height="40" rx="6" fill="#16213e" stroke="#82aaff" stroke-width="1.5"/>
+            <text x="61" y="78" text-anchor="middle" fill="#82aaff" font-weight="600" font-size="12">FastAPI</text>
+            <text x="61" y="93" text-anchor="middle" fill="#8892b0" font-size="10">REST API</text>
+            <line x1="106" y1="80" x2="148" y2="80" stroke="#8892b0" stroke-width="1.5" marker-end="url(#dp1)"/>
+            <rect x="150" y="36" width="270" height="88" rx="6" fill="#0f0f1a" stroke="#64ffda" stroke-width="1.2" stroke-dasharray="5,4"/>
+            <text x="163" y="52" fill="#64ffda" font-size="10" font-weight="600">Pipeline</text>
+            <rect x="160" y="60" width="74" height="40" rx="5" fill="#16213e" stroke="#64ffda" stroke-width="1.2"/>
+            <text x="197" y="77" text-anchor="middle" fill="#e0e0e0" font-size="10" font-weight="600">Extracción</text>
+            <text x="197" y="92" text-anchor="middle" fill="#8892b0" font-size="9">features</text>
+            <line x1="234" y1="80" x2="250" y2="80" stroke="#64ffda" stroke-width="1.2" marker-end="url(#dp1-t)"/>
+            <rect x="252" y="60" width="70" height="40" rx="5" fill="#16213e" stroke="#64ffda" stroke-width="1.2"/>
+            <text x="287" y="77" text-anchor="middle" fill="#e0e0e0" font-size="10" font-weight="600">Selección</text>
+            <text x="287" y="92" text-anchor="middle" fill="#8892b0" font-size="9">features</text>
+            <line x1="322" y1="80" x2="338" y2="80" stroke="#64ffda" stroke-width="1.2" marker-end="url(#dp1-t)"/>
+            <rect x="340" y="60" width="70" height="40" rx="5" fill="#16213e" stroke="#64ffda" stroke-width="1.2"/>
+            <text x="375" y="77" text-anchor="middle" fill="#e0e0e0" font-size="10" font-weight="600">Modelos</text>
+            <text x="375" y="92" text-anchor="middle" fill="#8892b0" font-size="9">ML · DL</text>
+            <path d="M 375 100 L 375 144 L 61 144 L 61 100" stroke="#82aaff" stroke-width="1.2" fill="none" stroke-dasharray="5,3" marker-end="url(#dp1-b)"/>
+            <text x="218" y="159" text-anchor="middle" fill="#82aaff" font-size="10">Retorna JSON</text>
+          </svg>
+          <svg viewBox="0 0 430 170" style="width:100%; max-height:23vh; display:block;" font-family="Inter,system-ui,sans-serif">
+            <defs>
+              <marker id="dp2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#8892b0"/></marker>
+              <marker id="dp2-b" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#82aaff"/></marker>
+              <marker id="dp2-p" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#a78bfa"/></marker>
+              <marker id="dp2-o" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#ffa07a"/></marker>
+            </defs>
+            <rect x="4" y="4" width="422" height="162" rx="8" fill="none" stroke="#8892b0" stroke-width="1.5" stroke-dasharray="6,4"/>
+            <text x="14" y="20" fill="#8892b0" font-size="11" font-weight="600">Oracle Cloud</text>
+            <rect x="14" y="48" width="72" height="42" rx="6" fill="#16213e" stroke="#a78bfa" stroke-width="1.5"/>
+            <text x="50" y="67" text-anchor="middle" fill="#a78bfa" font-weight="600" font-size="12">Cron</text>
+            <text x="50" y="82" text-anchor="middle" fill="#8892b0" font-size="10">disparador</text>
+            <line x1="86" y1="69" x2="126" y2="69" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#dp2-p)"/>
+            <rect x="128" y="42" width="100" height="54" rx="6" fill="#16213e" stroke="#a78bfa" stroke-width="1.5"/>
+            <text x="178" y="66" text-anchor="middle" fill="#a78bfa" font-weight="600" font-size="12">Beethoven</text>
+            <text x="178" y="81" text-anchor="middle" fill="#8892b0" font-size="10">orquestador</text>
+            <line x1="228" y1="56" x2="300" y2="44" stroke="#8892b0" stroke-width="1.5" marker-end="url(#dp2)"/>
+            <rect x="302" y="28" width="110" height="42" rx="6" fill="#16213e" stroke="#82aaff" stroke-width="1.5"/>
+            <text x="357" y="47" text-anchor="middle" fill="#82aaff" font-weight="600" font-size="12">FastAPI</text>
+            <text x="357" y="62" text-anchor="middle" fill="#8892b0" font-size="10">inferencia</text>
+            <path d="M 302 62 L 265 78 L 228 78" stroke="#82aaff" stroke-width="1.2" fill="none" stroke-dasharray="4,3" marker-end="url(#dp2-b)"/>
+            <text x="268" y="94" text-anchor="middle" fill="#82aaff" font-size="10">JSON</text>
+            <line x1="152" y1="96" x2="96" y2="124" stroke="#ffa07a" stroke-width="1.2" marker-end="url(#dp2-o)"/>
+            <rect x="22" y="116" width="88" height="40" rx="6" fill="#16213e" stroke="#ffa07a" stroke-width="1.2"/>
+            <text x="66" y="133" text-anchor="middle" fill="#ffa07a" font-weight="600" font-size="11">Storage</text>
+            <text x="66" y="148" text-anchor="middle" fill="#8892b0" font-size="9">audio</text>
+            <line x1="200" y1="96" x2="236" y2="122" stroke="#ffa07a" stroke-width="1.2" marker-end="url(#dp2-o)"/>
+            <rect x="212" y="116" width="108" height="40" rx="6" fill="#16213e" stroke="#ffa07a" stroke-width="1.2"/>
+            <text x="266" y="133" text-anchor="middle" fill="#ffa07a" font-weight="600" font-size="11">Base de datos</text>
+            <text x="266" y="148" text-anchor="middle" fill="#8892b0" font-size="9">características</text>
+          </svg>
         </div>
       </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════════
-         SLIDE 19 — Plusyc hoy
-    ═══════════════════════════════════════════════════ -->
-    <section>
-      <div class="section-label">Producción</div>
-      <h2>Plusyc hoy</h2>
-      <p style="font-size:0.72em; color:var(--accent); font-weight:600; margin-bottom:14px;">
-        El sistema está en producción — clasifica canciones entrantes en tiempo real
-      </p>
-      <div class="comparison-2col" style="gap:16px; align-items:center;">
-        <div style="text-align:center;">
-          <img src="../Img/ui_features.png" alt="Plusyc — características asignadas"
-               style="max-height:43vh; width:100%; object-fit:contain;">
-          <div class="img-caption">características asignadas automáticamente</div>
-        </div>
-        <div style="text-align:center;">
-          <img src="../Img/ui_mood.png" alt="Plusyc — moods y géneros"
-               style="max-height:43vh; width:100%; object-fit:contain;">
-          <div class="img-caption">moods y géneros</div>
-        </div>
-      </div>
-    </section>
+
 
     <!-- ═══════════════════════════════════════════════════
          SLIDE 20 — Demo
@@ -1284,31 +1320,31 @@
         a continuación
       </div>
       <h1 style="font-size:3.2em; color:var(--accent); margin-bottom:14px;">Demo</h1>
-      <p style="font-size:0.78em; color:var(--text-muted);">Sistema en producción — Plusyc Live</p>
+      <p style="font-size:0.78em; color:var(--text-muted);">Sistema — Plusyc Live</p>
     </section>
 
     <!-- ═══════════════════════════════════════════════════
          SLIDE 21 — Conclusiones
     ═══════════════════════════════════════════════════ -->
     <section>
-      <div class="section-label">Cierre</div>
+      <div class="section-label">Conclusiones</div>
       <h2>Conclusiones</h2>
       <ul class="check-list" style="margin-top:18px;">
         <li>
-          <strong>PANNs fue la clave</strong><br>
-          <span style="color:var(--text-muted); font-size:0.88em;">embeddings preentrenados capturan semántica que DSP clásico no puede</span>
+          <strong>Dataset MIR propio de música</strong><br>
+          <span style="color:var(--text-muted); font-size:0.88em;">DSP, PANNs, clases del catálogo de Plusyc</span>
         </li>
         <li>
-          <strong>ML clásico funciona</strong><br>
-          <span style="color:var(--text-muted); font-size:0.88em;">LightGBM + Optuna supera arquitecturas más complejas en este dominio y escala</span>
+          <strong>MLP y ML clásico funcionan</strong><br>
+          <span style="color:var(--text-muted); font-size:0.88em;">MLP y LightGBM + Optuna muestran señal de aprendizaje en este dominio y escala</span>
         </li>
         <li>
-          <strong>Pipeline propio sobre canciones completas</strong><br>
-          <span style="color:var(--text-muted); font-size:0.88em;">clases adaptadas al catálogo de Plusyc, no a datasets genéricos</span>
+          <strong>PANNs fue clave</strong><br>
+          <span style="color:var(--text-muted); font-size:0.88em;">el modelo preentrenado captura semántica que DSP clásico nó</span>
         </li>
         <li>
-          <strong>Sistema en producción</strong><br>
-          <span style="color:var(--text-muted); font-size:0.88em;">clasifica canciones entrantes, costo de inferencia cero, sin dependencia de terceros</span>
+          <strong>Baseline de inferencia en producción</strong><br>
+          <span style="color:var(--text-muted); font-size:0.88em;">el sistema etiqueta canciones entrantes, costo de inferencia cero, sin dependencia de terceros</span>
         </li>
       </ul>
     </section>
@@ -1317,7 +1353,7 @@
          SLIDE 22 — Próximos pasos
     ═══════════════════════════════════════════════════ -->
     <section>
-      <div class="section-label">Cierre</div>
+      <div class="section-label">Conclusiones</div>
       <h2>Próximos pasos</h2>
       <ul class="check-list" style="margin-top:18px;">
         <li class="arrow">
@@ -1329,12 +1365,12 @@
           <span style="color:var(--text-muted); font-size:0.88em;">estructura más fina y coherente para ambientación de precisión</span>
         </li>
         <li class="arrow">
-          <strong>Arquitecturas transformer</strong><br>
-          <span style="color:var(--text-muted); font-size:0.88em;">cuando el volumen de datos etiquetados lo justifique</span>
+          <strong>Mejorar limpieza y data augmentation</strong><br>
+          <span style="color:var(--text-muted); font-size:0.88em;">más limpieza en lugar de undersampling y uso de transformadores y redes de difusión para aumentar muestras en clases escasas</span>
         </li>
         <li class="arrow">
-          <strong>SaaS posible</strong><br>
-          <span style="color:var(--text-muted); font-size:0.88em;">sistema extensible a otros catálogos y empresas</span>
+          <strong>Posible SaaS</strong><br>
+          <span style="color:var(--text-muted); font-size:0.88em;">con mejoras en modelos y en infraestructura, se puede ofrecer el servicio</span>
         </li>
       </ul>
     </section>
