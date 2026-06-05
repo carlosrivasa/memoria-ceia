@@ -360,7 +360,7 @@
           <div style="color:var(--accent-secondary); font-weight:700; font-size:0.85em; margin-bottom:4px;">Deep Learning</div>
           <div style="font-size:0.65em; color:var(--text-muted); margin-bottom:12px;">PANNs / musicnn</div>
           <ul class="check-list">
-            <li class="arrow" style="font-size:0.7em; color:var(--text-primary);">Extraen contexto acústico profundo</li>
+            <li class="arrow" style="font-size:0.7em; color:var(--text-primary);">Filtros convolucionales detectan bordes y texturas en el espectrograma</li>
             <li class="arrow" style="font-size:0.7em; color:#e87070;">Clasificadores genéricos, no adaptados al catálogo</li>
           </ul>
         </div>
@@ -404,7 +404,7 @@
         <div class="bg-code-card" style="flex:1; font-size:0.58em;">
           <div style="color:var(--accent-secondary); font-weight:700; margin-bottom:3px;">GTZAN</div>
           <div style="color:var(--text-muted); font-size:0.88em; margin-bottom:10px;">1000 clips · 30s · 10 géneros</div>
-          <div style="margin-bottom:5px;"><span style="color:var(--accent); font-weight:700;">✓</span> DSP: MFCC, chroma, RMS, descriptores espectrales</div>
+          <div style="margin-bottom:5px;"><span style="color:var(--accent); font-weight:700;">✓</span> DSP: MFCC, croma, RMS, descriptores espectrales</div>
           <div style="margin-bottom:10px;"><span style="color:var(--accent); font-weight:700;">✓</span> Ventanas y estadísticos (media, varianza)</div>
           <div style="color:#e87070;"><span style="font-weight:700;">✗</span> Previews de 30s · 10 géneros vs 500+ de Plusyc</div>
         </div>
@@ -420,7 +420,7 @@
         <div class="bg-code-card" style="flex:1; font-size:0.58em;">
           <div style="color:var(--accent-secondary); font-weight:700; margin-bottom:3px;">Million Song Dataset</div>
           <div style="color:var(--text-muted); font-size:0.88em; margin-bottom:10px;">1M canciones · HDF5</div>
-          <div style="margin-bottom:5px;"><span style="color:var(--accent); font-weight:700;">✓</span> Gran cantidad de muestras</div>
+          <div style="margin-bottom:5px;"><span style="color:var(--accent); font-weight:700;">✓</span> Features por segmento: timbre (MFCC) · pitches (croma) · loudness</div>
           <div style="color:#e87070;"><span style="font-weight:700;">✗</span> Sin audio crudo · difícil replicar la extracción</div>
         </div>
 
@@ -429,7 +429,6 @@
           <div style="color:var(--text-muted); font-size:0.88em; margin-bottom:10px;">2M clips · 10s · 527 clases</div>
           <div style="margin-bottom:5px;"><span style="color:var(--accent); font-weight:700;">✓</span> Embeddings semánticos con CNN14 (PANNs)</div>
           <div style="margin-bottom:5px;"><span style="color:var(--accent); font-weight:700;">✓</span> Ventanas de 10s para captura semántica</div>
-          <div style="margin-bottom:10px;"><span style="color:var(--accent); font-weight:700;">✓</span> Usado para limpiar etiquetas ruidosas</div>
           <div style="color:#e87070;"><span style="font-weight:700;">✗</span> Clases diferentes</div>
         </div>
 
@@ -555,7 +554,7 @@
         <!-- Frames box -->
         <rect x="57" y="96" width="220" height="55" rx="7" fill="#16213e" stroke="#64ffda" stroke-width="1.5"/>
         <text x="162" y="116" text-anchor="middle" fill="#64ffda" font-weight="700">Variables por frame</text>
-        <text x="165" y="133" text-anchor="middle" fill="#8892b0" font-size="12">MFCC · chroma · ZCR · RMS · tonnetz</text>
+        <text x="165" y="133" text-anchor="middle" fill="#8892b0" font-size="12">MFCC · croma · ZCR · RMS · tonnetz</text>
         <text x="165" y="147" text-anchor="middle" fill="#8892b0" font-size="11">92 atributos</text>
 
         <!-- Globals box (dashed) -->
@@ -631,7 +630,7 @@
             </li>
             <li>
               <strong>Transformaciones estadísticas</strong><br>
-              <span style="color:var(--text-muted); font-size:0.88em;">ej. <em>Shifted Log Transformation</em> en Loudness para normalizar la distribución sesgada</span>
+              <span style="color:var(--text-muted); font-size:0.88em;">ej. Shifted Log Transformation en loudness para normalizar la distribución sesgada</span>
             </li>
           </ul>
         </div>
@@ -654,26 +653,25 @@
           <ul class="check-list">
             <li>
               <strong>Limpieza con AudioSet</strong><br>
-              <span style="color:var(--text-muted); font-size:0.88em;">modelo preentrenado detecta y elimina falsas etiquetas</span>
-            </li>
-            <li>
-              <strong>Muestreo balanceado</strong><br>
-              <span style="color:var(--text-muted); font-size:0.88em;">mood y genres tienen clases muy desbalanceadas</span>
+              <span style="color:var(--text-muted); font-size:0.88em;">modelo preentrenado detecta falsas etiquetas</span>
             </li>
             <li>
               <strong>Selección de variables — 3 etapas</strong><br>
               <span style="color:var(--text-muted); font-size:0.88em;">
                 <span style="color:var(--accent-secondary);">①</span> Filtro de varianza
-                · <span style="color:var(--accent-secondary);">②</span> Importancia basada en ganancia (árboles)
-                · <span style="color:var(--accent-secondary);">③</span> Exclusión por colinealidad (Pearson)
+                · <span style="color:var(--accent-secondary);">②</span> Importancia por ganancia en árboles (95% acumulado)
+                · <span style="color:var(--accent-secondary);">③</span> Exclusión por colinealidad (Pearson &gt; 0,95)
               </span>
+            </li>
+            <li>
+              <strong>Muestreo balanceado</strong><br>
+              <span style="color:var(--text-muted); font-size:0.88em;">mood y genres: techo por clase mayoritaria y mínimo representativo por clase minoritaria</span>
             </li>            
           </ul>
         </div>
         <div>
           <img src="../Img/liveness_antes_rvp.png" alt="Distribución liveness — datos ruidosos"
                style="max-height:46vh; width:100%; object-fit:contain;">
-          <div class="img-caption">liveness antes de limpieza — distribución con ruido</div>
         </div>
       </div>
     </section>
@@ -831,6 +829,101 @@
             <text x="380" y="200" text-anchor="middle" fill="#e0e0e0" font-size="10">loudness</text>
             <text x="380" y="213" text-anchor="middle" fill="#8892b0" font-size="9">RMSE loss</text>
           </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE — Diseño: Optuna + LightGBM
+    ═══════════════════════════════════════════════════ -->
+    <section>
+      <div class="section-label">Diseño</div>
+      <h2>Optimización de hiperparámetros — Optuna</h2>
+      <div class="comparison-2col" style="margin-top:14px; align-items:center; gap:24px;">
+        <!-- SVG: nested loops -->
+        <div style="flex:1.4;">
+          <svg viewBox="0 0 480 230" style="width:100%; max-height:48vh; display:block;" font-family="Inter,system-ui,sans-serif">
+            <defs>
+              <marker id="op1" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#8892b0"/></marker>
+              <marker id="op1-o" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#ffa07a"/></marker>
+              <marker id="op1-b" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#82aaff"/></marker>
+              <marker id="op1-t" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64ffda"/></marker>
+            </defs>
+
+            <!-- Outer Optuna box -->
+            <rect x="4" y="4" width="370" height="218" rx="10" fill="none" stroke="#ffa07a" stroke-width="1.5" stroke-dasharray="7,4"/>
+            <text x="14" y="22" fill="#ffa07a" font-size="11" font-weight="700">Optuna — N trials</text>
+
+            <!-- Optuna suggest box -->
+            <rect x="14" y="30" width="148" height="58" rx="6" fill="#16213e" stroke="#ffa07a" stroke-width="1.5"/>
+            <text x="88" y="50" text-anchor="middle" fill="#ffa07a" font-size="10" font-weight="600">Sugiere combinación</text>
+            <text x="88" y="65" text-anchor="middle" fill="#8892b0" font-size="9">depth · leaves · L1/L2</text>
+            <text x="88" y="77" text-anchor="middle" fill="#8892b0" font-size="9">subsample · lr</text>
+
+            <!-- Arrow down from Optuna suggest → inner loop -->
+            <line x1="88" y1="88" x2="88" y2="106" stroke="#ffa07a" stroke-width="1.2" marker-end="url(#op1-o)"/>
+
+            <!-- Inner tree-loop box -->
+            <rect x="14" y="96" width="352" height="118" rx="8" fill="none" stroke="#82aaff" stroke-width="1" stroke-dasharray="5,3"/>
+            <text x="24" y="110" fill="#8892b0" font-size="9">loop por árbol</text>
+
+            <!-- Construye árbol box -->
+            <rect x="22" y="116" width="118" height="58" rx="6" fill="#16213e" stroke="#82aaff" stroke-width="1.5"/>
+            <text x="81" y="138" text-anchor="middle" fill="#82aaff" font-size="10" font-weight="600">Construye árbol</text>
+            <text x="81" y="152" text-anchor="middle" fill="#8892b0" font-size="9">GBDT / GOSS</text>
+            <text x="81" y="164" text-anchor="middle" fill="#8892b0" font-size="9">hoja a hoja</text>
+
+            <!-- Arrow → Validación -->
+            <line x1="140" y1="145" x2="160" y2="145" stroke="#82aaff" stroke-width="1.2" marker-end="url(#op1-b)"/>
+
+            <!-- Validación box -->
+            <rect x="162" y="116" width="100" height="58" rx="6" fill="#16213e" stroke="#82aaff" stroke-width="1.5"/>
+            <text x="212" y="138" text-anchor="middle" fill="#82aaff" font-size="10" font-weight="600">Validación</text>
+            <text x="212" y="154" text-anchor="middle" fill="#8892b0" font-size="9">F1 / RMSE / MAE</text>
+
+            <!-- Arrow → ¿Early stop? -->
+            <line x1="262" y1="145" x2="280" y2="145" stroke="#82aaff" stroke-width="1.2" marker-end="url(#op1-b)"/>
+
+            <!-- ¿Early stop? diamond: center (312, 145) -->
+            <polygon points="280,145 312,125 344,145 312,165" fill="#16213e" stroke="#ff8a80" stroke-width="1.5"/>
+            <text x="312" y="142" text-anchor="middle" fill="#ff8a80" font-size="8.5" font-weight="600">¿Early</text>
+            <text x="312" y="154" text-anchor="middle" fill="#ff8a80" font-size="8.5" font-weight="600">stop?</text>
+
+            <!-- No → loop back to Construye árbol (below) -->
+            <path d="M 312 165 L 312 200 L 81 200 L 81 174" stroke="#82aaff" stroke-width="1.1" fill="none" stroke-dasharray="4,3" marker-end="url(#op1-b)"/>
+            <text x="196" y="214" text-anchor="middle" fill="#8892b0" font-size="9">No — siguiente árbol</text>
+
+            <!-- Sí → exits inner box, loops back up to Optuna suggest -->
+            <path d="M 344 145 L 362 145 L 362 15 L 162 15 L 162 60" stroke="#ffa07a" stroke-width="1.1" fill="none" stroke-dasharray="5,3" marker-end="url(#op1-o)"/>
+            <text x="296" y="12" text-anchor="middle" fill="#ffa07a" font-size="9">Sí — siguiente trial</text>
+
+            <!-- Exit outer box → Mejores params -->
+            <line x1="374" y1="59" x2="400" y2="59" stroke="#64ffda" stroke-width="1.5" marker-end="url(#op1-t)"/>
+            <text x="387" y="50" text-anchor="middle" fill="#8892b0" font-size="8">sin más</text>
+            <text x="387" y="60" text-anchor="middle" fill="#8892b0" font-size="8">trials</text>
+
+            <!-- Mejores params box -->
+            <rect x="402" y="36" width="74" height="46" rx="6" fill="#16213e" stroke="#64ffda" stroke-width="1.5"/>
+            <text x="439" y="55" text-anchor="middle" fill="#64ffda" font-size="9" font-weight="600">Mejores</text>
+            <text x="439" y="68" text-anchor="middle" fill="#64ffda" font-size="9" font-weight="600">params</text>
+          </svg>
+        </div>
+        <!-- Bullets -->
+        <div style="flex:1; font-size:0.78em;">
+          <ul class="check-list">
+            <li>
+              <strong>Búsqueda bayesiana</strong><br>
+              <span style="color:var(--text-muted); font-size:0.88em;">no grid search — usa resultados anteriores para sugerir la próxima combinación</span>
+            </li>
+            <li>
+              <strong>Early stopping integrado</strong><br>
+              <span style="color:var(--text-muted); font-size:0.88em;">30–50 iteraciones sin mejora cortan el trial actual</span>
+            </li>
+            <li>
+              <strong>Modelo final</strong><br>
+              <span style="color:var(--text-muted); font-size:0.88em;">lr muy baja + hasta 10.000 árboles — el early stopping determina el número real</span>
+            </li>
+          </ul>
         </div>
       </div>
     </section>
@@ -1169,8 +1262,8 @@
               Predicciones coherentes
             </div>
             <div class="bg-secondary-card" style="line-height:1.5;">
-              <span style="color:#e87070;">Primary mood</span> — subjetividad<br>
-              <span style="color:var(--text-muted);">Secondary mood</span> — no se usa en producción
+              <span style="color:#e87070;">Primary mood</span> — ej: <em>melancholy</em> vs <em>sentimental</em><br>
+              <span style="color:var(--text-muted);">Secondary mood</span> — ej: <em>cool melancholy</em> vs <em>light melancholy</em>
             </div>
           </div>
         </div>
@@ -1331,20 +1424,20 @@
       <h2>Conclusiones</h2>
       <ul class="check-list" style="margin-top:18px;">
         <li>
-          <strong>Dataset MIR propio de música</strong><br>
-          <span style="color:var(--text-muted); font-size:0.88em;">DSP, PANNs, clases del catálogo de Plusyc</span>
+          <strong>Dataset MIR propio de Plusyc</strong><br>
+          <span style="color:var(--text-muted); font-size:0.88em;">DSP, PANNs, clases del catálogo</span>
         </li>
         <li>
           <strong>MLP y ML clásico funcionan</strong><br>
-          <span style="color:var(--text-muted); font-size:0.88em;">MLP y LightGBM + Optuna muestran señal de aprendizaje en este dominio y escala</span>
+          <span style="color:var(--text-muted); font-size:0.88em;">MLP y LightGBM + Optuna alcanzan rendimiento aceptable en producción en el dominio y escala del negocio, con posibilidad de iterar</span>
         </li>
         <li>
           <strong>PANNs fue clave</strong><br>
-          <span style="color:var(--text-muted); font-size:0.88em;">el modelo preentrenado captura semántica que DSP clásico nó</span>
+          <span style="color:var(--text-muted); font-size:0.88em;">el modelo preentrenado captura semántica que DSP clásico no</span>
         </li>
         <li>
           <strong>Baseline de inferencia en producción</strong><br>
-          <span style="color:var(--text-muted); font-size:0.88em;">el sistema etiqueta canciones entrantes, costo de inferencia cero, sin dependencia de terceros</span>
+          <span style="color:var(--text-muted); font-size:0.88em;">el sistema etiqueta canciones entrantes, sin costo por consulta, sin dependencia de terceros</span>
         </li>
       </ul>
     </section>
@@ -1366,11 +1459,11 @@
         </li>
         <li class="arrow">
           <strong>Mejorar limpieza y data augmentation</strong><br>
-          <span style="color:var(--text-muted); font-size:0.88em;">más limpieza en lugar de undersampling y uso de transformadores y redes de difusión para aumentar muestras en clases escasas</span>
+          <span style="color:var(--text-muted); font-size:0.88em;">más limpieza en lugar de submuestreo y uso de transformadores y redes de difusión para aumentar muestras en clases escasas</span>
         </li>
         <li class="arrow">
           <strong>Posible SaaS</strong><br>
-          <span style="color:var(--text-muted); font-size:0.88em;">con mejoras en modelos y en infraestructura, se puede ofrecer el servicio</span>
+          <span style="color:var(--text-muted); font-size:0.88em;">el pipeline es generalizable — con mejoras en datos, reentrenamiento e infraestructura escalable</span>
         </li>
       </ul>
     </section>
@@ -1387,6 +1480,14 @@
         Director: Esp. Ing. Martín Moreyra<br>
         CEIA &nbsp;·&nbsp; FIUBA &nbsp;·&nbsp; junio 2026
       </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SLIDE — logos
+    ═══════════════════════════════════════════════════ -->
+    <section style="display:flex; align-items:center; justify-content:center;">
+      <img src="../Img/Uba_fiuba_ingenieria_logo.png"
+           style="display:block; filter:invert(1) hue-rotate(180deg);">
     </section>
 
   </div><!-- /slides -->
